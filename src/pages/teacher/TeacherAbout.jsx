@@ -66,9 +66,9 @@ export default function TeacherAbout() {
       });
       let c;
       if (user?.country) {
-        c = countries.find((e) => e.code == user.country);
-        setCountryValue(lang === "en" ? c.name_en : c.name_ar);
-        setCountryCode(c.code);
+        c = countries.find((e) => e?.code == user?.country);
+        setCountryValue(lang === "en" ? c?.name_en : c?.name_ar);
+        setCountryCode(c?.code);
       }
     }
   }, [data]);

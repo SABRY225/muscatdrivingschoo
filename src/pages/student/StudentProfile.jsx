@@ -85,13 +85,13 @@ export default function StudentProfile() {
       let c;
       if (user?.location) {
         c = countries.find((e) => e.code == user.location);
-        setCountryValue(lang === "en" ? c.name_en : c.name_ar);
-        setCountryCode(c.code);
+        setCountryValue(lang === "en" ? c?.name_en : c?.name_ar);
+        setCountryCode(c?.code);
       }
       if (user?.nationality) {
         c = countries.find((e) => e.code == user.nationality);
-        setNationalityValue(lang === "en" ? c.name_en : c.name_ar);
-        setNationalityCode(c.code);
+        setNationalityValue(lang === "en" ? c?.name_en : c?.name_ar);
+        setNationalityCode(c?.code);
       }
     }
   }, [data]);
@@ -316,45 +316,56 @@ export default function StudentProfile() {
                   {t("location")}
                 </InputLabel>
                 <Autocomplete
-                  fullWidth
-                  name="country"
-                  options={countries}
-                  value={countryValue}
-                  inputValue={countryValue}
-                  onChange={(event, newInputValue) => {
-                    if (newInputValue) {
-                      setCountryValue(
-                        lang === "en"
-                          ? newInputValue?.name_en
-                          : newInputValue?.name_ar
-                      );
-                      setCountryCode(newInputValue?.code);
-                      setCountryError(false);
-                    } else {
-                      setCountryValue("");
-                      setCountryCode("");
-                    }
-                  }}
-                  onInputChange={(event, newInputValue) => {
-                    setCountryValue(newInputValue);
-                  }}
-                  getOptionLabel={(op) =>
-                    (lang === "en" ? op.name_en : op.name_ar) || op
-                  }
-                  isOptionEqualToValue={(op, value) =>
-                    lang === "en" ? op.name_en == value : op.name_ar == value
-                  }
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label={lang === "en" ? "Choose a country" : "إختر بلدك"}
-                      inputProps={{
-                        ...params.inputProps,
-                        autoComplete: "new-password",
-                      }}
-                    />
-                  )}
-                />
+  fullWidth
+  name="country"
+  options={countries}
+  value={countryValue}
+  inputValue={countryValue}
+  onChange={(event, newInputValue) => {
+    if (newInputValue) {
+      setCountryValue(
+        lang === "en" ? newInputValue?.name_en : newInputValue?.name_ar
+      );
+      setCountryCode(newInputValue?.code);
+      setCountryError(false);
+    } else {
+      setCountryValue("");
+      setCountryCode("");
+    }
+  }}
+  onInputChange={(event, newInputValue) => {
+    setCountryValue(newInputValue);
+  }}
+  getOptionLabel={(op) =>
+    (lang === "en" ? op.name_en : op.name_ar) || op
+  }
+  isOptionEqualToValue={(op, value) =>
+    lang === "en" ? op.name_en === value : op.name_ar === value
+  }
+  renderOption={(props, option) => (
+    <Box component="li" sx={{ display: "flex", alignItems: "center" }} {...props}>
+      <img
+        loading="lazy"
+        width="25"
+        src={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png`}
+        alt=""
+        style={{ marginLeft: 8 }}
+      />
+      {lang === "en" ? option.name_en : option.name_ar}
+    </Box>
+  )}
+  renderInput={(params) => (
+    <TextField
+      {...params}
+      label={lang === "en" ? "Choose a country" : "إختر بلدك"}
+      inputProps={{
+        ...params.inputProps,
+        autoComplete: "new-password",
+      }}
+    />
+  )}
+/>
+
                 {countryError && (
                   <Typography
                     color="error"
@@ -369,48 +380,57 @@ export default function StudentProfile() {
                 <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
                   {t("nationality")}
                 </InputLabel>
-                <Autocomplete
-                  fullWidth
-                  name="nationality"
-                  options={countries}
-                  value={nationalityValue}
-                  inputValue={nationalityValue}
-                  onChange={(event, newInputValue) => {
-                    if (newInputValue) {
-                      setNationalityValue(
-                        lang === "en"
-                          ? newInputValue?.name_en
-                          : newInputValue?.name_ar
-                      );
-                      setNationalityCode(newInputValue?.code);
-                      setNationalityError(false);
-                    } else {
-                      setNationalityValue("");
-                      setNationalityCode("");
-                    }
-                  }}
-                  onInputChange={(event, newInputValue) => {
-                    setNationalityValue(newInputValue);
-                  }}
-                  getOptionLabel={(op) =>
-                    (lang === "en" ? op.name_en : op.name_ar) || op
-                  }
-                  isOptionEqualToValue={(op, value) =>
-                    lang === "en" ? op?.name_en == value : op?.name_ar == value
-                  }
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label={
-                        lang === "en" ? "Choose a nationality" : "إختر جنسيتك"
-                      }
-                      inputProps={{
-                        ...params.inputProps,
-                        autoComplete: "new-password",
-                      }}
-                    />
-                  )}
-                />
+<Autocomplete
+  fullWidth
+  name="country"
+  options={countries}
+  value={countryValue}
+  inputValue={countryValue}
+  onChange={(event, newInputValue) => {
+    if (newInputValue) {
+      setCountryValue(
+        lang === "en" ? newInputValue?.name_en : newInputValue?.name_ar
+      );
+      setCountryCode(newInputValue?.code);
+      setCountryError(false);
+    } else {
+      setCountryValue("");
+      setCountryCode("");
+    }
+  }}
+  onInputChange={(event, newInputValue) => {
+    setCountryValue(newInputValue);
+  }}
+  getOptionLabel={(op) =>
+    (lang === "en" ? op.name_en : op.name_ar) || op
+  }
+  isOptionEqualToValue={(op, value) =>
+    lang === "en" ? op.name_en === value : op.name_ar === value
+  }
+  renderOption={(props, option) => (
+    <Box component="li" sx={{ display: "flex", alignItems: "center" }} {...props}>
+      <img
+        loading="lazy"
+        width="25"
+        src={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png`}
+        alt=""
+        style={{ marginLeft: 8 }}
+      />
+      {lang === "en" ? option.name_en : option.name_ar}
+    </Box>
+  )}
+  renderInput={(params) => (
+    <TextField
+      {...params}
+      label={lang === "en" ? "Choose a country" : "إختر بلدك"}
+      inputProps={{
+        ...params.inputProps,
+        autoComplete: "new-password",
+      }}
+    />
+  )}
+/>
+
                 {nationalityError && (
                   <Typography
                     color="error"

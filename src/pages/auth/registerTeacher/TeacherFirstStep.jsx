@@ -80,7 +80,7 @@ export default function TeacherFirstStep() {
       
       if (resData.status !== 200 && resData.status !== 201) {
         enqueueSnackbar(
-          lang === "ar" ? resData.error.arabic : resData.error.english,
+          lang === "ar" ? resData.message.arabic : resData.message.english,
           { variant: "error", autoHideDuration: 8000 }
         );
         throw new Error("Failed occurred");

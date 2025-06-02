@@ -10,33 +10,45 @@ import rtlPlugin from "stylis-plugin-rtl";
 import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
 import { prefixer } from "stylis";
-import { BrowserRouter} from 'react-router-dom'
-import { Provider} from 'react-redux'
-import { PersistGate } from 'redux-persist/integration/react'
-import { store , persistor} from './redux/store';
+import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from './redux/store';
 import { SnackbarProvider } from 'notistack';
 import { Suspense } from 'react';
 
+// تهيئة i18next
 i18n
-  .use(initReactI18next) // passes i18n down to react-i18next
+  .use(initReactI18next)
   .use(LanguageDetector)
   .use(HttpApi)
   .init({
-    // the translations
-    // (tip move them in a JSON file and import them,
-    // or even better, manage them via a UI: https://react.i18next.com/guides/multiple-translation-files#manage-your-translations-with-a-management-gui)
     supportedLngs: ["ar", "en"],
-    fallbackLng: "en",
+    fallbackLng: "ar", // ← اللغة الافتراضية العربية
     detection: {
-      order: ["path", "cookie", "localStorage", "htmlTag", "subdomain"],
-      caches: ["cookie"],
+      order: ["cookie"], // ← الكشف فقط من الكوكي
+      caches: ["cookie"], // ← حفظ اللغة في الكوكي
     },
     backend: {
       loadPath: "/assets/locales/{{lng}}/translation.json",
     },
   });
 
-  //Create rtl cache
+// تحقق إن لم يتم تحديد اللغة من الكوكيز → حدد العربية
+const currentLang = cookies.get("i18next");
+if (!currentLang) {
+  i18n.changeLanguage("ar");
+  document.documentElement.lang = "ar";
+  document.documentElement.dir = "rtl";
+}
+
+// ضبط اللغة والاتجاه عند التغيير
+i18n.on('languageChanged', (lng) => {
+  document.documentElement.lang = lng;
+  document.documentElement.dir = lng === 'ar' ? 'rtl' : 'ltr';
+});
+
+// إعداد cache لـ RTL أو LTR
 const cacheRtl = createCache({
   key: cookies.get("i18next") === "ar" ? "muirtl" : "muiltr",
   stylisPlugins: [prefixer, rtlPlugin],
@@ -46,7 +58,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <CacheProvider value={cacheRtl}>
     <BrowserRouter>
-    <Provider store={store}>
+      <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <Suspense fallback={<h1></h1>}>
             <SnackbarProvider maxSnack={3}>
@@ -54,7 +66,7 @@ root.render(
             </SnackbarProvider>
           </Suspense>
         </PersistGate>
-    </Provider>
+      </Provider>
     </BrowserRouter>
   </CacheProvider>
 );

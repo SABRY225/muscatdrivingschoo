@@ -70,6 +70,8 @@ export default function Login() {
         }
       );
       const resData = await response.json();
+      console.log(resData);
+      
       if (response.status !== 200 && response.status !== 201) {
         setLoad(false);
         enqueueSnackbar(resData.message, {

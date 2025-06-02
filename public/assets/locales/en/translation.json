@@ -692,5 +692,6 @@
   "view_account_statement"            : "Account Statement",
   "msg_whatsapp_one"                  : "Please, Scan QR Code",
   "msg_whatsapp_two"                  : "Please, Waiting for send message",
-  "msg_whatsapp_three"                : "Send sucess message is done to whats app"
+  "msg_whatsapp_three"                : "Send sucess message is done to whats app",
+  "Lectures":"Lectures"
 }

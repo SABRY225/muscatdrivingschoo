@@ -23,7 +23,7 @@ export default function AdminSingleTeacher() {
           <AboutSingleTeacher teacher={data?.data} />
           <StdeuntsTypeSingleTeacher teacher={data?.data} />
           <AvailablitySingleTeacher teacher={data?.data} />
-          <AdminPayingTeacher teacher={data?.data} />
+          {/* <AdminPayingTeacher teacher={data?.data} /> */}
           <ResumeSingleTeacher teacher={data?.data} />
         </>
       )}

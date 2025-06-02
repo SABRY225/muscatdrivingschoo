@@ -14,7 +14,7 @@ const IconWrapper = styled(Box)({
   width: "30px",
   height: "30px",
   borderRadius: "50%",
-  backgroundColor: "#005B8E",
+  // backgroundColor: "#005B8E",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
@@ -30,7 +30,7 @@ const Image = styled("img")({
   width: "200px",
 });
 
-const TikTokIcon = ({ color = "#fff" }) => {
+const TikTokIcon = ({ color = "#D10909" }) => {
   return (
     <svg
       fill={color}
@@ -51,11 +51,11 @@ export default function LinksFooter() {
   const links = data?.data;
 
   const iconComponents = {
-    Facebook:   <FacebookIcon sx={{ fontSize: "18px", color: "white" }} />,
-    Twitter:    <TwitterIcon sx={{ fontSize: "18px", color: "white" }} />,
-    LinkedIn:   <LinkedInIcon sx={{ fontSize: "18px", color: "white" }} />,
-    Instagram:  <InstagramIcon sx={{ fontSize: "18px", color: "white" }} />,
-    TikTok:     <TikTokIcon sx={{ fontSize: "18px", color: "white" }} />,
+    Facebook: <FacebookIcon sx={{ fontSize: "30px", color: "#D10909" }} />,
+    Twitter: <TwitterIcon sx={{ fontSize: "30px", color: "#D10909" }} />,
+    LinkedIn: <LinkedInIcon sx={{ fontSize: "30px", color: "#D10909" }} />,
+    Instagram: <InstagramIcon sx={{ fontSize: "30px", color: "#D10909" }} />,
+    TikTok: <TikTokIcon sx={{ fontSize: "18px", color: "#D10909"}} />,
   };
 
   return (
@@ -78,7 +78,7 @@ export default function LinksFooter() {
               return null;
             }
             return (
-              <IconWrapper key={index}>
+              <IconWrapper key={index} >
                 <Link to={obj?.link}>{iconComponent}</Link>
               </IconWrapper>
             );

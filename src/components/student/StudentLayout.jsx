@@ -1,84 +1,164 @@
-import {Avatar, Box,  Container,  Divider,  Grid,  List,   ListItem,   ListItemButton,   ListItemText,   Paper,    Typography,
+import {
+  Avatar,
+  Box,
+  Divider,
+  Drawer,
+  Grid,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Paper,
+  Typography,
 } from "@mui/material";
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import Navbar from "../Navbar";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { deepOrange } from "@mui/material/colors";
 
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import EscalatorWarningIcon from "@mui/icons-material/EscalatorWarning";
+import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
+import AttachmentIcon from "@mui/icons-material/Attachment";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
+import LocalOfferIcon from "@mui/icons-material/LocalOffer";
+import SchoolIcon from "@mui/icons-material/School";
+import LockIcon from "@mui/icons-material/Lock";
+import MessageIcon from "@mui/icons-material/Message";
+import PaymentIcon from "@mui/icons-material/Payment";
+import SupportIcon from "@mui/icons-material/Support";
+import MenuIcon from "@mui/icons-material/Menu";
+import RequestPageIcon from "@mui/icons-material/RequestPage";
+import GradingIcon from "@mui/icons-material/Grading";
+
 export default function StudentLayout({ children }) {
   const { t } = useTranslation();
+  const location = useLocation();
+  const { student } = useSelector((state) => state.student);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   const topics = [
-    { title: t("profile"),            link: "/profile" },
-    { title: t("profile_photo"),      link: "/profile_photo" },
-    { title: t("lessons"),            link: "/lessons" },
-    { title: t("my_teachers"),        link: "/teachers" },
-    { title: t("setting_parent"),     link: "/parents" },
-    { title: t("setting_changepassword"), link: "/changepassword" },
-    { title: t("messages"),           link: "/messages" },
-    { title: t("credit"),             link: "/credit" },
-    { title: t("payment_history"),    link: "/payment-history" },
-    { title: t("paymentOperations"),  link: "/financial-records" },
-    { title: t("refunds"),            link: "/refunds" },
-    { title: t("tests"),              link: "/tests" },
-    { title: t("lectures"),           link: "/lectures" },
-    { title: t("packages"),           link: "/packages" },
-    { title: t("discounts"),           link: "/discounts" },
-    { title: t("setting_page"),           link: "/settings" },
+    { title: t("profile"), link: "/profile", icon: <AccountCircleIcon /> },
+    { title: t("parent"), link: "/parents", icon: <EscalatorWarningIcon /> },
+    { title: t("Points earned"), link: "/referral-system", icon: <AttachmentIcon /> },
+    { title: t("profile_photo"), link: "/profile_photo", icon: <PhotoCameraIcon /> },
+    { title: t("Lesson booking requests"), link: "/request-lesson", icon: <GradingIcon /> },
+    { title: t("alllessons"), link: "/lessons", icon: <MenuBookIcon /> },
+    // { title: t("pastlessons"), link: "/pastLessons", icon: <MenuBookIcon /> },
+    // { title: t("cominglessons"), link: "/comingLessons", icon: <MenuBookIcon /> },
+    { title: t("packages"), link: "/package", icon: <LocalOfferIcon /> },
+    { title: t("Lectures"), link: "/lecture", icon: <SchoolIcon /> },
+    { title: t("Questions"), link: "/questions", icon: <MenuBookIcon /> },
+    { title: t("Exams"), link: "/exam", icon: <MenuBookIcon /> },
+    { title: t("Resource"), link: "/resource", icon: <MenuBookIcon /> },
+    { title: t("Discounts"), link: "/discount", icon: <LocalOfferIcon /> },
+    { title: t("my_teachers"), link: "/teachers", icon: <SchoolIcon /> },
+    { title: t("Change Password"), link: "/changepassword", icon: <LockIcon /> },
+    { title: t("messages"), link: "/messages", icon: <MessageIcon /> },
+    { title: t("credit"), link: "/credit", icon: <PaymentIcon /> },
+    // { title: t("payment_history"), link: "/payment-history", icon: <PaymentIcon /> },
+    { title: t("paymentOperations"), link: "/financial-records", icon: <PaymentIcon /> },
+    { title: t("Complaints"), link: "/technical-support", icon: <SupportIcon /> },
+    { title: t("My bills"), link: "/mybills", icon: <RequestPageIcon /> },
   ];
 
-  const { student } = useSelector((state) => state.student);
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  const drawer = (
+    <Paper sx={{ padding: "20px 20px 100px", width: 230,backgroundColor:"#D10909",borderRadius:"20rem",margin:"0 1rem" }}>
+      <Box sx={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
+        <Avatar
+          src={`${process.env.REACT_APP_API_KEY}images/${student?.image}`}
+          alt={student?.name}
+          sx={{
+            width: 95,
+            height: 95,
+            fontSize: 36,
+            bgcolor: deepOrange[500],
+            backgroundColor:"#fff"
+          }}
+        />
+        <Typography sx={{ marginTop: 2, fontWeight: "700",color:"#fff" }}>
+          {student?.name}
+        </Typography>
+      </Box>
+      <Divider sx={{ marginY: 2 ,backgroundColor:"#fff"}} />
+      <List>
+        {topics.map((topic, index) => {
+          const fullPath = `/student${topic.link}`;
+          const isSelected = location.pathname === fullPath;
+
+          return (
+            <Link
+              key={index}
+              to={fullPath}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <ListItem disablePadding>
+                <ListItemButton
+                  selected={isSelected}
+                  sx={{
+                    backgroundColor: isSelected ? "#000" : "#fff",
+                    color: isSelected ? "#fff" : "#000",
+                    borderRadius: 1,
+                    margin:"0.2rem 0",
+                    "&:hover": {
+                      backgroundColor: "rgba(25, 118, 210, 0.04)",
+                    },
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: 40,color: isSelected ? "#fff" : "#000" }}>{topic.icon}</ListItemIcon>
+                  <ListItemText primary={topic.title} sx={{ textAlign: "start" }} />
+                </ListItemButton>
+              </ListItem>
+            </Link>
+          );
+        })}
+      </List>
+    </Paper>
+  );
+
   return (
     <Navbar>
-      <Container sx={{ marginTop: "120px", marginBottom: "60px" }}>
+      <Paper sx={{ marginTop: "120px", paddingBottom: "1rem",}}>
         <Grid container spacing={2}>
-          <Grid item xs={12} lg={3} sx={{ display: { md: "block", xs: "none" },}}>
-            <Paper sx={{ padding: "20px" }}>
-              <Box sx={{ display: "flex", alignItems: "center",flexDirection: "column",}}>
-                <Avatar
-                  src={`${process.env.REACT_APP_API_KEY}images/${student?.image}`}
-                  alt={student?.name}
-                  sx={{
-                    width: "95px",
-                    height: "95px",
-                    fontSize: "36px",
-                    bgcolor: deepOrange[500],
-                  }}
-                />
-                <Typography sx={{ marginTop: "16px", fontWeight: "700" }}>
-                  {student?.name}
-                </Typography>
-              </Box>
-              <Divider sx={{ marginY: "20px" }} />
-              <List>
-                {topics.map((topic, index) => {
-                  return (
-                    <Link to={`/student${topic.link}`}>
-                      <ListItem key={topic.title + index + "o"} disablePadding>
-                        <ListItemButton>
-                          <ListItemText
-                            primary={topic.title}
-                            sx={{ textAlign: "start" }}
-                          />
-                        </ListItemButton>
-                      </ListItem>
-                    </Link>
-                  );
-                })}
-              </List>
-            </Paper>
+          {/* زر القائمة للجوال */}
+          <Grid item xs={12} sx={{ display: { md: "none" }, textAlign: "left" }}>
+            <IconButton onClick={handleDrawerToggle}>
+              <MenuIcon />
+            </IconButton>
           </Grid>
-          <Grid item xs={12} lg={9} sx={{ overflow: "hidden" }}>
+
+          {/* القائمة الجانبية - تظهر دائمًا في الشاشات الكبيرة */}
+          <Grid item xs={12} md={3} sx={{ display: { xs: "none", md: "block" } }}>
+            {drawer}
+          </Grid>
+
+          {/* القائمة الجانبية للجوال */}
+          <Drawer
+            anchor="left"
+            open={mobileOpen}
+            onClose={handleDrawerToggle}
+            sx={{
+              display: { xs: "block", md: "none" },
+              "& .MuiDrawer-paper": { width: 300 },
+            }}
+          >
+            {drawer}
+          </Drawer>
+
+          {/* المحتوى الرئيسي */}
+          <Grid item xs={12} md={8} mt={5} sx={{ overflow: "hidden"}}>
             {children}
           </Grid>
         </Grid>
-      </Container>
-      {/* <Box sx={{marginTop:"120px"}}>
-                <DownloadApp/>
-                <LinksFooter/>
-                <Footer/>
-            </Box> */}
+      </Paper>
     </Navbar>
   );
 }

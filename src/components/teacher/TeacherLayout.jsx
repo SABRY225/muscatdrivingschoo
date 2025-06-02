@@ -1,40 +1,46 @@
-import {Avatar, Box,  Container, Divider, Grid, List, ListItem,   ListItemButton,   ListItemText,   Paper,  Typography,} from "@mui/material";
-import React            from "react";
+import {Avatar, Box,  Container, Divider, Grid, List, ListItem,   ListItemButton,   ListItemIcon,   ListItemText,   Paper,  Typography,} from "@mui/material";
 import Navbar           from "../Navbar";
 import TeacherStepper   from "./TeacherStepper";
 import Loading          from "../../components/Loading";
-import { Link }         from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useSelector }  from "react-redux";
 import { useTeacher }   from "../../hooks/useTeacher";
 import { deepOrange }   from "@mui/material/colors";
+import { Link, useLocation } from "react-router-dom";
+
+import { AccessTime, AccountCircle, CardGiftcard, Description, EventNote, Group, Help, HelpOutline, Info, LibraryBooks, Lock, MenuBook, MessageOutlined, Notes, Percent, PhotoCamera, PlayLesson, Quiz, ReceiptLong, Replay, School, Settings, Star, Videocam, WorkspacePremium } from "@mui/icons-material";
 
 export default function TeacherLayout({ active, title, children }) {
-  const { t } = useTranslation();
-  const topics = [
-    { title: t("profile"),                    link: "/about" },
-    { title: t("profile_photo"),              link: "/photo" },
-    { title: t("additionalInformation"),      link: "/additionalInformation" },
-    { title: t("subjects"),               link: "/subjects" },
-    { title: t("resume"),                 link: "/resume" },
-    { title: t("availability"),           link: "/availability" },
-    { title: t("description"),            link: "/description" },
-    { title: t("video"),                  link: "/video" },
-    { title: t("messages"),               link: "/messages" },
-    { title: t("setting_changepassword"), link: "/changepassword" },
-    { title: t("lessons"),                link: "/sessions" },
-    { title: t("students"),               link: "/students" },
-    { title: t("certification"),          link: "/certificates" },
-    { title: t("lectures"),               link: "/lectures" },
-    { title: t("view_teacher_lesson"),    link: "/lessons" },
-    { title: t("quesiton"),               link: "/question" },
-    { title: t("quesiton_choose"),        link: "/question-choose" },
-    { title: t("package"),                link: "/package" },
-    { title: t("tests"),                  link: "/tests" },
-    { title: t("discounts"),              link: "/discounts" },
-    { title: t("refunds"),                link: "/refunds" },
-    { title: t("setting_page"),           link: "/settings" },
-  ];
+  const { t } = useTranslation();  
+  const location = useLocation();
+const topics = [
+  { icon: <AccountCircle />,       title: t("profile"),                    link: "/about" },
+  { icon: <PhotoCamera/>,         title: t("profile_photo"),              link: "/photo" },
+  { icon: <Star/>,                title: t("Points earned"),              link: "/pointsearned" },
+  { icon: <EventNote/>,           title: t("Lesson booking requests"),    link: "/request-lesson" },
+  { icon: <ReceiptLong />,         title: t("My bills"),                   link: "/mybills" },
+  { icon: <Info />,                title: t("additionalInformation"),      link: "/additionalInformation" },
+  { icon: <MenuBook />,            title: t("subjects"),                   link: "/subjects" },
+  { icon: <Description />,         title: t("resume"),                     link: "/resume" },
+  { icon: <AccessTime />,          title: t("availability"),               link: "/availability" },
+  { icon: <Notes/>,               title: t("description"),                link: "/description" },
+  { icon: <Videocam/>,            title: t("video"),                      link: "/video" },
+  { icon: <MessageOutlined/>,     title: t("messages"),                   link: "/messages" },
+  { icon: <Lock />,                title: t("setting_changepassword"),     link: "/changepassword" },
+  { icon: <School />,              title: t("lessons"),                    link: "/sessions" },
+  { icon: <Group/>,               title: t("students"),                   link: "/students" },
+  { icon: <WorkspacePremium/>,    title: t("certification"),              link: "/certificates" },
+  { icon: <PlayLesson />,          title: t("lectures"),                   link: "/lectures" },
+  { icon: <LibraryBooks />,        title: t("view_teacher_lesson"),        link: "/lessons" },
+  { icon: <Help/>,                title: t("quesiton"),                   link: "/question" },
+  { icon: <HelpOutline/>,         title: t("quesiton_choose"),            link: "/question-choose" },
+  { icon: <CardGiftcard/>,        title: t("package"),                    link: "/package" },
+  { icon: <Quiz/>,                title: t("tests"),                      link: "/tests" },
+  { icon: <Percent />,             title: t("discounts"),                  link: "/discounts" },
+  { icon: <Replay/>,              title: t("refunds"),                    link: "/refunds" },
+  { icon: <Settings/>,            title: t("setting_page"),               link: "/settings" },
+];
+
   const { teacher }         = useSelector((state) => state.teacher);
   const { data, isLoading } = useTeacher(teacher?.id);
   return (
@@ -96,15 +102,12 @@ export default function TeacherLayout({ active, title, children }) {
         {children}
       </Paper>
     </Container>
-
       :
 
-    <Container sx={{ marginTop: "120px", marginBottom: "60px" }}>
-        <Grid container spacing={2}>
-          {/* Added by eng.reem.shwky@gmail.com */}
+        <Grid container spacing={2} style={{marginTop: "120px",}}>
           <Grid item xs={12} lg={3} sx={{ display: { md: "block", xs: "none" },}}>
-            <Paper sx={{ padding: "20px" }}>
-              <Box sx={{display: "flex",alignItems: "center",flexDirection: "column",}}>
+            <Paper sx={{ padding: "20px 20px 100px", width: 230,backgroundColor:"#D10909",borderRadius:"20rem",margin:"0 1rem" }}>
+             <Box sx={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
                 <Avatar
                   src={`${process.env.REACT_APP_API_KEY}images/${teacher?.image}`}
                   alt={teacher?.name}
@@ -115,34 +118,49 @@ export default function TeacherLayout({ active, title, children }) {
                     bgcolor: deepOrange[500],
                   }}
                 />
-                <Typography sx={{ marginTop: "16px", fontWeight: "700" }}>
-                  {teacher?.name}
+                <Typography sx={{ marginTop: 2, fontWeight: "700",color:"#fff" }}>
+                  {teacher?.firstName}
+                  {" "}
+                  {teacher?.lastName}
                 </Typography>
               </Box>
-              <Divider sx={{ marginY: "20px" }} />
+              <Divider sx={{ marginY: "20px" ,backgroundColor:"#fff"}} />
               <List>
                 {topics.map((topic, index) => {
+                  const fullPath = `/teacher${topic.link}`;
+                   const isSelected = location.pathname === fullPath;
                   return (
-                    <Link to={`/teacher${topic.link}`}>
-                      <ListItem key={topic.title + index + "o"} disablePadding>
-                        <ListItemButton>
-                          <ListItemText
-                            primary={topic.title}
-                            sx={{ textAlign: "start" }}
-                          />
-                        </ListItemButton>
-                      </ListItem>
+                    <Link 
+                    key={index}
+                       to={fullPath}
+                    >
+              <ListItem disablePadding>
+                <ListItemButton
+                  selected={isSelected}
+                  sx={{
+                    backgroundColor: isSelected ? "#000" : "#fff",
+                    color: isSelected ? "#fff" : "#000",
+                    borderRadius: 1,
+                    margin:"0.2rem 0",
+                    "&:hover": {
+                      backgroundColor: "rgba(25, 118, 210, 0.04)",
+                    },
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: 40,color: isSelected ? "#fff" : "#000" }}>{topic.icon}</ListItemIcon>
+                  <ListItemText primary={topic.title} sx={{ textAlign: "start" }} />
+                </ListItemButton>
+              </ListItem>
                     </Link>
                   );
                 })}
               </List>
             </Paper>
           </Grid>
-          <Grid item xs={12} lg={9} sx={{ overflow: "hidden" }}>
+          <Grid item xs={12} lg={8} sx={{ overflow: "hidden" }}>
             {children}
           </Grid>
         </Grid>
-    </Container>
     }
     </>
   )}

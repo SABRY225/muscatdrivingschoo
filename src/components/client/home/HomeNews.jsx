@@ -25,40 +25,40 @@ export default function HomeNews() {
     const [counter, setCounter]        = useState(3);
     var settingsNews = {};
     settingsNews = {
-      dots: true,
-      infinite: false,
-      speed: 500,
-      slidesToShow: 1,
-      slidesToScroll: 1,
-      initialSlide: 0,
-      rtl: false,
-      responsive: [
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 3,
+    initialSlide: 0,
+    rtl: true,
+    responsive: [
       {
-      breakpoint: 1024,
-      settings: {
-      slidesToShow: 1,
-      slidesToScroll: 1,
-      infinite: false,
-      dots: true
-      }
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+          infinite: true,
+          dots: true
+        }
       },
       {
-      breakpoint: 600,
-      settings: {
-      slidesToShow: 1,
-      slidesToScroll: 1,
-      initialSlide: 0
-      }
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          initialSlide: 1
+        }
       },
       {
-      breakpoint: 480,
-      settings: {
-      slidesToShow: 1,
-      slidesToScroll: 1
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1
+        }
       }
-      }
-      ]
-      };
+    ]
+  };
 
     useEffect(() => {
         if (data?.data) {
@@ -66,42 +66,6 @@ export default function HomeNews() {
             setCounter( data?.data.length ); }
             
             setNews(data.data);
-
-            settingsNews = {
-              dots: true,
-              infinite: false,
-              speed: 500,
-              slidesToShow: counter,
-              slidesToScroll: counter,
-              initialSlide: 0,
-              rtl: true,
-              responsive: [
-                {
-                  breakpoint: 1024,
-                  settings: {
-                    slidesToShow: counter,
-                    slidesToScroll: counter,
-                    infinite: false,
-                    dots: true
-                  }
-                },
-                {
-                  breakpoint: 600,
-                  settings: {
-                    slidesToShow: 1,
-                    slidesToScroll: 1,
-                    initialSlide: 0
-                  }
-                },
-                {
-                  breakpoint: 480,
-                  settings: {
-                    slidesToShow: 1,
-                    slidesToScroll: 1
-                  }
-                }
-              ]
-           };
         }
     }, [data]);
 
@@ -113,16 +77,16 @@ export default function HomeNews() {
         <div className='contain_title'>
       
       </div>
-          <Typography sx={{fontSize:{md:"26px",xs:"22px"},fontWeight:"700",color:"#151313",textAlign:"center",
+          <Typography sx={{fontSize:{md:"26px",xs:"22px"},fontWeight:"700",color:"#EF0D0D",textAlign:"center",
                 marginBottom:"50px"}}>{t('home_news')}</Typography>
         
-    <div className='contain_textbox_search'>
+    {/* <div className='contain_textbox_search'>
       <TextField
           sx={{ m: 1 ,width: "100%", borderRadius:"15px !important" }}
           label={t("search")} variant="outlined" value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
       />
-    </div>
+    </div> */}
         <div className="slider-container">
         <Slider {...settingsNews}>
         {   News?.length > 0 &&
@@ -144,10 +108,10 @@ export default function HomeNews() {
                         <h2 className='h2_title'>
                         {lang=="ar"?item?.titleAR:item?.titleEN}
                         </h2>
-                        <p style={{width:"90%", fontSize: "14px" , color:"#888" , textAlign:  "center !important" , margin:"auto" , display:"block" , marginBottom:"15px"}}>
+                        {/* <p style={{width:"90%", fontSize: "14px" , color:"#888" , textAlign:  "center !important" , margin:"auto" , display:"block" , marginBottom:"15px"}}>
                         {lang=="ar"?item?.descriptionAR:item?.descriptionEN}
 
-                        </p>
+                        </p> */}
                         
                         
                         <a className='btndetails'   onClick={() => navigate(`/news-details/${item.id}`)} >

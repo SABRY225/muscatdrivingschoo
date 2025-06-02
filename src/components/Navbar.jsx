@@ -23,7 +23,7 @@ import { logoutParent }   from "../redux/parentSlice";
 import { studentLogout }  from "../redux/studentSlice";
 import { logoutGuest }    from "../redux/guestSlice";
 import SelectCurrency     from "./reusableUi/SelectCurrency";
-import logoImage from "../images/logo.png";
+import logoImage from "../images/logo1.png";
 import cookies from "js-cookie";
 import PersonIcon from "@mui/icons-material/Person";
 import SearchIcon from "@mui/icons-material/Search";
@@ -43,6 +43,9 @@ const drawerWidth = 240;
 
 const ImageLogo = styled("img")({
   height: "60px",
+  backgroundColor:"#fff",
+  padding:"0.3rem",
+  borderRadius:"50%",
 
   "@media screen and (max-width: 600px) ": {
     height: "45px",
@@ -494,315 +497,329 @@ function Navbar(props) {
   );
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <AppBar component="nav">
-        <Toolbar>
-          <IconButton color="inherit" aria-label="open drawer" edge="start" onClick={handleDrawerToggle}
-            sx={{ mr: 2, ml: 2, display: { md: "none" } }}>
-            <MenuIcon />
-          </IconButton>
-          <Box sx={{flexGrow: 1,display: "flex",paddingY: "10px",alignItems: "center",}}>
-            <Link to="/">
-              <ImageLogo src={logoImage} />
-            </Link>
-          </Box>
-          {(teacher || student) && (
-            <Box
-              sx={{
-                padding: "4px",
-                backgroundColor: "#fc5a5a",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: "50%",
-                cursor: "pointer",
-                marginX: { xs: "4px", sm: "1.5rem" },
-                display: { md: "none", xs: "flex" },
-              }}
-              onClick={() =>
-                teacher
-                  ? navigate("/teacher/notifications")
-                  : navigate("/student/notifications")
-              }
+    <>
+      <Box sx={{ display: "flex" }}>
+        {/* nav */}
+        <AppBar component="nav" sx={{
+          background: "#D10909",
+          margin: "1rem 0rem",
+          padding:"0.5rem 0rem",
+          borderRadius: "50px",
+        }}>
+          <Toolbar sx={{ display: 'flex',justifyContent:"space-between",justifyItems:"center" }}>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{ mr: 2, ml: 2, display: { md: "none" } }}
             >
-              <Badge badgeContent={notSeen} color="success">
-                <NotificationsIcon sx={{ fontSize: "20px" }} />
-              </Badge>
-            </Box>
-          )}
-          <Box
-            sx={{
+              <MenuIcon />
+            </IconButton>
+
+            <Box sx={{
               display: { xs: "none", md: "flex" },
               alignItems: "center",
-              columnGap: "10px",
-            }}
-          >
-            <Link to="/landing">
-              <Box
-                sx={{
-                  display: "flex",alignItems: "center",gap: 1,marginX: 2,
-                }}
-              >
-                <Typography sx={{ fontSize: "14px" }}>
-                  {t("search_for_teachers")}
-                </Typography>
-                <SearchIcon />
-              </Box>
-            </Link>
-            <a target="_blank" href="mailto:info@muscatdrivingschool.com">
-              <Box
-                sx={{ display: "flex", alignItems: "center", columnGap: "4px" }}
-              >
-                <EmailOutlinedIcon sx={{ fontSize: "15px" }} />
-                <Typography sx={{ fontSize: "14px" }}>
-                  info@muscatdrivingschool.com
-                </Typography>
-              </Box>
-            </a>
-            <a target="_blank" href={whatsAppLink || "/"}>
-              <Box
-                sx={{ display: "flex", alignItems: "center", columnGap: "8px" }}
-              >
-                <ImageCall src={call} />
-                <Typography sx={{ fontSize: "14px" }}>{t("call")}</Typography>
-              </Box>
-            </a>
-    
-            <ChangeLanguage lang={lang} />
-            <SelectCurrency />
-            {!teacher && !parent && !student && !guest && (
-              <>
-                <Button sx={{ my: 2,  color: "white",  display: "block", textTransform: "capitalize",   padding: "1px 18px",}}
-                  variant="text"
-                  onClick={() => navigate("/login")}
-                >
-                  {t("login")}
-                </Button>
-                <Button
-                  onClick={() => navigate("/teacherRegister/step1")}
-                  sx={{ my: 2,  color: "white", display: "block",
-                    textTransform: "capitalize",
-                    padding: "1px 13px",  backgroundColor: "#ffffff33", fontSize: "14px",
-                    height: "50px", borderRadius: "10px",
-                  }}
-                  variant="text"
-                >
-                  {t("becometeacher")}
-                </Button>
-                <Button
-                  onClick={() => navigate("/guestRegister/step1")}
-                  sx={{
-                    my: 2,
-                    display: "block", textTransform: "capitalize",
-                    padding: "1px 13px",backgroundColor: "#ffc93c",color:"#000",fontSize: "14px",
-                    height: "50px",   borderRadius: "10px",
-                  }}
-                  variant="text"
-                >
-                  {t("addAds")}
-                </Button>
-              </>
-            )}
-            {teacher && (
-              <Stack alignItems={"center"} direction="row" gap="12px">
+              justifyContent: "center"
+            }}>
+              <Link to="/" >
+                <ImageLogo src={logoImage} />
+              </Link>
+              <Link to="/landing">
                 <Box
                   sx={{
-                    width: "35px",
-                    height: "35px",
-                    backgroundColor: "#fc5a5a",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    borderRadius: "50%",
-                    cursor: "pointer",
+                    gap: 1,
+                    padding: "0 0.6rem",
+                    fontSize: "15px"
                   }}
-                  onClick={() => navigate("/teacher/notifications")}
                 >
-                  <Badge badgeContent={notSeen} color="success">
-                    <NotificationsIcon sx={{ fontSize: "22px" }} />
-                  </Badge>
+                  {t("search_for_teachers")}
                 </Box>
-                <Box>
-                  <Box sx={{ color: "white", cursor: "pointer", display: "flex",alignItems: "center", columnGap: "6px",}}
-                    onClick={handleClick}>
+              </Link>
+              <Link to="/packages">
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    padding: "0 0.6rem",
+                    fontSize: "15px"
+                  }}
+                >
+                  {t("packages")}
+                </Box>
+              </Link>
+              <Link to="/lectures">
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    padding: "0 0.6rem",
+                    fontSize: "15px"
+                  }}
+                >
+                  {t("Lectures")}
+
+                </Box>
+              </Link>
+            </Box>
+            <Box>
+              <Box
+                sx={{
+                  display: { xs: "none", md: "flex" },
+                  alignItems: "center",
+                  justifyContent: "space-around",
+                  columnGap: "5px",
+                }}
+              >
+                <ChangeLanguage lang={lang} />
+                <SelectCurrency />
+                {!teacher && !student && !parent && (
+                  <>
+                    <Link to="/login">
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 1,
+                          padding: "3px"
+                        }}
+                      >
+                        {t("login")}
+                      </Box>
+                    </Link>
+                    <Link to="/teacherRegister/step1">
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 1,
+                          border: "1px solid",
+                          borderRadius: "5px",
+                          padding: "6px 4px",
+                          color: "#D10909",
+                          backgroundColor: "#FFFFFF",
+                        }}
+                      >
+                        {t("becometeacher")}
+                      </Box>
+                    </Link>
+                  </>
+                )}
+
+                {teacher && (
+                  <Stack alignItems={"center"} direction="row" gap="12px">
                     <Box
                       sx={{
                         width: "35px",
                         height: "35px",
-                        backgroundColor: "#ffffff33",
+                        backgroundColor: "#fc5a5a",
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
                         borderRadius: "50%",
+                        cursor: "pointer",
                       }}
+                      onClick={() => navigate("/teacher/notifications")}
                     >
-                      <PersonIcon sx={{ fontSize: "22px" }} />
+                      <Badge 
+                      // badgeContent={notSeenTeacher} 
+                      color="success">
+                        <NotificationsIcon sx={{ fontSize: "22px" }} />
+                      </Badge>
                     </Box>
-                    {teacher?.firstName
-                      ? teacher?.firstName + " " + teacher?.lastName
-                      : t("username")}
-                  </Box>
-                  <Menu id="account-menu"  anchorEl={anchorEl} open={open}
-                    onClose={handleClose}
-                    PaperProps={{
-                      elevation: 0,
-                      sx: {
-                        overflow: "visible",
-                        filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-                        mt: 1.5,
-                        "& .MuiAvatar-root": {
-                          width: 32,
-                          height: 32,
-                          ml: -0.5,
-                          mr: 1,
-                        },
-                        "&:before": {
-                          content: '""',
-                          display: "block",
-                          position: "absolute",
-                          top: 0,
-                          right: 14,
-                          width: 10,
-                          height: 10,
-                          bgcolor: "background.paper",
-                          transform: "translateY(-50%) rotate(45deg)",
-                          zIndex: 0,
-                        },
-                      },
-                    }}
-                  >
-                    {teacherProfile.map((item) => {
-                      return (
-                        <MenuItem sx={{ fontSize: "14px" }} onClick={() => { navigate(`/teacher${item.link}`); handleClose(); }}>
-                          <ListItemIcon>{item.icon}</ListItemIcon>
-                          {item.title}
+                    <Box>
+                      <Box
+                        sx={{
+                          color: "white",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          columnGap: "6px",
+                        }}
+                        onClick={handleClick}
+                      >
+                        <Box
+                          sx={{
+                            width: "35px",
+                            height: "35px",
+                            backgroundColor: "#ffffff33",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: "50%",
+                          }}
+                        >
+                          <PersonIcon sx={{ fontSize: "22px" }} />
+                        </Box>
+                        {teacher?.firstName
+                          ? teacher?.firstName + " " + teacher?.lastName
+                          : t("username")}
+                      </Box>
+                      <Menu
+                        id="account-menu"
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleClose}
+                        PaperProps={{
+                          elevation: 0,
+                          sx: {
+                            overflow: "visible",
+                            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                            mt: 1.5,
+                            "& .MuiAvatar-root": {
+                              width: 32,
+                              height: 32,
+                              ml: -0.5,
+                              mr: 1,
+                            },
+                            "&:before": {
+                              content: '""',
+                              display: "block",
+                              position: "absolute",
+                              top: 0,
+                              right: 14,
+                              width: 10,
+                              height: 10,
+                              bgcolor: "background.paper",
+                              transform: "translateY(-50%) rotate(45deg)",
+                              zIndex: 0,
+                            },
+                          },
+                        }}
+                      >
+                        {teacherProfile.map((item) => {
+                          return (
+                            <MenuItem
+                              sx={{ fontSize: "14px" }}
+                              onClick={() => {
+                                navigate(`/teacher${item.link}`);
+                                handleClose();
+                              }}
+                            >
+                              <ListItemIcon>{item.icon}</ListItemIcon>
+                              {item.title}
+                            </MenuItem>
+                          );
+                        })}
+                        <MenuItem
+                          sx={{ fontSize: "14px" }}
+                          onClick={handleTeacherLogout}
+                        >
+                          <ListItemIcon>
+                            <LogoutIcon fontSize="small" />
+                          </ListItemIcon>
+                          {t("logout")}
                         </MenuItem>
-                      );
-                    })}
-                    <MenuItem
-                      sx={{ fontSize: "14px" }}
-                      onClick={handleTeacherLogout}
+                      </Menu>
+                    </Box>
+                  </Stack>
+                )}
+                {student && (
+                  <Stack direction="row" alignItems={"center"}>
+                    <Box
+                      sx={{
+                        width: "35px",
+                        height: "35px",
+                        backgroundColor: "#fc5a5a",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        borderRadius: "50%",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => navigate("/student/notifications")}
                     >
-                      <ListItemIcon>
-                        <LogoutIcon fontSize="small" />
-                      </ListItemIcon>
+                      <Badge 
+                      // badgeContent={notSeenStudent} 
+                      color="success">
+                        <NotificationsIcon sx={{ fontSize: "22px" }} />
+                      </Badge>
+                    </Box>
+                    <Button
+                      color="Blue"
+                      variant="contained"
+                      sx={{ mx: "8px" }}
+                      onClick={() => navigate("/student/profile")}
+                    >
+                      {student?.name ? student.name : t("username")}
+                    </Button>
+                    <Button
+                      color="Blue"
+                      variant="contained"
+                      onClick={handleStudentLogout}
+                    >
                       {t("logout")}
-                    </MenuItem>
-                  </Menu>
-                </Box>
-              </Stack>
-            )}
-            {student && (
-              <Stack direction="row" alignItems={"center"}>
-                <Box
-                  sx={{
-                    padding: "5px",
-                    backgroundColor: "#fc5a5a",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    borderRadius: "50%",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => navigate("/student/notifications")}
-                >
-                  <Badge badgeContent={notSeen} color="success">
-                    <NotificationsIcon sx={{ fontSize: "22px" }} />
-                  </Badge>
-                </Box>
-                <Button
-                  color="Blue"
-                  variant="contained"
-                  sx={{ mx: "8px" }}
-                  onClick={() => navigate("/student/profile")}
-                >
-                  {student?.name ? student.name : t("username")}
-                </Button>
-                <Button
-                  color="Blue"
-                  variant="contained"
-                  onClick={handleStudentLogout}
-                >
-                  {t("logout")}
-                </Button>
-              </Stack>
-            )}
-            {parent && (
-              <Stack alignItems={"center"}>
-                <Button
-                  color="Blue"
-                  variant="contained"
-                  onClick={() => dispatch(logoutParent())}
-                >
-                  {t("logout")}
-                </Button>
-              </Stack>
-            )}
-<a href="/careers">
-      <Box sx={{display: "flex", alignItems: "center",columnGap: "8px",justifyContent: "center",color: "white", marginBottom: "8px", marginTop:"10px",
-        textTransform: "capitalize",padding: "1px 13px",
-          backgroundColor: "#ffc93c",color:"#FFF", width:"78%", margin:"auto",
-          fontSize: "14px",height: "50px",borderRadius: "10px",}}><Typography sx={{ fontSize: "14px" }}>{t("careers")}</Typography></Box></a>
-        {guest && (
-          <>
+                    </Button>
+                  </Stack>
+                )}
+                {parent && (
+                  <Stack alignItems={"center"}>
+                    <Button
+                      color="Blue"
+                      variant="contained"
+                      onClick={() => dispatch(logoutParent())}
+                    >
+                      {t("logout")}
+                    </Button>
+                  </Stack>
+                )}
 
-            <Stack direction="row" alignItems={"center"}>
-            <Button
-                  color="Blue"
-                  variant="contained"
-                  sx={{ mx: "8px" }}
-                  onClick={() => navigate("/guest/profile")}
-                >
-                  {guest?.name ? guest.name : t("username")}
-                </Button>
-                <Button
-                  color="Blue"
-                  variant="contained"
-                  onClick={handleGuestLogout}
-                >
-                  {t("logout")}
-                </Button>
-            </Stack>
-          </>
-        )}
-          </Box>
-          <Box
-            sx={{
-              display: { xs: "flex", md: "none" },
-              alignItems: "center",
-              columnGap: "10px",
-            }}
-          >
-            <Link to="/landing">
-              <Box sx={{display: "flex",alignItems: "center",justifyContent: "center",color: "white",}}>
-                <Typography sx={{ fontSize: "10px" }}>
-                  {t("search_for_teachers")}
-                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  display: { xs: "flex", md: "none" },
+                  alignItems: "center",
+                  columnGap: "10px",
+                }}
+              >
+                {/* <Link to="/landing">
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "white",
+                  marginBottom: "12px",
+                }}
+              >
                 <SearchIcon />
               </Box>
-            </Link>
-            <ChangeLanguage lang={lang} />
-          </Box>
-        </Toolbar>
-      </AppBar>
-      <Box component="nav">
-        <Drawer container={container} variant="temporary" open={mobileOpen} onClose={handleDrawerToggle}
-          ModalProps={{keepMounted: true,}}
-          sx={{
-            display: { xs: "block", md: "none" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
-              width: drawerWidth,
-            },
-          }}
-        >
-          {drawer}
-        </Drawer>
+            </Link> */}
+                <ChangeLanguage lang={lang} />
+              </Box>
+            </Box>
+          </Toolbar>
+        </AppBar>
+
+        {/* Drawer */}
+        <Box component="nav">
+          <Drawer
+            container={container}
+            variant="temporary"
+            open={mobileOpen}
+            onClose={handleDrawerToggle}
+            ModalProps={{
+              keepMounted: true,
+            }}
+            sx={{
+              display: { xs: "block", md: "none" },
+              "& .MuiDrawer-paper": {
+                boxSizing: "border-box",
+                width: drawerWidth,
+              },
+            }}
+          >
+            {drawer}
+          </Drawer>
+        </Box>
+
+        <Box component="main" sx={{ paddingY: 0, width: "100%", backgroundColor: "#F5F5F5" }}>
+          {props.children}
+        </Box>
       </Box>
-      <Box component="main" sx={{ paddingY: 0, width: "100%" }}>
-        {props.children}
-      </Box>
-    </Box>
+    </>
   );
 }
 

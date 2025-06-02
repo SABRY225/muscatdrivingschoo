@@ -3,12 +3,12 @@ import React  from "react";
 import home1  from "../../../images/home_1.jpg";
 import home2  from "../../../images/home_2.jpg";
 
-import image1 from "../../../images/home1";
-import image2 from "../../../images/home2";
-import image3 from "../../../images/home3";
-import image4 from "../../../images/home4";
-import image5 from "../../../images/home5";
-import image6 from "../../../images/home6";
+import image1 from "../../../images/home1.jpeg";
+import image2 from "../../../images/home2.jpeg";
+import image3 from "../../../images/home3.jpeg";
+import image4 from "../../../images/home4.jpeg";
+import image5 from "../../../images/home5.jpeg";
+import image6 from "../../../images/home6.jpeg";
 
 const Image = styled("img")({
   width: "100%",

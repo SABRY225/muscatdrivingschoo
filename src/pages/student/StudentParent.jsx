@@ -12,7 +12,7 @@ export default function ParentView() {
 
   return (
     <StudentLayout>
-      <Paper sx={{padding:"40px 20px"}}>
+      <Box sx={{padding:"40px 20px"}}>
 
         <Typography
           sx={{
@@ -36,7 +36,7 @@ export default function ParentView() {
             <ParentTable />
           
         </Container>
-      </Paper>
+      </Box>
     </StudentLayout>
   );
 }

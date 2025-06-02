@@ -183,6 +183,11 @@ import GuestCareerStepOne from "./pages/guest/career/StepOne.jsx";
 import GuestCareerStepTwo from "./pages/guest/career/StepTwo.jsx";
 import GuestCareerDetails from "./pages/guest/career/Details.jsx";
 import AdminTeachersAccount from "./pages/admin/AdminTeachersAccount.jsx";
+import TermsTeacher from "./pages/client/TermsTeacher.jsx";
+import UnderDevelopmentStudent from "./components/UnderDevelopmentStudent.jsx";
+import UnderDevelopment from "./components/UnderDevelopment.jsx";
+import NotFound from "./components/NotFound.jsx";
+import UnderDevelopmentTeacher from "./components/UnderDevelopmentTeacher.jsx";
 
 const theme = createTheme({
   direction: "rtl",
@@ -269,6 +274,11 @@ function App() {
             <Route path="news-details/:id" element={<SingleNews />} />
 
             <Route path="map-browser" element={student ? <MapBrowser /> : <Navigate to="/" />} />
+            <Route path="advertisement" element={<UnderDevelopment />} />
+            <Route path="ractiveSystemInfo" element={<UnderDevelopment />} />
+            <Route path="resource" element={<UnderDevelopment />} />
+            <Route path="exames" element={<UnderDevelopment />} />
+            <Route path="*" element={<NotFound />} />
 
             {/** login page */}
             <Route path="login" element={<Login />} />
@@ -293,8 +303,8 @@ function App() {
             <Route path="guest/ads/details/:AdsId" element={<GuestAdsStepDetails />} />
             <Route path="guest/ads" element={<GuestAds />} />
             <Route path="guest/main" element={<GuestMainBox />} />
-            <Route path="guest" element={<GuestMainBox />} />
-            <Route path="Terms-Conditions-teacher" element={<GuestMainBox />} />
+            <Route path="guest" element={<UnderDevelopment />} />
+            <Route path="Terms-Conditions-teacher" element={<TermsTeacher />} />
 
             {/** student auth */}
             <Route path="studentregister/step1" element={<StudentFirstStep />} />
@@ -311,6 +321,17 @@ function App() {
             <Route path="forgetPassword/step3" element={<ForgetPassThirdStep />} />
             {/** student pages */}
             <Route path="student/profile" element={student ? <StudentProfile /> : <Navigate to="/login" />} />
+            <Route path="student/referral-system" element={student ? <UnderDevelopmentStudent /> : <Navigate to="/login" />} />
+            <Route path="student/request-lesson" element={student ? <UnderDevelopmentStudent /> : <Navigate to="/login" />} />
+            <Route path="student/package" element={student ? <UnderDevelopmentStudent /> : <Navigate to="/login" />} />
+            <Route path="student/lecture" element={student ? <UnderDevelopmentStudent /> : <Navigate to="/login" />} />
+            <Route path="student/questions" element={student ? <UnderDevelopmentStudent /> : <Navigate to="/login" />} />
+            <Route path="student/exam" element={student ? <UnderDevelopmentStudent /> : <Navigate to="/login" />} />
+            <Route path="student/resource" element={student ? <UnderDevelopmentStudent /> : <Navigate to="/login" />} />
+            <Route path="student/discount" element={student ? <UnderDevelopmentStudent /> : <Navigate to="/login" />} />
+            <Route path="student/technical-support" element={student ? <UnderDevelopmentStudent /> : <Navigate to="/login" />} />
+            <Route path="student/mybills" element={student ? <UnderDevelopmentStudent /> : <Navigate to="/login" />} />
+
             <Route path="student/settings" element={student ? <StudentSettings /> : <Navigate to="/login" />} />
             <Route path="student/parents" element={student ? <StudentParent /> : <Navigate to="/login" />} />
             <Route path="student/changepassword" element={student ? <StudentChangePassword /> : <Navigate to="/login" />} />
@@ -381,6 +402,20 @@ function App() {
               path="teacher/about"
               element={teacher ? <TeacherAbout /> : <Navigate to="/login" />}
             />
+
+            <Route
+              path="teacher/mybills"
+              element={teacher ? <UnderDevelopmentTeacher /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="teacher/request-lesson"
+              element={teacher ? <UnderDevelopmentTeacher /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="teacher/pointsearned"
+              element={teacher ? <UnderDevelopmentTeacher /> : <Navigate to="/login" />}
+            />
+
             <Route
               path="teacher/photo"
               element={teacher ? <TeacherPhoto /> : <Navigate to="/login" />}

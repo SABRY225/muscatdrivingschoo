@@ -11,24 +11,22 @@ import { fetchConversionRate } from "../../redux/conversionRate";
 
 export default function SelectCurrency() {
   const { currency } = useSelector((state) => state.currency);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch();  
 
   const handleChange = (e) => {
     dispatch(changeCurrency({ currency: e.target.value }));
     dispatch(fetchConversionRate(e.target.value));
   };
   const lang = Cookies.get("i18next") || "en";
-
   return (
-    <Box className="currency">
-      <FormControl sx={{ m: 1, width: 153 }}>
+    <Box className="currency" >
+      <FormControl sx={{  width: 170}}>
         <Select
           variant="standard"
           sx={{
             color: "white",
             "& .MuiSvgIcon-root": {
               color: "white",
-              fontSize: "14px",
             },
           }}
           displayEmpty
@@ -39,8 +37,9 @@ export default function SelectCurrency() {
             elevation: 0.3,
             PaperProps: {
               style: {
-                maxHeight: 48 * 3 + 8,
-                width: 160,
+                // maxHeight: 48 * 3 + 8,
+                width: 100,
+                height:400
               },
             },
           }}
@@ -49,9 +48,13 @@ export default function SelectCurrency() {
             <MenuItem
               key={name.title}
               value={name.title}
-              sx={{ alignItem: "center" }}
+              style={{ width:"450px"}}
             >
-              {lang === "ar" ? name.titleAr : name.titleEn}
+              <div style={{display:"flex"}}>
+              <div  style={{paddingLeft:"0.5rem"}}>
+                <img src={`https://flagcdn.com/w320/${name.code}.png`} alt={name.code} style={{width:"30px"}} /></div>
+              <div style={{paddingLeft:"0.5rem"}}>{lang === "ar" ? name.titleAr : name.titleEn}</div>
+              </div>
             </MenuItem>
           ))}
         </Select>

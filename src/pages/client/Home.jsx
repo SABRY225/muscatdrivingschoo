@@ -17,6 +17,10 @@ import HomeAds        from "../../components/client/home/Ads";
 import Navbar from "../../components/Navbar";
 import { useSelector } from "react-redux";
 import MapBrowsing from "../../components/client/home/MapBrowsing";
+import InteractiveSystemInfoSection from "./InteractiveSystemInfoSection";
+import DiscountSection from "./DiscountSection";
+import RescourceSection from "./RescourceSection";
+import ExamSection from "./ExameSection";
 
 export default function Home() {
   const { student } = useSelector((state) => state.student);
@@ -24,19 +28,24 @@ export default function Home() {
     <Navbar>
       {student && student.lat && student.long && <MapBrowsing />}
       <HomeBanner     />
-      <HomeImages     />
-      <HomeAbout      />
-      <HomeWorks      />
-      <Teachers       />
-      <HomeDiscounts />
-      <HomeComment   />
-      <HomePackage   />
-      <HomeLecture   />
       <HomeAds       />
       <HomeNews      />
 
+      {/* <HomeImages     /> */}
+      {/* <HomeAbout      /> */}
+      {/* <Teachers       /> */}
+      {/* <HomeDiscounts /> */}
+      {/* <HomeComment   /> */}
+      {/* <HomePackage   /> */}
+      {/* <HomeLecture   /> */}
+      <InteractiveSystemInfoSection />
+      <DiscountSection />
+      <RescourceSection />
+      <ExamSection />
+
+
+      <HomeWorks      />
       <HomeQuestions />
-      
       <DownloadApp />
       <LinksFooter />
       <Footer />

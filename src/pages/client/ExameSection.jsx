@@ -23,13 +23,26 @@ export default function ExamSection() {
     <Wrapper>
 
 
-      <Box sx={{ maxWidth: "650px", textAlign: "center" }}>
+
+            {/* إخفاء الصورة في الشاشات الصغيرة */}
+            <Box
+        sx={{
+          borderRadius: "12px",
+          width: "500px",
+          display: { xs: "none", md: "block" },
+          marginBottom:{md:6,xs:10},
+          marginTop:{md:5,xs:7}
+        }}
+      >
+        <img src="https://server.moalime.com/drive/5.png" alt="Exams" width="100%" />
+      </Box>
+            <Box sx={{ maxWidth: "650px", textAlign: "center" }}>
         <Typography
           sx={{
             marginTop: "-10px",
             fontSize: { md: "32px", xs: "22px" },
             fontWeight: "bold",
-            color: "#D10909",
+            color: "#e74c3c",
           }}
         >
           {t("Educational tests on the Muscat Driving School platform. Evaluate your progress and develop your skills.")}
@@ -61,7 +74,7 @@ export default function ExamSection() {
                 border: "1px solid",
                 borderRadius: "5px",
                 padding: "8px 12px",
-                color: "#D10909",
+                color: "#e74c3c",
                 backgroundColor: "#FFFFFF",
                 textAlign: "center",
               }}
@@ -70,18 +83,6 @@ export default function ExamSection() {
             </Box>
           </Link>
         </Box>
-      </Box>
-            {/* إخفاء الصورة في الشاشات الصغيرة */}
-            <Box
-        sx={{
-          borderRadius: "12px",
-          width: "500px",
-          display: { xs: "none", md: "block" },
-          marginBottom:{md:6,xs:10},
-          marginTop:{md:5,xs:7}
-        }}
-      >
-        <img src="https://server.moalime.com/drive/5.png" alt="Exams" width="100%" />
       </Box>
     </Wrapper>
   );

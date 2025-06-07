@@ -1,12 +1,13 @@
 import React from "react";
 import Navbar from "../../components/Navbar";
-import { Button, Container, Paper } from "@mui/material";
+import { Box, Button, Container, Paper } from "@mui/material";
 import BookedLesson from "../../components/student/BookedLesson";
 import { useTeacherSessions } from "../../hooks/useTeacherSessions";
 import Loading from "../../components/Loading";
 import { useSelector } from "react-redux";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
 import { useTranslation } from "react-i18next";
+import TeacherLayout from "../../components/teacher/TeacherLayout";
 
 export default function TeacherSessions() {
   const { teacher, token }    = useSelector((state) => state.teacher);
@@ -14,7 +15,8 @@ export default function TeacherSessions() {
   const { t } = useTranslation();
   return (
     <Navbar>
-      <Container sx={{ marginTop: "120px", marginBottom: "80px" }}>
+      <TeacherLayout>
+      <Box sx={{ marginTop: "80px", marginBottom: "80px" }}>
         <Button
           href="http://meet.google.com/new"
           target="_blank"
@@ -54,7 +56,9 @@ export default function TeacherSessions() {
         ) : (
           <Loading />
         )}
-      </Container>
+      </Box>
+      </TeacherLayout>
+
     </Navbar>
   );
 }

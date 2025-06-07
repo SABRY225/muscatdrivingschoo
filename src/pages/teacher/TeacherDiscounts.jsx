@@ -3,7 +3,7 @@ import { Box, Tab } from '@mui/material'
 import React                from 'react'
 import TeacherLayout        from '../../components/teacher/TeacherLayout'
 import { useTranslation }   from 'react-i18next';
-import Add        from '../../components/teacher/discounts/Add';
+import AddDiscounts        from '../../components/teacher/discounts/Add';
 import View      from '../../components/teacher/discounts/View';
 
 
@@ -23,7 +23,7 @@ export default function TeacherLectures() {
                     </TabList>
                 </Box>
                     <TabPanel value="1"><View   /></TabPanel>
-                    <TabPanel value="2"><Add      /></TabPanel> 
+                    <TabPanel value="2"><AddDiscounts      /></TabPanel> 
             </TabContext>
         </TeacherLayout>
     )

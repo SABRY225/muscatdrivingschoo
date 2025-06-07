@@ -10,17 +10,21 @@ import { useSelector }  from "react-redux";
 import { useSnackbar }  from "notistack";
 import Cookies          from "js-cookie";
 import { useTeacherLectures }     from "../../../hooks/useTeacherLectures";
-import TeacherLectureUpdate  from "./TeacherLectureUpdate";
+import { useNavigate } from "react-router-dom";
 
 export default function TeacherLecturesView() {
   const { t } = useTranslation();
+    const navigate = useNavigate();
 
   const columns = [
     { id: "image",             label: t("image"),             minWidth: 100 },
-    { id: "titleAR",           label: t("titleAR"),           minWidth: 150 },
-    { id: "titleEN",           label: t("titleEN"),           minWidth: 150 },
-    { id: "descriptionAR",     label: t("descriptionAR"),     minWidth: 150 },
-    { id: "descriptionEN",     label: t("descriptionEN"),     minWidth: 150 },
+    { id: "title",           label: t("title"),           minWidth: 150 },
+    { id: "description",     label: t("Description"),     minWidth: 150 },
+    { id: "subject",           label: t("subject"),           minWidth: 150 },
+    { id: "semester",     label: t("semester"),     minWidth: 150 },
+    { id: "classes",     label: t("classes"),     minWidth: 150 },
+    { id: "price",     label: t("price"),     minWidth: 150 },
+    { id: "status",            label: t("status"),            minWidth: 50 },
     { id: "update",            label: t("update"),            minWidth: 50 },
     { id: "delete",            label: t("delete"),            minWidth: 50 },
   ];
@@ -34,8 +38,8 @@ export default function TeacherLecturesView() {
 
 
   const { closeSnackbar, enqueueSnackbar } = useSnackbar();
-  const { lang }    = Cookies.get("i18next") || "en";
-
+  const lang   = Cookies.get("i18next") || "en";
+ 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -50,13 +54,14 @@ export default function TeacherLecturesView() {
       setLectures(data.data);
     }
   }, [data]);
-
+  
   /** handle open dialog */
   const [open, setOpen] = React.useState(false);
 
   const handleClose = () => {
     setOpen(false);
   };
+console.log(Lectures);
 
   const handleDelete = async (id) => {
     closeSnackbar();
@@ -136,21 +141,18 @@ export default function TeacherLecturesView() {
                             src={`${process.env.REACT_APP_API_KEY}images/${row.image}`}
                         />
                         </TableCell>
-                        <TableCell align="center">{row.titleAR}</TableCell>
-                        <TableCell align="center">{row.titleEN}</TableCell>
-                        <TableCell align="center">{row.descriptionAr}</TableCell>
-                        <TableCell align="center">{row.descriptionEn}</TableCell>
+                        <TableCell align="center">{lang==="ar"?row?.titleAR:row?.titleEN}</TableCell>
+                        <TableCell align="center">{lang==="ar"?row?.descriptionAr:row?.descriptionEn}</TableCell>
+                        <TableCell align="center">{lang==="ar"?row?.subject?.titleAR:row?.subject?.titleEN}</TableCell>
+                        <TableCell align="center">{t(row?.semester)}</TableCell>
+                        <TableCell align="center">{lang==="ar"?row?.class?.titleAR:row?.class?.titleEN}</TableCell>
+                        <TableCell align="center">{row?.price}{" "}{t(row?.currency)}</TableCell>
+                        <TableCell align="center">{row?.status==1?t("status_waiting"):row?.status==2?t("status_accept"):t("status_rejected")}</TableCell>
                         <TableCell align="center">
-                          <Button onClick={() => setOpen(row.id)}>
+                          <Button onClick={() => navigate(`/teacher/lectures/${row?.id}`)}>
                             <EditIcon />
                           </Button>
-                          <Dialog open={open === row.id} onClose={handleClose}>
-                            <TeacherLectureUpdate
-                              setLectures={setLectures}
-                              Lectures={row}
-                              handleClose={handleClose}
-                            />
-                          </Dialog>
+                          
                         </TableCell>
                         <TableCell align="center">
                           <Button

@@ -27,7 +27,6 @@ export default function TeacherLessonsView() {
   const columns = [
     { id: "LectureId",  label: t("LectureName"),           minWidth: 100 },
     { id: "titleAr",    label: t("titleAr"),           minWidth: 150 },
-    { id: "titleEN",    label: t("titleEn"),           minWidth: 150 },
     { id: "update",     label: t("update"),   minWidth: 50 },
     { id: "delete",     label: t("delete"),   minWidth: 50 },
   ];
@@ -43,7 +42,7 @@ export default function TeacherLessonsView() {
 
 
   const { closeSnackbar, enqueueSnackbar } = useSnackbar();
-  const { lang }    = Cookies.get("i18next") || "en";
+  const lang   = Cookies.get("i18next") || "en";
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -140,9 +139,8 @@ export default function TeacherLessonsView() {
                     return (
                      
                       <TableRow hover role="checkbox" key={row.id + "demj"}>
-                        <TableCell align="center">{row.TeacherLecture.titleAR}</TableCell>
-                        <TableCell align="center">{row.titleAR}</TableCell>
-                        <TableCell align="center">{row.titleEN}</TableCell>
+                        <TableCell align="center">{lang=="ar"?row.TeacherLecture.titleAR:row.TeacherLecture.titleEN}</TableCell>
+                        <TableCell align="center">{lang==="ar"?row.titleAR:row.titleEN}</TableCell>
                         <TableCell align="center">
                           <Button onClick={() => setOpen(row.id)}>
                             <EditIcon />

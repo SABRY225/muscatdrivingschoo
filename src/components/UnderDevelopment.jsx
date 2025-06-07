@@ -19,7 +19,7 @@ const styles = {
   container: {
     textAlign: "center",
     padding: "80px 20px",
-    color: "#D10909",
+    color: "#e74c3c",
     margin:"10rem 0"
   },
   icon: {

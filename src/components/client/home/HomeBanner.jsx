@@ -39,7 +39,7 @@ export default function HomeBanner() {
             fontSize: { md: "30px", xs: "22px" },
             fontWeight: "bold",
             width:"510px",
-            color: "#D10909",
+            color: "#e74c3c",
           }}
         >
           {t("bannerTitle")}
@@ -83,7 +83,7 @@ export default function HomeBanner() {
               <Typography
                 sx={{
                   fontSize: { md: "20px", xs: "16px" },
-                  color: "#D10909",
+                  color: "#e74c3c",
                   fontWeight: "700",
                 }}
               >
@@ -108,7 +108,7 @@ export default function HomeBanner() {
               <Typography
                 sx={{
                   fontSize: { md: "20px", xs: "16px" },
-                  color: "#D10909",
+                  color: "#e74c3c",
                   fontWeight: "700",
                 }}
               >

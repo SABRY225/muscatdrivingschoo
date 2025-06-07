@@ -29,7 +29,7 @@ export default function RatingTeacher({teacher}) {
             <Typography sx={{marginBottom:"20px"}}>
                 ({t('rating_desc')})
             </Typography>
-            <Rating name="size-large" value={teacher.rate} readOnly size="large" />
+            <Rating name="size-large" value={teacher?.rate} readOnly size="large" />
             <Divider sx={{marginY:"16px"}}/>
             {
             teacher?.Rates.length>0&&
@@ -40,11 +40,11 @@ export default function RatingTeacher({teacher}) {
                         <Box sx={{display:"flex",alignItems:"center",columnGap:"6px"}}>
                             <Avatar/>
                             <Box>
-                                <Typography sx={{fontSize:"14px"}}>{rate.Student?.name||t('username')}</Typography>
-                                <Rating name="size-small" defaultValue={rate.rating} readOnly size="small" />
+                                <Typography sx={{fontSize:"14px"}}>{rate?.Student?.name||t('username')}</Typography>
+                                <Rating name="size-small" defaultValue={rate?.rating} readOnly size="small" />
                             </Box>
                         </Box>
-                        <Typography sx={{marginTop:"4px"}}>{rate.comment}</Typography>
+                        <Typography sx={{marginTop:"4px"}}>{rate?.comment}</Typography>
                     </Box>
                 )
             })
@@ -52,7 +52,7 @@ export default function RatingTeacher({teacher}) {
             <Button sx={{marginTop:"30px",textTransform:"capitalize"}} variant='contained'
             onClick={handleClickOpen}>{t('addrate')}</Button>
             <Dialog open={open} onClose={handleClose}>
-                <AddRate TeacherId={teacher.id} handleClose={handleClose}/>
+                <AddRate TeacherId={teacher?.id} handleClose={handleClose}/>
             </Dialog>
         </Paper>
     )

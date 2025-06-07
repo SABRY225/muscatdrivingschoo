@@ -16,6 +16,7 @@ import { collection, query, onSnapshot, where, doc } from "firebase/firestore";
 import { db } from "../../firebase";
 import ContactPersonTeacher from "../../components/reusableUi/ContactPersonTeacher";
 import lgo from "../../images/messge.jpg";
+import TeacherLayout from "../../components/teacher/TeacherLayout";
 
 const Image = styled("img")({
   width: "160px",
@@ -58,8 +59,9 @@ export default function TeacherMessages() {
 
   return (
     <Navbar>
-      <Container
-        sx={{ marginBottom: "50px", marginTop: "120px", overflow: "hidden" }}
+      <TeacherLayout>
+      <Box
+        sx={{ marginBottom: "50px", marginTop: "80px", overflow: "hidden" }}
       >
         <Grid container spacing={3}>
           <Grid item xs={12} lg={4}>
@@ -111,7 +113,9 @@ export default function TeacherMessages() {
             )}
           </Grid>
         </Grid>
-      </Container>
+      </Box>
+      </TeacherLayout>
+
     </Navbar>
   );
 }

@@ -13,32 +13,32 @@ import { AccessTime, AccountCircle, CardGiftcard, Description, EventNote, Group,
 export default function TeacherLayout({ active, title, children }) {
   const { t } = useTranslation();  
   const location = useLocation();
+  
 const topics = [
   { icon: <AccountCircle />,       title: t("profile"),                    link: "/about" },
   { icon: <PhotoCamera/>,         title: t("profile_photo"),              link: "/photo" },
-  { icon: <Star/>,                title: t("Points earned"),              link: "/pointsearned" },
-  { icon: <EventNote/>,           title: t("Lesson booking requests"),    link: "/request-lesson" },
-  { icon: <ReceiptLong />,         title: t("My bills"),                   link: "/mybills" },
+  { icon: <Description />,         title: t("resume"),                     link: "/resume" },
   { icon: <Info />,                title: t("additionalInformation"),      link: "/additionalInformation" },
   { icon: <MenuBook />,            title: t("subjects"),                   link: "/subjects" },
-  { icon: <Description />,         title: t("resume"),                     link: "/resume" },
   { icon: <AccessTime />,          title: t("availability"),               link: "/availability" },
+  { icon: <WorkspacePremium/>,    title: t("certification"),              link: "/certificates" },
   { icon: <Notes/>,               title: t("description"),                link: "/description" },
-  { icon: <Videocam/>,            title: t("video"),                      link: "/video" },
-  { icon: <MessageOutlined/>,     title: t("messages"),                   link: "/messages" },
+  { icon: <Videocam/>,            title: t("Video presentation"),                      link: "/video" },
   { icon: <Lock />,                title: t("setting_changepassword"),     link: "/changepassword" },
   { icon: <School />,              title: t("lessons"),                    link: "/sessions" },
-  { icon: <Group/>,               title: t("students"),                   link: "/students" },
-  { icon: <WorkspacePremium/>,    title: t("certification"),              link: "/certificates" },
+  { icon: <MessageOutlined/>,     title: t("messages"),                   link: "/messages" },
   { icon: <PlayLesson />,          title: t("lectures"),                   link: "/lectures" },
   { icon: <LibraryBooks />,        title: t("view_teacher_lesson"),        link: "/lessons" },
-  { icon: <Help/>,                title: t("quesiton"),                   link: "/question" },
-  { icon: <HelpOutline/>,         title: t("quesiton_choose"),            link: "/question-choose" },
   { icon: <CardGiftcard/>,        title: t("package"),                    link: "/package" },
   { icon: <Quiz/>,                title: t("tests"),                      link: "/tests" },
   { icon: <Percent />,             title: t("discounts"),                  link: "/discounts" },
+  { icon: <Help/>,                title: t("quesiton"),                   link: "/question" },  
+  { icon: <HelpOutline/>,         title: t("quesiton_choose"),            link: "/question-choose" },
+  // { icon: <Settings/>,            title: t("setting_page"),               link: "/settings" },  
+  { icon: <Star/>,                title: t("Points earned"),              link: "/pointsearned" },  
+  { icon: <EventNote/>,           title: t("Lesson booking requests"),    link: "/request-lesson" },
+  { icon: <ReceiptLong />,         title: t("My bills"),                   link: "/mybills" },
   { icon: <Replay/>,              title: t("refunds"),                    link: "/refunds" },
-  { icon: <Settings/>,            title: t("setting_page"),               link: "/settings" },
 ];
 
   const { teacher }         = useSelector((state) => state.teacher);
@@ -106,7 +106,7 @@ const topics = [
 
         <Grid container spacing={2} style={{marginTop: "120px",}}>
           <Grid item xs={12} lg={3} sx={{ display: { md: "block", xs: "none" },}}>
-            <Paper sx={{ padding: "20px 20px 100px", width: 230,backgroundColor:"#D10909",borderRadius:"20rem",margin:"0 1rem" }}>
+            <Paper sx={{ padding: "20px 20px 100px", width: 230,backgroundColor:"#e74c3c",borderRadius:"20rem",margin:"0 1rem" }}>
              <Box sx={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
                 <Avatar
                   src={`${process.env.REACT_APP_API_KEY}images/${teacher?.image}`}

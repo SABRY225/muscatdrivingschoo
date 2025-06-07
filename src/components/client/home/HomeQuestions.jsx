@@ -40,7 +40,7 @@ export default function HomeQuestions() {
           sx={{
             fontSize: { md: "26px", xs: "22px" },
             fontWeight: "700",
-            color: "#D10909",
+            color: "#e74c3c",
             textAlign: "center",
             marginBottom: "30px",
           }}

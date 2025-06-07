@@ -188,6 +188,15 @@ import UnderDevelopmentStudent from "./components/UnderDevelopmentStudent.jsx";
 import UnderDevelopment from "./components/UnderDevelopment.jsx";
 import NotFound from "./components/NotFound.jsx";
 import UnderDevelopmentTeacher from "./components/UnderDevelopmentTeacher.jsx";
+import InteractiveSystemInfo from "./pages/client/InteractiveSystemInfo";
+import Test from "./components/client/home/Test.jsx";
+import SingleTest from "./components/client/home/SingleTest.jsx";
+import ReferralSystem from "./components/teacher/ReferralSystem.jsx";
+import RequestLesson from "./components/teacher/Lesson/RequestLesson.jsx";
+import MyBillsTeacher from "./components/teacher/MyBills.jsx";
+import TeacherLectureUpdate from "./components/teacher/lecture/TeacherLectureUpdate.jsx";
+import EditPackage from "./pages/teacher/EditPackage.jsx";
+import EditExam from "./pages/teacher/EditExam.jsx";
 
 const theme = createTheme({
   direction: "rtl",
@@ -275,9 +284,10 @@ function App() {
 
             <Route path="map-browser" element={student ? <MapBrowser /> : <Navigate to="/" />} />
             <Route path="advertisement" element={<UnderDevelopment />} />
-            <Route path="ractiveSystemInfo" element={<UnderDevelopment />} />
+            <Route path="ractiveSystemInfo" element={<InteractiveSystemInfo />} />
             <Route path="resource" element={<UnderDevelopment />} />
-            <Route path="exames" element={<UnderDevelopment />} />
+            <Route path="exames" element={<Test />} />
+            <Route path="test/:testId" element={<SingleTest />} />
             <Route path="*" element={<NotFound />} />
 
             {/** login page */}
@@ -405,15 +415,15 @@ function App() {
 
             <Route
               path="teacher/mybills"
-              element={teacher ? <UnderDevelopmentTeacher /> : <Navigate to="/login" />}
+              element={teacher ? <MyBillsTeacher /> : <Navigate to="/login" />}
             />
             <Route
               path="teacher/request-lesson"
-              element={teacher ? <UnderDevelopmentTeacher /> : <Navigate to="/login" />}
+              element={teacher ? <RequestLesson /> : <Navigate to="/login" />}
             />
             <Route
               path="teacher/pointsearned"
-              element={teacher ? <UnderDevelopmentTeacher /> : <Navigate to="/login" />}
+              element={teacher ? <ReferralSystem /> : <Navigate to="/login" />}
             />
 
             <Route
@@ -468,7 +478,10 @@ function App() {
               path="teacher/tests"
               element={teacher ? <TeacherTests /> : <Navigate to="/login" />}
             />
-
+           <Route
+              path="teacher/editExam/:id"
+              element={teacher ? <EditExam /> : <Navigate to="/login" />}
+            />
             <Route
               path="teacher/notifications"
               element={
@@ -480,7 +493,10 @@ function App() {
               path="teacher/lectures"
               element={teacher ? <TeacherLectures /> : <Navigate to="/login" />}
             />
-
+            <Route
+              path="teacher/lectures/:id"
+              element={teacher ? <TeacherLectureUpdate /> : <Navigate to="/login" />}
+            />
             <Route
               path="teacher/credit"
               element={teacher ? <TeacherCredit /> : <Navigate to="/login" />}
@@ -501,7 +517,10 @@ function App() {
               path="teacher/package"
               element={teacher ? <TeacherPackage /> : <Navigate to="/login" />}
             />
-
+            <Route
+              path="teacher/edit-package/:id"
+              element={teacher ? <EditPackage /> : <Navigate to="/login" />}
+            />
             <Route
               path="teacher/question"
               element={teacher ? <TeacherQuestion /> : <Navigate to="/login" />}

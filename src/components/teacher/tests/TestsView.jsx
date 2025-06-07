@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, Dialog , TableContainer, TableCell , TableBody, Paper,Table , TableRow , TablePagination }   from "@mui/material";
+import { Box, Button , TableContainer, TableCell , TableBody, Paper,Table , TableRow , TablePagination }   from "@mui/material";
 import { useTranslation }         from "react-i18next";
 import Loading                    from "../../Loading";
 import EditIcon                   from "@mui/icons-material/Edit";
@@ -10,10 +10,11 @@ import { useSelector }            from "react-redux";
 import { useSnackbar }            from "notistack";
 import Cookies                    from "js-cookie";
 import { useTestsTeacher }        from "../../../hooks/useTestsTeacher";
-import TestsUpdate                from "./TestsUpdate";
 import currencies                 from "../../../data/currencies";
+import { useNavigate } from "react-router-dom";
 export default function TestsView() {
   const { t } = useTranslation();
+    const navigate = useNavigate();
 
   const columns = [
     { id: "price",             label: t("price"),           minWidth: 150 },
@@ -135,19 +136,12 @@ export default function TestsView() {
                      
                       <TableRow hover role="checkbox" key={row.id + "demj"}>
                         <TableCell align="center">{row.price}</TableCell>
-                        <TableCell align="center">{ (lang == "en") ? current_currency.titleEn :  current_currency.titleAr}</TableCell>
-                        <TableCell align="center">{ (lang == "en") ? row.Level.titleEN :  row.Level.titleAR}</TableCell>
+                        <TableCell align="center">{ (lang == "en") ? current_currency?.titleEn :  current_currency?.titleAr}</TableCell>
+                        <TableCell align="center">{ (lang == "en") ? row?.Level?.titleEN :  row?.Level?.titleAR}</TableCell>
                         <TableCell align="center">
-                          <Button onClick={() => setOpen(row.id)}>
+                          <Button onClick={() => navigate(`/teacher/editExam/${row?.id}`)}>
                             <EditIcon />
                           </Button>
-                          <Dialog open={open === row.id} onClose={handleClose}>
-                            <TestsUpdate
-                              setTests={setTests}
-                              Tests={row}
-                              handleClose={handleClose}
-                            />
-                          </Dialog>
                         </TableCell>
                         <TableCell align="center">
                           <Button

@@ -90,7 +90,7 @@ var settingsComment = {
             Rates?.map((item,index) =>
             {
               console.log(item);
-                let rating  = parseInt(item.rating);
+                let rating  = parseInt(item?.rating);
                 const renderList = () => {
                     const list_rating = [];
                     for(let x=0; x < rating; x++){

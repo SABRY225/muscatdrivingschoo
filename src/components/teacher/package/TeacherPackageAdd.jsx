@@ -1,355 +1,430 @@
-import { Box, Button, InputLabel, TextField, Typography , styled , Paper , Autocomplete , MenuItem , FormControl , Select} from '@mui/material'
-import React , { useState } from 'react';
-import { useForm,Controller } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { useSnackbar}               from 'notistack'
-import { useSelector }              from 'react-redux';
-import { useSubjects }              from "../../../hooks/useSubject";
-import { useTrainingCategoryTypes } from "../../../hooks/useTrainingCategoryTypes";
-import { useLimeType }              from "../../../hooks/useLimeType";
-import { useClasses  }              from "../../../hooks/useClasses";
-import { useLevels  }               from "../../../hooks/useLevels";
-import currencies                    from "../../../data/currencies";
+import React, { useEffect, useState } from 'react';
+import FormControl from '@mui/material/FormControl';
+import { Container, TextField, Select, Box, Typography, TextareaAutosize } from '@mui/material';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import { t } from 'i18next';
+import { Controller, useForm } from 'react-hook-form';
 import Cookies from 'js-cookie';
-const Image = styled("img")({
-    width: "300px",
-});
+import { useSelector } from 'react-redux';
+import { useSnackbar } from 'notistack';
+import { useNavigate } from 'react-router-dom';
+import LoadingButton from '@mui/lab/LoadingButton';
+import { useDropzone } from "react-dropzone";
+import { CloudUpload as CloudUploadIcon } from '@mui/icons-material';
+import axios from 'axios';
+import { useCurriculums } from '../../../hooks/useCurriculums';
+import { useClasses } from '../../../hooks/useClasses';
+import Navbar from '../../Navbar';
+import currencies from '../../../data/currencies';
+import { useTrainingCategoryTypes } from '../../../hooks/useTrainingCategoryTypes';
+import { useLimeType } from '../../../hooks/useLimeType';
+import { useSubjects } from '../../../hooks/useSubject';
 
-export default function TeacherPackageAdd() {
+function TeacherPackageAdd() {
+  const [levels, setLevels] = useState([]);
+  const [error, setError] = useState(null);
+  const lang = Cookies.get("i18next") || "en";
+  const { enqueueSnackbar } = useSnackbar();
+  const [loading, setLoading] = useState(false);
+  const { teacher } = useSelector((state) => state.teacher);
+  const i18next = Cookies.get('i18next');
+  const { data: Curriculums } = useCurriculums()
+  const { data: Classes } = useClasses()
+  const { data: subjects } = useSubjects()
+  const { data: TrainingCategoryTypes } = useTrainingCategoryTypes();
+  const { data: LimeType } = useLimeType();
 
-    const { teacher , token}       = useSelector( (state)=>state.teacher )
-    const {t}                      = useTranslation()
-    const {closeSnackbar,enqueueSnackbar} = useSnackbar()
-    const [image, setImage]       = useState(null);
-    const { data:trainingcategorytypes , isLoadingTrainingType  }   = useTrainingCategoryTypes();
-    
-    const { data:limittypes , isLoadingLimeType  }   = useLimeType();
-    const { data:subjects ,   isLoadingSubject  }    = useSubjects();
-    const { data:classes ,    isLoadingClass  }       = useClasses();
-    const { data:levels ,     isLoadingLevel  }       = useLevels();
+  const Classrooms = [
+    { id: "First semester", label: t("First semester") },
+    { id: "Second semester", label: t("First semester") }
+  ]
+  const genders = [
+    { id: "male", label: t("male") },
+    { id: "female", label: t("female") },
+    { id: "male&female", label: t("male&female") }
+  ]
+  const [fileImageName, setFileImageName] = useState('');
+  const [Image, setImage] = useState();
+  const [fileName, setFileName] = useState('');
+  const [file, setFile] = useState();
 
-
-    const [currencyValue,    setCurrencyValue]      = useState("");
-    const [currencyCode,     setCurrencyCode]       = useState("");
-    const [countryError,     setCurrencyError]      = useState(false);
-    
-    const [trainingTypeError ] = useState("");
-    const [SubjectId,    setSubjectsValue]   = useState("");
-    const [LimitTypeId , setLimitType]        = useState("");
-    const [LevelId ,     setLevels]           = useState("");
-    const [TrainingCategoryTypeId , setTrainingTypeValue ] = useState("");
-    const [price, setPrice] = useState(0);
-    const [numTotalLesson , setNumTotalLesson] = useState(0);
-    const [numWeekLesson , setNumWeekLesson] = useState(0);
-
-    const lang = Cookies.get("i18next") || "en";
-    const { register,control, formState: { errors }, handleSubmit } = useForm({
-        defaultValues: {
-            title_ar          :   "",
-            title_en          :   "",
-            description_ar    :   "",
-            description_en    :   "",
+  useEffect(() => {
+    const fetchLevels = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_KEY}api/v1/admin/levels`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-    });
-    
-    const handlePrice = (e) => {
-      closeSnackbar();
-      if (e.target.value < 0 || e.target.value > 100000000) {
-        enqueueSnackbar(t("package_price_error"), {
-          variant: "error",
-          autoHideDuration: "5000",
-        });
-      } else {
-        setPrice(e.target.value);
+        const data = await response.json();
+        setLevels(data.data); // Assuming the API returns an array of levels
+      } catch (err) {
+        console.error("Error fetching levels:", err);
+        setError(err.message);
       }
     };
 
-    const handleNumTotalLesson = (e) => {
-      closeSnackbar();
-      if (e.target.value < 0 || e.target.value > 100) {
-        enqueueSnackbar(t("package_price_error"), {
-          variant: "error",
-          autoHideDuration: "5000",
-        });
-      } else {
-        setNumTotalLesson(e.target.value);
-      }
-    };
-
-    const handleNumWeekLesson = (e) => {
-      closeSnackbar();
-      if (e.target.value < 0 || e.target.value > 100) {
-        enqueueSnackbar(t("package_price_error"), {
-          variant: "error",
-          autoHideDuration: "5000",
-        });
-      } else {
-        setNumWeekLesson(e.target.value);
-      }
-    };
+    fetchLevels();
+  }, []); // The empty dependency array ensures it runs only once when the component mounts
 
 
-    async function onSubmit(data)
-    {
-      closeSnackbar();
+  const navigate = useNavigate();
+
+  const { register, handleSubmit, formState: { errors }, control, getValues } = useForm({
+    defaultValues: {
+      level: '',
+      class: '',
+      subject: '',
+      semester: '',
+      curriculums: '',
+      titleAR: '',
+      titleEN: '',
+      duration: '',
+      price: '',
+      currency: '',
+      startDate: '',
+      endDate: '',
+      gender: '',
+      numTotalLesson: '',
+      numWeekLesson: '',
+      descriptionAr: '',
+      descriptionEn: '',
+      TrainingCategoryTypeId: '',
+      LimeTypeId: '',
+      teacherId: '',
+      linkPackage: ""
+    }
+  });
+
+  const { getRootProps: getRootPropsImage, getInputProps: getInputPropsImage } = useDropzone({
+    onDrop: (acceptedFiles) => handleFileUpload(acceptedFiles),  // عند اختيار الصورة
+    accept: 'image/*'  // تحديد أن نوع الملف المسموح به هو الصور
+  });
+  const { getRootProps: getRootPropsFile, getInputProps: getInputPropsFile } = useDropzone({
+    onDrop: (acceptedFiles) => handleFile(acceptedFiles),  // عند اختيار المستند
+    accept: '.pdf,.doc,.docx,.ppt,.pptx,.txt'  // تحديد أن نوع الملف المسموح به هو المستندات
+  });
+
+  // هذه دالة التعامل مع صورة
+  const handleFileUpload = (files) => {
+    if (files && files[0]) {
+      setFileImageName(files[0].name);  // تخزين اسم الصورة
+      setImage(files[0]);
+
+    }
+  };
+  // هذه دالة التعامل مع المستند
+  const handleFile = (files) => {
+    if (files && files[0]) {
+      setFileName(files[0].name);  // تخزين اسم المستند
+      setFile(files[0]);
+
+    }
+  };
+
+  async function createPackage(data) {
+    const startDateTime = new Date(data.startDate); // تحويل إلى كائن تاريخ
+    const endDateTime = new Date(data.endDate); // تحويل إلى كائن تاريخ
+
+    // تحقق من أن startDate أقل من endDate
+    if (startDateTime >= endDateTime) {
+      enqueueSnackbar(t("Start date must be earlier than end date"), { variant: "error", autoHideDuration: 5000 });
+      return; // إنهاء الوظيفة إذا كان الشرط غير محقق
+    }
+
+    data.startDate = startDateTime;
+    data.endDate = endDateTime;
+    delete data.time;
+
     const formData = new FormData();
-    formData.append("image",          image);
-    formData.append("TeacherId",      teacher.id);
-    formData.append("titleAR",        data.title_ar);
-    formData.append("titleEN",        data.title_en);
-    formData.append("descriptionAr",  data.description_ar);
-    formData.append("descriptionEn",  data.description_en);
-    formData.append("startDate",      data.startDate);
-    formData.append("endDate",        data.endDate);
-    formData.append("price",          price);
-    formData.append("TrainingCategoryTypeId",          TrainingCategoryTypeId);
-    formData.append("LimeTypeId",           LimitTypeId);
-    formData.append("SubjectId",            SubjectId);
-    formData.append("LevelId",              LevelId);
-    formData.append("numTotalLesson",       numTotalLesson);
-    formData.append("numWeekLesson",        numWeekLesson);
-    formData.append("gender",               data.gender);
-    formData.append("currency",             currencyCode);
 
-    if (!image) {
-      enqueueSnackbar("image is required filed", {
-        variant: "error",
-        autoHideDuration: 8000,
+    formData.append("image", Image);
+    formData.append("docs", file);
+    formData.append("TeacherId", teacher.id);
+    for (const key in data) {
+      if (key !== "image" && key !== "teacherId" && key !== "docs") { // تجنب إضافة الصورة مرتين
+        formData.append(key, data[key]);
+      }
+    }
+
+    try {
+      await axios.post(`${process.env.REACT_APP_API_KEY}api/v1/teacher/createPackage`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
-      throw new Error("failed occured");
+      // setLoading(true);
+      enqueueSnackbar(t("packageMsg"), { variant: "success", autoHideDuration: 5000 });
+      navigate("/teacher/package")
+
+    } catch (err) {
+      enqueueSnackbar("Data submission failed", { variant: "error", autoHideDuration: 5000 });
+      setLoading(false);
+      console.error("Error:", err);
+      throw new Error("Something went wrong: " + err);
     }
+  }
+console.log(TrainingCategoryTypes);
+console.log(subjects);
 
-        try{
-            const response = await fetch(`${process.env.REACT_APP_API_KEY}api/v1/teacher/createPackage`,{
-                method:"POST",
-                headers:{
-                  Authorization: token,
-                },
-                body:formData,
-            })
-            if(response.status!==200&&response.status!==201)
-            {
-                throw new Error('failed occured')
-            }
-            const resData = await response.json()
-            enqueueSnackbar(lang==="ar"?resData.msg.arabic:resData.msg.english,{variant:"success",autoHideDuration:8000})
-        }
-        catch(err)
-        {
-            console.log(err)
-        }
-    }
 
-    return (
-        <>
-      <Box sx={{width:"500px",maxWidth:"100%"}}>
-      <Paper sx={{ width: "100%", padding: "20px" }}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Box sx={{marginBottom:"18px"}}>
-            <InputLabel sx={{marginBottom:"6px",fontSize:"14px"}}>{t('titleAr')}</InputLabel>
-            <Controller
-                name="title_ar"
-                control={control}
-                render={({ field }) => <TextField {...field} fullWidth/>}
-                {...register("title_ar", { required: "title Address is required" })}
-            />
-            {errors.title_ar?.type === 'required' && <Typography color="error" role="alert" sx={{fontSize:"13px",marginTop:"6px"}}>{t('required')}</Typography>}
+  return (
+    <Navbar>
+      <Container sx={{ marginTop: '2px', marginBottom: '80px' }}>
+        <form sx={{ margin: 'auto' }} encType="multipart/form-data" onSubmit={handleSubmit(createPackage)}>
+          <Box
+            sx={{
+              display: { md: "flex", xs: "block" },
+              justifyContent: "space-between",
+              gap: "20px",
+            }}
+          >
+            <FormControl fullWidth margin="dense">
+              <TextField
+                label={t("packageTitleArabic")}
+                type="text"
+                variant="outlined"
+                {...register("titleAR", {
+                  required: t("isRequired"),
+                  minLength: {
+                    value: 5,
+                    message: t("titleLimit")
+                  }
+                })} />
+              <p className='text-red-500'>{errors.titleAR?.message}</p>
+            </FormControl>
+            <FormControl fullWidth margin="dense">
+              <TextField
+                label={t("packageTitleEnglish")}
+                type="text"
+                variant="outlined"
+                {...register("titleEN", {
+                  required: t("isRequired"),
+                  minLength: {
+                    value: 5,
+                    message: t("titleLimit")
+                  }
+                })} />
+              <p className='text-red-500'>{errors.titleEN?.message}</p>
+            </FormControl>
           </Box>
 
-          <Box sx={{marginBottom:"18px"}}>
-              <InputLabel sx={{marginBottom:"6px",fontSize:"14px"}}>{t('titleEn')}</InputLabel>
-              <Controller
-                name="title_en"
-                control={control}
-                render={({ field }) => <TextField {...field} fullWidth/>}
-                {...register("title_en", { required: "title Address is required" })}
-              />
-              {errors.title_en?.type === 'required' && <Typography color="error" role="alert" sx={{fontSize:"13px",marginTop:"6px"}}>{t('required')}</Typography>}
-          </Box>
-
-        <Box sx={{ marginBottom: "26px" }}>
-              <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
-                {t("package_descAr")}
-              </InputLabel>
-              <Controller
-                name="description_ar"
-                control={control}
-                render={({ field }) => (
-                  <TextField {...field} fullWidth multiline rows={3} />
-                )}
-                {...register("description_ar", {
-                  required: "description_ar Address is required",
+          <Box
+            sx={{
+              display: { md: "flex", xs: "block" },
+              justifyContent: "space-between",
+              gap: "20px",
+            }}
+          >
+            <FormControl fullWidth margin="dense">
+              <InputLabel id="trainingCategoryTypes">{t("viewtrainingcategorytypes")}</InputLabel>
+              <Select
+                labelId="TrainingCategoryTypeId"
+                label={t("TrainingCategoryTypeId")}
+                defaultValue="" // قيمة افتراضية
+                {...register("TrainingCategoryTypeId", {
+                  required: t("isRequired"),
                 })}
-              />
-              {errors.description_ar?.type === "required" && (
-                <Typography
-                  color="error"
-                  role="alert"
-                  sx={{ fontSize: "13px", marginTop: "6px" }}
-                >
-                  {t("required")}
-                </Typography>
-              )}
-        </Box>
+              >
+                {TrainingCategoryTypes?.data.map((row, index) => (
+                    <MenuItem key={index} value={row.id}>{i18next === "ar"?t(row.titleAR):t(row.titleEN)}</MenuItem>
+                ))
+                }
+              </Select>
+              <p className="text-red-500">{errors.TrainingCategoryTypeId?.message}</p>
+            </FormControl>
 
-        <Box sx={{ marginBottom: "26px" }}>
-              <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
-                {t("package_descEn")}
-              </InputLabel>
-              <Controller
-                name="description_en"
-                control={control}
-                render={({ field }) => (
-                  <TextField {...field} fullWidth multiline rows={3} />
-                )}
-                {...register("description_en", {
-                  required: "description_ar Address is required",
+            <FormControl fullWidth margin="dense">
+              <InputLabel id="limetype">{t("limetype")}</InputLabel>
+              <Select
+                labelId="LimeTypeId"
+                label={t("LimeType")}
+                defaultValue="" // قيمة افتراضية
+                {...register("LimeTypeId", {
+                  required: t("isRequired"),
                 })}
-              />
-              {errors.description_en?.type === "required" && (
-                <Typography
-                  color="error"
-                  role="alert"
-                  sx={{ fontSize: "13px", marginTop: "6px" }}
-                >
-                  {t("required")}
-                </Typography>
-              )}
-        </Box>
-          
-        {!isLoadingTrainingType && (
-          <Box sx={{ marginBottom: "26px" }}>
-              <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
-                {t("package_trainingtype")}
-              </InputLabel>
-
-              <Autocomplete
-               onChange={(event, newValue) => {
-                setTrainingTypeValue(newValue?.id || null);
-               }}
-                fullWidth
-                name="trainingcategorytype"
-                options={trainingcategorytypes?.data}
-                getOptionLabel={(op) =>
-                  (lang === "en" ? op.titleEN : op.titleAR) || op
+              >
+                {
+                  LimeType?.data.map((row, index) => (
+                    <MenuItem key={index} value={row.id}>{i18next === "ar" ? row.titleAR : row.titleEN}</MenuItem>
+                  ))
                 }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label={lang === "en" ? "Choose a Training Category Types" : "إختر فئه التدريب"}
-                    inputProps={{
-                      ...params.inputProps,
-                      autoComplete: "new-password",
-                    }}
-                  />
-                )}
-              />
-              {trainingTypeError && (
-                <Typography
-                  color="error"
-                  role="alert"
-                  sx={{ fontSize: "13px", marginTop: "6px" }}
-                >
-                  {t("required")}
-                </Typography>
-              )}
+              </Select>
+              <p className="text-red-500">{errors.LimeTypeId?.message}</p>
+            </FormControl>
           </Box>
-        )}
-
-        {!isLoadingLimeType && (
-          <Box sx={{ marginBottom: "26px" }}>
-              <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
-                {t("package_limittype")}
-              </InputLabel>
-
-              <Autocomplete
-                onChange={(event, newValue) => {
-                  setLimitType(newValue?.id || null);
-                }}
-                fullWidth
-                name="limittype"
-                options={limittypes?.data}
-                getOptionLabel={(op) =>
-                  (lang === "en" ? op.titleEN : op.titleAR) || op
+          <Box
+            sx={{
+              display: { md: "flex", xs: "block" },
+              justifyContent: "space-between",
+              gap: "20px",
+            }}
+          >
+            <FormControl fullWidth margin="dense">
+              <InputLabel id="level">{t("choosesLevel")}</InputLabel>
+              <Select
+                labelId="level"
+                label={t("choosesLevel")}
+                defaultValue="" // قيمة افتراضية
+                {...register("level", {
+                  required: t("isRequired"),
+                })}
+              >
+                {i18next === "ar"
+                  ? levels.map((level, index) => (
+                    <MenuItem key={index} value={level.id}>{t(level.titleAR)}</MenuItem>
+                  ))
+                  : levels.map((level, index) => (
+                    <MenuItem key={index} value={level.id}>{t(level.titleEN)}</MenuItem>
+                  ))
                 }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label={lang === "en" ? "Choose a Limit Type" : "إختر نوع الجير"}
-                    inputProps={{
-                      ...params.inputProps,
-                      autoComplete: "new-password",
-                    }}
-                  />
-                )}
-              />
-          </Box>
-        )}
+              </Select>
+              <p className="text-red-500">{errors.level?.message}</p>
+            </FormControl>
 
-        {!isLoadingSubject && (
-          <Box sx={{ marginBottom: "26px" }}>
-              <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
-                {t("package_subject")}
-              </InputLabel>
-
-              <Autocomplete
-              onChange={(event, newValue) => {
-                setSubjectsValue(newValue?.id || null);
-              }}
-                fullWidth
-                name="subject"
-                options={subjects?.data}
-                getOptionLabel={(op) =>
-                  (lang === "en" ? op.titleEN : op.titleAR) || op
+            <FormControl fullWidth margin="dense">
+              <InputLabel id="class">{t("classes")}</InputLabel>
+              <Select
+                labelId="class"
+                label={t("classes")}
+                defaultValue="" // قيمة افتراضية
+                {...register("class", {
+                  required: t("isRequired"),
+                })}
+              >
+                {
+                  Classes?.data.map((calss, index) => (
+                    <MenuItem key={index} value={calss.id}>{i18next === "ar" ? calss.titleAR : calss.titleEN}</MenuItem>
+                  ))
                 }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label={lang === "en" ? "Choose a Categories" : "إختر نوع التدريب "}
-                    inputProps={{
-                      ...params.inputProps,
-                      autoComplete: "new-password",
-                    }}
-                  />
-                )}
-              />
+              </Select>
+              <p className="text-red-500">{errors.class?.message}</p>
+            </FormControl>
           </Box>
-        )}
-
-        {!isLoadingLevel && (
-          <Box sx={{ marginBottom: "26px" }}>
-              <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
-                {t("package_classes")}
-              </InputLabel>
-
-              <Autocomplete
-              onChange={(event, newValue) => {
-                setLevels(newValue?.id || null);
-              }}
-                fullWidth
-                name="subject"
-                options={levels?.data}
-                getOptionLabel={(op) =>
-                  (lang === "en" ? op.titleEN : op.titleAR) || op
+            <FormControl fullWidth margin="dense">
+              <InputLabel id="subject">{t("subject")}</InputLabel>
+              <Select
+                labelId="subject"
+                label={t("subject")}
+                defaultValue="" // قيمة افتراضية
+                {...register("subject", {
+                  required: t("isRequired"),
+                })}
+              >
+                {
+                  subjects?.data.map((subject, index) => (
+                    <MenuItem key={index} value={subject.id}>{i18next === "ar"?t(subject?.titleAR):t(subject?.titleEN)}</MenuItem>
+                  ))
                 }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label={lang === "en" ? "Choose a Levels" : "إختر مراحل التدريب "}
-                    inputProps={{
-                      ...params.inputProps,
-                      autoComplete: "new-password",
-                    }}
-                  />
+              </Select>
+              <p className="text-red-500">{errors.subject?.message}</p>
+            </FormControl>
+          <FormControl fullWidth margin="dense">
+              <InputLabel id="gender">{t("package_gender")}</InputLabel>
+              <Select
+                labelId="gender"
+                label={t("package_gender")}
+                {...register("gender", {
+                  required: t("isRequired"),
+                })}
+              >
+                {genders.map((row, index) => (
+                    <MenuItem key={index} value={row.id}>{row.label}</MenuItem>
+                ))
+                }
+              </Select>
+              <p className="text-red-500">{errors.gender?.message}</p>
+            </FormControl>
+          <Box
+            sx={{
+              display: { md: "flex", xs: "block" },
+              justifyContent: "space-between",
+              gap: "20px",
+            }}
+          >
+            <FormControl fullWidth margin="dense">
+              <InputLabel id="Curriculums">{t("studyCurriculum")}</InputLabel>
+              <Select
+                labelId="curriculums"
+                label={t("curriculums")}
+                defaultValue="" // قيمة افتراضية
+                {...register("curriculums", {
+                  required: t("isRequired"),
+                })}
+              >
+                {
+                  Curriculums?.data.map((Curriculum, index) => (
+                    <MenuItem key={index} value={Curriculum.id}>{i18next === "ar" ? Curriculum.titleAR : Curriculum.titleEN}</MenuItem>
+                  ))
+                }
+              </Select>
+              <p className="text-red-500">{errors.curriculums?.message}</p>
+            </FormControl>
+            <FormControl fullWidth margin="dense">
+              <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }} id="semester">
+                {t("semester")}
+              </InputLabel>
+              <Select
+                labelId="semester"
+                label={t("semester")}
+                {...register("semester", {
+                  required: t("isRequired"),
+                })}
+              >
+                {Classrooms?.length > 0 ? (
+                  Classrooms.map((semester, index) => (
+                    <MenuItem key={index} value={semester.id}>
+                      {t(semester.id)}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem disabled>{t("noData")}</MenuItem>
                 )}
-              />
+              </Select>
+            </FormControl>
           </Box>
-        )}
-        
-        <Box sx={{ marginBottom: "26px" }}>
-          <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
-              {t("package_startDate")}
-          </InputLabel>
+
+          <Box
+            sx={{
+              display: { md: "flex", xs: "block" },
+              justifyContent: "space-between",
+              gap: "20px",
+            }}
+          >
+            <FormControl fullWidth margin="dense">
+              <TextField
+                label={t("sharePrice")}
+                type="number"
+                variant="outlined"
+                {...register("price", {
+                  required: t("isRequired"),
+                })} />
+              <p className='text-red-500'>{errors.price?.message}</p>
+            </FormControl>
+            <FormControl fullWidth margin="dense">
+              <InputLabel id="currency">{t("currency")}</InputLabel>
+              <Select
+                labelId="currency"
+                label={t("currency")}
+                {...register("currency", {
+                  required: t("isRequired"),
+                })}
+              >
+                {
+                  currencies.map((curr) => {
+                    return <MenuItem value={curr.title}>{lang === "en" ? curr.titleEn : curr.titleAr}</MenuItem>
+                  })
+                }
+              </Select>
+              <p className='text-red-500'>{errors.currency?.message}</p>
+            </FormControl>
+          </Box>
+
+          <Box sx={{ display: "flex", gap: 3 }}>
+            <Box sx={{ width: "100%" }}>
+              <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
+                {t("lessonDate")}
+              </InputLabel>
               <Controller
                 name="startDate"
                 control={control}
@@ -360,7 +435,7 @@ export default function TeacherPackageAdd() {
                   required: "start Date Address is required",
                 })}
               />
-              {errors.startDate?.type === "required" && (
+              {errors.date?.type === "required" && (
                 <Typography
                   color="error"
                   role="alert"
@@ -369,58 +444,134 @@ export default function TeacherPackageAdd() {
                   {t("required")}
                 </Typography>
               )}
-        </Box>
+            </Box>
+            {/* ------------------------------- */}
+            <Box sx={{ width: "100%" }}>
+              <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
+                {t("lessonTime")}
+              </InputLabel>
+              <Controller
+                name="time"
+                control={control}
+                render={({ field }) => (
+                  <TextField type="time" {...field} fullWidth />
+                )}
+                {...register("time", {
+                  required: "time is required",
+                })}
+              />
+              {errors.time?.type === "required" && (
+                <Typography
+                  color="error"
+                  role="alert"
+                  sx={{ fontSize: "13px", marginTop: "6px" }}
+                >
+                  {t("required")}
+                </Typography>
+              )}
+            </Box>
+          </Box>
 
-        <Box sx={{ marginBottom: "26px" }}>
-          <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
-            {t("package_endDate")}
-          </InputLabel>
-          <Controller
+          <Box sx={{ width: "100%" }}>
+            <InputLabel sx={{ marginBottom: "6px", fontSize: "13px", marginTop: "3px" }}>
+              {t("lessonEndDate")}
+            </InputLabel>
+            <Controller
               name="endDate"
               control={control}
               render={({ field }) => (
                 <TextField type="date" {...field} fullWidth />
               )}
               {...register("endDate", {
-                required: "start Date Address is required",
+                required: "End Date Address is required",
               })}
-          />
-              {errors.endDate?.type === "required" && (
-                <Typography
-                  color="error"
-                  role="alert"
-                  sx={{ fontSize: "13px", marginTop: "6px" }}
-                >
-                  {t("required")}
-                </Typography>
-              )}
-        </Box>
+            />
+            {errors.date?.type === "required" && (
+              <Typography
+                color="error"
+                role="alert"
+                sx={{ fontSize: "13px", marginTop: "6px" }}
+              >
+                {t("required")}
+              </Typography>
+            )}
+          </Box>
 
-        <Box sx={{ marginBottom: "26px" }}>
-              <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
-                {t("gender")}
+          <Box
+            sx={{
+              display: { md: "flex", xs: "block" },
+              justifyContent: "space-between",
+              gap: "20px",
+            }}
+          >
+            <FormControl fullWidth margin="dense">
+              <TextField
+                label={t("sharesCount")}
+                type="number"
+                variant="outlined"
+                {...register("numTotalLesson", {
+                  required: t("isRequired"),
+                  minLength: {
+                    value: 1,
+                    message: t("share1")
+                  }
+                })} />
+              <p className='text-red-500'>{errors.numberOfShares?.message}</p>
+            </FormControl>
+            <FormControl fullWidth margin="dense">
+              <TextField label={t("sharesCountInWeek")} type="number" variant="outlined" {...register("numWeekLesson", {
+                required: t("isRequired"),
+                validate: (value) => {
+                  if (value > Number(getValues("numTotalLesson"))) {
+                    return t("shareInWeekValid")
+                  }
+                },
+                pattern: {
+                  value: /^[1-9]$/,
+                  message: t("share1")
+                },
+              })} />
+              <p className='text-red-500'>{errors.sharesInWeek?.message}</p>
+            </FormControl>
+
+
+          </Box>
+
+          <FormControl fullWidth margin="dense">
+            <InputLabel id="duration">{t("duration")}</InputLabel>
+            <Select
+              labelId="duration"
+              label={t("duration")}
+              {...register("duration", {
+                required: t("isRequired"),
+              })}
+            >
+              <MenuItem value={1}>1 {t("hour")}</MenuItem>
+              <MenuItem value={2}>2 {t("hour")}</MenuItem>
+            </Select>
+            <p className='text-red-500'>{errors.duration?.message}</p>
+          </FormControl>
+          <Box
+            sx={{
+              display: { md: "flex", xs: "block" },
+              justifyContent: "space-between",
+              gap: "20px",
+            }}
+          >
+            <FormControl fullWidth margin="dense">
+
+              <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
+                {t("descriptionAr")}
               </InputLabel>
               <Controller
-                name="gender"
+                name="descriptionAr"
                 control={control}
-                render={({ field }) => (
-                  <FormControl fullWidth>
-                    <Select
-                      {...field}
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      {...register("gender", {
-                        required: "gender is required",
-                      })}
-                    >
-                      <MenuItem value={"male"}>{t("male")}</MenuItem>
-                      <MenuItem value={"female"}>{t("female")}</MenuItem>
-                      <MenuItem value={"male&female"}>{t("male&female")}</MenuItem>
-                    </Select>
-                  </FormControl>
-                )}
+                render={({ field }) => <TextField multiline rows={4} {...field} fullWidth />}
+                {...register("descriptionAr", {
+                  required: "description Address is required",
+                })}
               />
-              {errors.gender?.type === "required" && (
+              {errors.descriptionAr?.message === "required" && (
                 <Typography
                   color="error"
                   role="alert"
@@ -429,114 +580,121 @@ export default function TeacherPackageAdd() {
                   {t("required")}
                 </Typography>
               )}
-        </Box>
+            </FormControl>
+            <FormControl fullWidth margin="dense">
+              <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
+                {t("descriptionEn")}
+              </InputLabel>
+              <Controller
+                name="descriptionEn"
+                control={control}
+                render={({ field }) => <TextField multiline rows={4} {...field} fullWidth />}
+                {...register("descriptionEn", {
+                  required: "description Address is required",
+                })}
+              />
+              {errors.descriptionEn?.message === "required" && (
+                <Typography
+                  color="error"
+                  role="alert"
+                  sx={{ fontSize: "13px", marginTop: "6px" }}
+                >
+                  {t("required")}
+                </Typography>
+              )}
+            </FormControl>
+          </Box>
 
-        <Box sx={{marginBottom:"18px"}}>
-          <InputLabel sx={{marginBottom:"6px",fontSize:"14px"}}>{t('package_duration')}</InputLabel>
-          <Controller
-              name="duration"
-              control={control}
-              render={({ field }) => <TextField {...field} fullWidth/>}
-              {...register("duration", { required: "Duration is required" })}
-          />
-          {errors.duration?.type === 'required' && <Typography color="error" role="alert" sx={{fontSize:"13px",marginTop:"6px"}}>{t('required')}</Typography>}
-        </Box>
+          <Box sx={{ marginBottom: "18px", marginTop: "10px" }}>
+            <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
+              {t("Package link (if you do not include documents related to the Package, you must include a link to the Package)")}
+            </InputLabel>
 
-        <Box sx={{marginBottom:"18px"}}>
-          <InputLabel sx={{marginBottom:"6px",fontSize:"14px"}}>{t('package_price')}</InputLabel>
-          <TextField
-              fullWidth name="price"  type="number" min="0"  max="10000000000000" required
-              sx={{ marginBottom: 3 }}
-              onChange={handlePrice}
-              value={price}
-            />
-          {errors.price?.type === 'required' && <Typography color="error" role="alert" sx={{fontSize:"13px",marginTop:"6px"}}>{t('required')}</Typography>}
-        </Box>
-
-        <Box sx={{ marginBottom: "26px" }}>
-          <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>{t("currency")}</InputLabel>
-          <Autocomplete fullWidth name="currency"
-                options={currencies}    value={currencyValue}     inputValue={currencyValue}
-                onChange={(event, newInputValue) => {
-                  if (newInputValue) {
-                    setCurrencyValue(
-                      lang === "en"
-                        ? newInputValue?.titleEn
-                        : newInputValue?.titleAr
-                    );
-                    setCurrencyCode(newInputValue?.title);
-                    setCurrencyError(false);
-                  } else {
-                    setCurrencyValue("");
-                    setCurrencyCode("");
-                  }
-                }}
-                onInputChange={(event, newInputValue) => {
-                  setCurrencyValue(newInputValue);
-                }}
-                getOptionLabel={(op) =>
-                  (lang === "en" ? op.titleEn : op.titleAr) || op
+            <FormControl fullWidth margin='dense'>
+              <TextField type="text"  {...register("linkPackage", {
+                required: {
+                  // value: !file,
+                  message: t("file_video-validation")
+                },
+                pattern: {
+                  value: /^(https?:\/\/)?(www\.youtube\.com|youtu\.be)\/.+$/,
+                  message: t("youtube_link")
                 }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label={lang === "en" ? "Choose a Currency" : "إختر العمله"}
-                    inputProps={{
-                      ...params.inputProps,
-                      autoComplete: "new-password",
-                    }}
-                  />
-                )}
-              />
-              {countryError && (
-                <Typography
-                  color="error"
-                  role="alert"
-                  sx={{ fontSize: "13px", marginTop: "6px" }}
-                >
-                  {t("required")}
+              })} />
+
+              <p className='text-red-500'>{errors.linkPackage?.message}</p>
+            </FormControl>
+          </Box>
+
+          <Box sx={{
+            display: { md: "flex", xs: "block" },
+            justifyContent: "space-between",
+            gap: "20px",
+          }}>
+            <Box sx={{ flex: 1, marginBottom: "18px" }}>
+              <InputLabel sx={{ marginBottom: "6px", fontSize: "14px", fontWeight: 'bold', color: '#f50000' }}>
+                {t("Package documents")}
+              </InputLabel>
+              <div {...getRootPropsFile()} style={{
+                border: '2px dashed #f50000',
+                padding: '20px',
+                textAlign: 'center',
+                cursor: 'pointer',
+                borderRadius: '4px'
+              }}>
+                <input {...getInputPropsFile()} />
+                <CloudUploadIcon sx={{ fontSize: "30px", color: "#f50000" }} />
+                <Typography sx={{ fontSize: "14px", color: "#f50000", marginTop: "8px" }}>
+                  {t("Package documents")}
+                </Typography>
+              </div>
+
+              {/* عرض اسم المستند بعد اختياره */}
+              {fileName && (
+                <Typography sx={{ marginTop: "10px", fontSize: "17px", color: "red", textAlign: "center" }}>
+                  {t("Selected File")}: {fileName}
                 </Typography>
               )}
-        </Box>
+            </Box>
 
-        <Box sx={{marginBottom:"18px"}}>
-          <InputLabel sx={{marginBottom:"6px",fontSize:"14px"}}>{t('package_numTotalLesson')}</InputLabel>
-          <TextField
-              fullWidth name="numTotalLesson"  type="number" min="0"  max="100"  required
-              sx={{ marginBottom: 3 }}
-              onChange={handleNumTotalLesson}
-              value={numTotalLesson}
-            />
-          {errors.numTotalLesson?.type === 'required' && <Typography color="error" role="alert" sx={{fontSize:"13px",marginTop:"6px"}}>{t('required')}</Typography>}
-        </Box>
-        <Box sx={{marginBottom:"18px"}}>
-          <InputLabel sx={{marginBottom:"6px",fontSize:"14px"}}>{t('package_numWeekLesson')}</InputLabel>
-          <TextField
-              fullWidth name="numWeekLesson"  type="number" min="0"  max="100"  required
-              sx={{ marginBottom: 3 }}
-              onChange={handleNumWeekLesson}
-              value={numWeekLesson}
-            />
-          {errors.numWeekLesson?.type === 'required' && <Typography color="error" role="alert" sx={{fontSize:"13px",marginTop:"6px"}}>{t('required')}</Typography>}
-        </Box>
-            <input type="file" id="image"  hidden onChange={(e) => setImage(e.target.files[0])} />
-            <Button
-              variant="contained"
-              color="secondary"
-              sx={{
-                textTransform: "capitalize",
-                padding: 0,
-                marginBottom: "20px",
-              }}
-            >
-            <InputLabel htmlFor="image">{t("addphoto")}</InputLabel>
-            </Button>
-            <Box>{image && <Image src={URL.createObjectURL(image)} />}</Box>
+            <Box sx={{ flex: 1, marginBottom: "18px" }}>
+              <InputLabel sx={{ marginBottom: "6px", fontSize: "14px", fontWeight: 'bold', color: '#f50000' }}>
+                {t("Choose a suitable image for the package")}
+              </InputLabel>
+              <div {...getRootPropsImage()} style={{
+                border: '2px dashed #f50000',
+                padding: '20px',
+                textAlign: 'center',
+                cursor: 'pointer',
+                borderRadius: '4px'
+              }}>
+                <input {...getInputPropsImage()} />
+                <CloudUploadIcon sx={{ fontSize: "30px", color: "#f50000" }} />
+                <Typography sx={{ fontSize: "14px", color: "#f50000", marginTop: "8px" }}>
+                  {t("Choose a suitable image for the package")}
+                </Typography>
+              </div>
 
-            <Button variant="contained" type="submit" sx={{ml:"6px",mr:"6px"}}>{t('save')}</Button>
+              {/* عرض اسم الصورة بعد اختياره */}
+              {fileImageName && (
+                <Typography sx={{ marginTop: "10px", fontSize: "17px", color: "red", textAlign: "center" }}>
+                  {t("selected Image")}: {fileImageName}
+                </Typography>
+              )}
+            </Box>
+          </Box>
+          <br />
+          <br />
+          <LoadingButton
+            type="submit"
+            // loading={loading}
+            loadingPosition="start"
+            variant="contained"
+          >{t("Add Package")}</LoadingButton>
         </form>
-        </Paper>
-        </Box>
-        </>
-    )
+      </Container>
+    </Navbar>
+  )
 }
+
+export default TeacherPackageAdd;

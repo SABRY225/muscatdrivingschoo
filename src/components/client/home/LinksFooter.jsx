@@ -30,7 +30,7 @@ const Image = styled("img")({
   width: "200px",
 });
 
-const TikTokIcon = ({ color = "#D10909" }) => {
+const TikTokIcon = ({ color = "#e74c3c" }) => {
   return (
     <svg
       fill={color}
@@ -51,11 +51,11 @@ export default function LinksFooter() {
   const links = data?.data;
 
   const iconComponents = {
-    Facebook: <FacebookIcon sx={{ fontSize: "30px", color: "#D10909" }} />,
-    Twitter: <TwitterIcon sx={{ fontSize: "30px", color: "#D10909" }} />,
-    LinkedIn: <LinkedInIcon sx={{ fontSize: "30px", color: "#D10909" }} />,
-    Instagram: <InstagramIcon sx={{ fontSize: "30px", color: "#D10909" }} />,
-    TikTok: <TikTokIcon sx={{ fontSize: "18px", color: "#D10909"}} />,
+    Facebook: <FacebookIcon sx={{ fontSize: "30px", color: "#e74c3c" }} />,
+    Twitter: <TwitterIcon sx={{ fontSize: "30px", color: "#e74c3c" }} />,
+    LinkedIn: <LinkedInIcon sx={{ fontSize: "30px", color: "#e74c3c" }} />,
+    Instagram: <InstagramIcon sx={{ fontSize: "30px", color: "#e74c3c" }} />,
+    TikTok: <TikTokIcon sx={{ fontSize: "18px", color: "#e74c3c"}} />,
   };
 
   return (

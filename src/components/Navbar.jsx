@@ -501,7 +501,7 @@ function Navbar(props) {
       <Box sx={{ display: "flex" }}>
         {/* nav */}
         <AppBar component="nav" sx={{
-          background: "#D10909",
+          background: "#e74c3c",
           margin: "1rem 0rem",
           padding:"0.5rem 0rem",
           borderRadius: "50px",
@@ -598,7 +598,7 @@ function Navbar(props) {
                           border: "1px solid",
                           borderRadius: "5px",
                           padding: "6px 4px",
-                          color: "#D10909",
+                          color: "#e74c3c",
                           backgroundColor: "#FFFFFF",
                         }}
                       >

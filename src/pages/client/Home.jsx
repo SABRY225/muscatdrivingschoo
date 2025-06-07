@@ -40,7 +40,7 @@ export default function Home() {
       {/* <HomeLecture   /> */}
       <InteractiveSystemInfoSection />
       <DiscountSection />
-      <RescourceSection />
+      {/* <RescourceSection /> */}
       <ExamSection />
 
 

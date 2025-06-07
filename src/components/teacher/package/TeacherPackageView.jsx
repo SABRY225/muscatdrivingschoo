@@ -17,7 +17,7 @@ import { useSelector }            from "react-redux";
 import { useSnackbar }            from "notistack";
 import Cookies                    from "js-cookie";
 import { useTeacherPackages }     from "../../../hooks/useTeacherPackages";
-import TeacherPackageUpdate       from "./TeacherPackageUpdate";
+import { useNavigate } from "react-router-dom";
 
 export default function TeacherPackageView() {
   const { t } = useTranslation();
@@ -35,6 +35,7 @@ export default function TeacherPackageView() {
   const [ rowsPerPage, setRowsPerPage ] = React.useState(10);
   const [ searchInput, setSearchInput ] = React.useState("");
   const { teacher,token }           = useSelector((state)=>state.teacher);
+  const navigate = useNavigate();
 
   const { data, isLoading }         = useTeacherPackages( teacher?.id , token);
   const [ Packages , setPackages]   = useState([]);
@@ -147,16 +148,9 @@ export default function TeacherPackageView() {
                         <TableCell align="center">{row.descriptionAr}</TableCell>
                         <TableCell align="center">{row.descriptionEn}</TableCell>
                         <TableCell align="center">
-                          <Button onClick={() => setOpen(row.id)}>
+                          <Button onClick={() => navigate(`/teacher/edit-package/${row.id}`)}>
                             <EditIcon />
                           </Button>
-                          <Dialog open={open === row.id} onClose={handleClose}>
-                            <TeacherPackageUpdate
-                              setPackages={setPackages}
-                              Package={row}
-                              handleClose={handleClose}
-                            />
-                          </Dialog>
                         </TableCell>
                         <TableCell align="center">
                           <Button

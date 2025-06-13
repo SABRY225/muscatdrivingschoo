@@ -162,15 +162,13 @@ export default function GuestLogin() {
                   textAlign: "center",
                   fontWeight: "700",
                   marginBottom: "20px",
-                  cursor: "pointer",
                 }}
-                onClick={() => navigate("/guestRegister/step1")}
               >
                 {t("donthaveacount")}
               </Typography>
             </Box>
 
-            <Button variant="contained" color="secondary" fullWidth type="submit" sx={{ textTransform: "capitalize" }}>
+            <Button variant="contained" color="secondary" fullWidth type="submit" sx={{ textTransform: "capitalize" }} onClick={() => navigate("/guestRegister/step1")}>
               {t("register")}
             </Button>
 

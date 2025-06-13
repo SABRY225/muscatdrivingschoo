@@ -15,6 +15,7 @@ import { useAdsSingle }       from "../../hooks/useAdsSingle";
 import AdsImages              from "../../components/guest/AdsImages";
 import call                   from "../../images/callsvg.svg";
 import currencies             from "../../data/currencies";
+import { convertCurrency } from "../../utils/convertCurrency";
 const ImageLogo = styled("img")({
   height: "60px",
 
@@ -33,19 +34,12 @@ const ImageCall = styled("img")({
 });
 export default function SingleDiscount() {
   const { AdsId }         = useParams();
-  const [image, setImage]                      = useState(null);
-  const [currentObject, setCurrentObject]      = useState([]);
   const { data, isLoading }                    = useAdsSingle(AdsId);
-  
+      const { currency } = useSelector(state => state.currency);
+
   const lang                  = Cookies.get("i18next") || "en";
-  const {closeSnackbar,enqueueSnackbar} = useSnackbar()
   const { t }               = useTranslation();
-  const navigate            = useNavigate();
-  const { dataSocial } = useSocialMedia();
-  const links = dataSocial?.data;
-  const whatsAppLink = links
-    ?.filter((obj) => obj.type === "Whatsapp")
-    .map((obj) => obj.link);
+
 
   useEffect(() => {
   if (data?.data) {
@@ -53,16 +47,26 @@ export default function SingleDiscount() {
   }
 
   }, [data]);
+    const [convertedAmount, setConvertedAmount] = React.useState(null);
 
+React.useEffect(() => {
+  console.log(data);
+  
+        async function fetchConvertedAmount() {
+            const result = await convertCurrency(data?.data?.carPrice, data?.data?.currency, currency);
+            setConvertedAmount(result);
+        }
+        fetchConvertedAmount();
+    }, [data?.data?.carPrice, currency, data?.data?.currency]);
 
   let current_currency = "";
-  current_currency = currencies.find((e) => e.title == data?.data?.currency);
+  current_currency = currencies.find((e) => e.title === data?.data?.currency);
   return (
     <Navbar>
       <div className="breadcrumb">
         <ul>
-          <li><a href="/home">{t("lnk_home")}</a></li>
-          <li><a href="/home">{t("lnk_ads")}</a></li>
+          <li><a href="/">{t("lnk_home")}</a></li>
+          <li><a href="/">{t("lnk_ads")}</a></li>
           <li><a href="javascript:void(0);">{lang==="ar"?data?.data?.titleAR:data?.data?.titleEN}</a></li>
         </ul>
       </div>
@@ -102,7 +106,7 @@ export default function SingleDiscount() {
 
             <tr>
               <td><h4> {t("price")} </h4></td>
-              <td> <p>{data?.data?.carPrice} { ( lang == "ar" ) ? current_currency?.titleAr : current_currency?.titleEn }</p></td>
+              <td> <p>{convertedAmount} { t(currency) }</p></td>
             </tr>
 
             <tr>
@@ -158,7 +162,7 @@ export default function SingleDiscount() {
             </Typography>
           </Box>
         </a>
-        <a target="_blank" href={whatsAppLink || "/"}>
+        <a target="_blank" href="https://api.whatsapp.com/send?phone=96894085688">
           <Box
             sx={{
               display: "flex",

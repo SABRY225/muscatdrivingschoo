@@ -15,7 +15,6 @@ import { useSnackbar } from "notistack";
 import { useSelector } from "react-redux";
 import Cookies from "js-cookie";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { CloudUpload as CloudUploadIcon } from '@mui/icons-material';
@@ -28,13 +27,21 @@ export default function AddDiscounts({ handleClose }) {
     const { t } = useTranslation();
     const lang = Cookies.get("i18next") || "en";
     const { closeSnackbar, enqueueSnackbar } = useSnackbar();
-    const { teacher } = useSelector((state) => state.teacher);
+    const { teacher, token } = useSelector((state) => state.teacher);
     const { data: Curriculums } = useCurriculums()
+    const [subjects, setSubjects] = useState([]);
     const { data: Classes } = useClasses()
     const Classrooms = [
         { id: "First semester", label: t("First semester") },
         { id: "Second semester", label: t("First semester") }
     ]
+    useEffect(() => {
+        const getSubjects = async () => {
+            const response = await axios.get(`${process.env.REACT_APP_API_KEY}api/v1/subject/allSubjects`);
+            setSubjects(response.data.data);
+        };
+        getSubjects();
+    }, []);
     const [fileImageName, setFileImageName] = useState('');
     const [Image, setImage] = useState();
     const [fileName, setFileName] = useState('');
@@ -48,35 +55,35 @@ export default function AddDiscounts({ handleClose }) {
         setValue
     } = useForm({
         defaultValues: {
-            titleArabic: "",
-            titleEnglish: "",
+            titleAR: "",
+            titleEN: "",
             discountType: "",
-            classId: '',
+            class: '',
             semester: '',
             curriculums: '',
-            discountRate: "",
-      currency: '',
-      amountBeforeDiscount: "",
+            percentage: "",
+            currency: '',
+            amountBeforeDiscount: "",
             amountAfterDiscount: "",
-            descriptionArabic: "",
-            descriptionEnglish: "",
-            discountStartDate: "",
-            discountEndDate: "",
-            termsAndConditionsArabic: "",
-            termsAndConditionsEnglish: "",
-            linkDiscount:""
+            descriptionAR: "",
+            descriptionEN: "",
+            startDate: "",
+            endDate: "",
+            subject: "",
+            conditionsAR: "",
+            conditionsEN: "",
+            linkDiscount: ""
         },
     });
 
-    const navigate = useNavigate();
     const { getRootProps: getRootPropsImage, getInputProps: getInputPropsImage } = useDropzone({
         onDrop: (acceptedFiles) => handleFileUpload(acceptedFiles),  // عند اختيار الصورة
         accept: 'image/*'  // تحديد أن نوع الملف المسموح به هو الصور
     });
-      const { getRootProps: getRootPropsFile, getInputProps: getInputPropsFile } = useDropzone({
+    const { getRootProps: getRootPropsFile, getInputProps: getInputPropsFile } = useDropzone({
         onDrop: (acceptedFiles) => handleFile(acceptedFiles),  // عند اختيار المستند
         accept: '.pdf,.doc,.docx,.ppt,.pptx,.txt'  // تحديد أن نوع الملف المسموح به هو المستندات
-      });
+    });
     // هذه دالة التعامل مع صورة
     const handleFileUpload = (files) => {
         if (files && files[0]) {
@@ -85,63 +92,67 @@ export default function AddDiscounts({ handleClose }) {
 
         }
     };
-      // هذه دالة التعامل مع المستند
-  const handleFile = (files) => {
-    if (files && files[0]) {
-      setFileName(files[0].name);  // تخزين اسم المستند
-      setFile(files[0]);
+    // هذه دالة التعامل مع المستند
+    const handleFile = (files) => {
+        if (files && files[0]) {
+            setFileName(files[0].name);  // تخزين اسم المستند
+            setFile(files[0]);
 
-    }
-  };
+        }
+    };
 
-    const discountRate = watch("discountRate");
+    const percentage = watch("percentage");
     const amountBeforeDiscount = watch("amountBeforeDiscount");
     useEffect(() => {
-        if (discountRate && amountBeforeDiscount) {
-            const discount = (amountBeforeDiscount * discountRate) / 100;
+        if (percentage && amountBeforeDiscount) {
+            const discount = (amountBeforeDiscount * percentage) / 100;
             const amountAfterDiscount = amountBeforeDiscount - discount;
             setValue("amountAfterDiscount", amountAfterDiscount.toFixed(2)); // تحديث القيمة
         }
-    }, [discountRate, amountBeforeDiscount, setValue]);
+    }, [percentage, amountBeforeDiscount, setValue]);
     async function createDiscount(data) {
         console.log(data);
 
         closeSnackbar();
-        const startDateTime = new Date(data.discountStartDate);
-        const endDateTime = new Date(data.discountEndDate);
+        const startDateTime = new Date(data.startDate);
+        const endDateTime = new Date(data.endDate);
 
 
         if (startDateTime >= endDateTime) {
             enqueueSnackbar(t("Start date must be earlier than end date"), { variant: "error", autoHideDuration: 5000 });
             return;
         }
-        data.discountStartDate = startDateTime;
-        data.discountEndDate = endDateTime;
+        data.startDate = startDateTime;
+        data.endDate = endDateTime;
         const formData = new FormData();
 
         formData.append("image", Image);
         formData.append("docs", file);
-        formData.append("teacherId", teacher.id);
+        formData.append("TeacherId", teacher.id);
         for (const key in data) {
-            if (key !== "image" && key !== "teacherId" && key !== "docs" ) {
+            if (key !== "image" && key !== "teacherId" && key !== "docs") {
                 formData.append(key, data[key]);
             }
         }
 
         try {
             const res = await axios.post(
-                `${process.env.REACT_APP_API_KEY}api/v1/teacher/discounts/create-discount`,
+                `${process.env.REACT_APP_API_KEY}api/v1/teacher/discount`,
                 formData,
                 {
                     headers: {
                         "Content-Type": "multipart/form-data",
+                        Authorization: `${token}`,
+
                     },
                 }
             );
             console.log(res);
 
             enqueueSnackbar(t("A new Discount has been created."), { variant: "success", autoHideDuration: 8000 });
-            navigate("/teacher/discounts")
+            setTimeout(function () {
+                window.location.reload();
+            }, 3000);
         } catch (err) {
             console.log(err);
 
@@ -152,20 +163,20 @@ export default function AddDiscounts({ handleClose }) {
         <>
             <Container sx={{ marginTop: '10px', marginBottom: '80px' }}>
                 <form onSubmit={handleSubmit(createDiscount)}  >
-                    <Box sx={{ marginBottom: "18px", display:  {md:"flex",xs:"block"}, width: "100%", gap: "16px" }}>
+                    <Box sx={{ marginBottom: "18px", display: { md: "flex", xs: "block" }, width: "100%", gap: "16px" }}>
                         <Box sx={{ flex: 1 }}>
                             <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
                                 {t("titleAr")}
                             </InputLabel>
                             <Controller
-                                name="titleArabic"
+                                name="titleAR"
                                 control={control}
                                 render={({ field }) => <TextField {...field} fullWidth />}
-                                {...register("titleArabic", {
+                                {...register("titleAR", {
                                     required: "title Address is required",
                                 })}
                             />
-                            {errors.titleArabic?.type === "required" && (
+                            {errors.titleAR?.type === "required" && (
                                 <Typography
                                     color="error"
                                     role="alert"
@@ -180,14 +191,14 @@ export default function AddDiscounts({ handleClose }) {
                                 {t("titleEn")}
                             </InputLabel>
                             <Controller
-                                name="titleEnglish"
+                                name="titleEN"
                                 control={control}
                                 render={({ field }) => <TextField {...field} fullWidth />}
-                                {...register("titleEnglish", {
+                                {...register("titleEN", {
                                     required: "title Address is required",
                                 })}
                             />
-                            {errors.titleEnglish?.type === "required" && (
+                            {errors.titleEN?.type === "required" && (
                                 <Typography
                                     color="error"
                                     role="alert"
@@ -198,132 +209,162 @@ export default function AddDiscounts({ handleClose }) {
                             )}
                         </Box>
                     </Box>
-                    <Box sx={{ marginBottom: "18px", display:  {md:"flex",xs:"block"}, width: "100%", gap: "16px" }}>
-                        <Box sx={{ flex: 1,marginBottom: "18px" }}>
-                        <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
-                            {t("Discount Type")}
-                        </InputLabel>
-                        <Controller
-                            name="discountType"
-                            control={control}
-                            render={({ field }) => (
-                                <Select
-                                    {...field}
-                                    fullWidth
-                                >
-                                    <MenuItem value="Monthly Discounts">{t("Monthly Discounts")}</MenuItem>
-                                    <MenuItem value="Discounts for University Cardholders">{t("Discounts for University Cardholders")}</MenuItem>
-                                </Select>
-                            )}
-                            rules={{ required: t("required") }}
-                        />
+                    <Box sx={{ marginBottom: "18px", display: { md: "flex", xs: "block" }, width: "100%", gap: "16px" }}>
+                        <Box sx={{ flex: 1, marginBottom: "18px" }}>
+                            <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
+                                {t("Discount Type")}
+                            </InputLabel>
+                            <Controller
+                                name="discountType"
+                                control={control}
+                                render={({ field }) => (
+                                    <Select
+                                        {...field}
+                                        fullWidth
+                                    >
+                                        <MenuItem value="Monthly Discounts">{t("Monthly Discounts")}</MenuItem>
+                                        <MenuItem value="Discounts for University Cardholders">{t("Discounts for University Cardholders")}</MenuItem>
+                                    </Select>
+                                )}
+                                rules={{ required: t("required") }}
+                            />
+                        </Box>
+                        <Box sx={{ flex: 1, marginBottom: "18px" }}>
+                            <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
+                                {t("classes")}
+                            </InputLabel>
+                            <Controller
+                                name="class"
+                                control={control}
+                                render={({ field }) => (
+                                    <Select
+                                        {...field}
+                                        fullWidth
+                                    >
+                                        {
+                                            Classes?.data.map((calss, index) => (
+                                                <MenuItem key={index} value={calss.id}>{lang === "ar" ? calss.titleAR : calss.titleEN}</MenuItem>
+                                            ))
+                                        }
+                                    </Select>
+                                )}
+                                rules={{ required: t("required") }}
+                            />
+                        </Box>
                     </Box>
-                    <Box sx={{ flex: 1, marginBottom: "18px" }}>
-                        <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
-                            {t("classes")}
-                        </InputLabel>
-                        <Controller
-                            name="classId"
-                            control={control}
-                            render={({ field }) => (
+
+                    <Box sx={{ marginBottom: "18px", display: { md: "flex", xs: "block" }, width: "100%", gap: "16px" }}>
+                        <Box sx={{ flex: 1, marginBottom: "18px" }}>
+                            <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
+                                {t("studyCurriculum")}
+                            </InputLabel>
+                            <Controller
+                                name="curriculums"
+                                control={control}
+                                render={({ field }) => (
+                                    <Select
+                                        {...field}
+                                        fullWidth
+                                    >
+                                        {
+                                            Curriculums?.data.map((Curriculum, index) => (
+                                                <MenuItem key={index} value={Curriculum.id}>{lang === "ar" ? Curriculum.titleAR : Curriculum.titleEN}</MenuItem>
+                                            ))
+                                        }
+                                    </Select>
+                                )}
+                                rules={{ required: t("required") }}
+                            />
+                        </Box>
+                        <Box sx={{ flex: 1, marginBottom: "18px" }}>
+                            <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
+                                {t("semester")}
+                            </InputLabel>
+                            <Controller
+                                name="semester"
+                                control={control}
+                                render={({ field }) => (
+                                    <Select
+                                        {...field}
+                                        fullWidth
+                                    >
+                                        {Classrooms?.length > 0 ? (
+                                            Classrooms.map((semester, index) => (
+                                                <MenuItem key={index} value={semester.id}>
+                                                    {t(semester.id)}
+                                                </MenuItem>
+                                            ))
+                                        ) : (
+                                            <MenuItem disabled>{t("noData")}</MenuItem>
+                                        )}
+                                    </Select>
+                                )}
+                                rules={{ required: t("required") }}
+                            />
+                        </Box>
+                    </Box>
+                    <Box sx={{ marginBottom: "18px", display: { md: "flex", xs: "block" }, width: "100%", gap: "16px" }}>
+                        <Box sx={{ flex: 1, marginBottom: "18px" }}>
+                            <FormControl fullWidth margin="dense">
+                                <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
+                                    {t("subject")}
+                                </InputLabel>
                                 <Select
-                                    {...field}
-                                    fullWidth
+                                    labelId="subject"
+                                    label={t("subject")}
+                                    defaultValue="" // قيمة افتراضية
+                                    {...register("subject", {
+                                        required: t("isRequired"),
+                                    })}
                                 >
-                                    {
-                                        Classes?.data.map((calss, index) => (
-                                            <MenuItem key={index} value={calss.id}>{lang === "ar" ? calss.titleAR : calss.titleEN}</MenuItem>
+                                    {lang === "ar"
+                                        ? subjects.map((subject, index) => (
+                                            <MenuItem key={index} value={subject.id}>{t(subject.titleAR)}</MenuItem>
+                                        ))
+                                        : subjects.map((subject, index) => (
+                                            <MenuItem key={index} value={subject.id}>{t(subject.titleEN)}</MenuItem>
                                         ))
                                     }
                                 </Select>
-                            )}
-                            rules={{ required: t("required") }}
-                        />
-                    </Box>
-                    </Box>
-
-                     <Box sx={{ marginBottom: "18px", display:  {md:"flex",xs:"block"}, width: "100%", gap: "16px" }}>
-                    <Box sx={{ flex: 1,marginBottom: "18px" }}>
-                        <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
-                            {t("studyCurriculum")}
-                        </InputLabel>
-                        <Controller
-                            name="curriculums"
-                            control={control}
-                            render={({ field }) => (
-                                <Select
-                                    {...field}
-                                    fullWidth
-                                >
-                                    {
-                                        Curriculums?.data.map((Curriculum, index) => (
-                                            <MenuItem key={index} value={Curriculum.id}>{lang === "ar" ? Curriculum.titleAR : Curriculum.titleEN}</MenuItem>
-                                        ))
-                                    }
-                                </Select>
-                            )}
-                            rules={{ required: t("required") }}
-                        />
-                    </Box>
-                    <Box sx={{ flex: 1,marginBottom: "18px" }}>
-                        <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
-                            {t("semester")}
-                        </InputLabel>
-                        <Controller
-                            name="semester"
-                            control={control}
-                            render={({ field }) => (
-                                <Select
-                                    {...field}
-                                    fullWidth
-                                >
-                                    {Classrooms?.length > 0 ? (
-                                        Classrooms.map((semester, index) => (
-                                            <MenuItem key={index} value={semester.id}>
-                                                {t(semester.id)}
-                                            </MenuItem>
-                                        ))
-                                    ) : (
-                                        <MenuItem disabled>{t("noData")}</MenuItem>
-                                    )}
-                                </Select>
-                            )}
-                            rules={{ required: t("required") }}
-                        />
-                    </Box>
-                     </Box>
-
-                              <FormControl fullWidth margin="dense">
+                            </FormControl>
+                        </Box>
+                        <Box sx={{ flex: 1, marginBottom: "18px" }}>
+                            <FormControl fullWidth margin="dense">
                                 <InputLabel id="currency">{t("currency")}</InputLabel>
                                 <Select
-                                  labelId="currency"
-                                  label={t("currency")}
-                                  {...register("currency", {
-                                    required: t("isRequired"),
-                                  })}
+                                    labelId="currency"
+                                    label={t("currency")}
+                                    {...register("currency", {
+                                        required: t("isRequired"),
+                                    })}
                                 >
-                                  {
-                                    currencies.map((curr) => {
-                                      return <MenuItem value={curr.title}>{lang === "en" ? curr.titleEn : curr.titleAr}</MenuItem>
-                                    })
-                                  }
+                                    {
+                                        currencies.map((curr) => {
+                                            return <MenuItem value={curr.title}>{lang === "en" ? curr.titleEn : curr.titleAr}</MenuItem>
+                                        })
+                                    }
                                 </Select>
                                 <p className='text-red-500'>{errors.currency?.message}</p>
-                              </FormControl>
-                    <Box sx={{ marginBottom: "18px", display:  {md:"flex",xs:"block"}, width: "100%", gap: "16px" }}>
+                            </FormControl>
+                        </Box>
+                    </Box>
+
+
+
+                    <Box sx={{ marginBottom: "18px", display: { md: "flex", xs: "block" }, width: "100%", gap: "16px" }}>
                         <Box sx={{ flex: 1 }}>
                             <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
                                 {t("Discount Percentage")}
                             </InputLabel>
                             <Controller
-                                name="discountRate"
+                                name="percentage"
                                 control={control}
                                 render={({ field }) => <TextField type="number"  {...field} fullWidth />}
-                                {...register("discountRate", {
-                                    required: "discountRate is required",
+                                {...register("percentage", {
+                                    required: "percentage is required",
                                 })}
                             />
-                            {errors.discountRate?.type === "required" && (
+                            {errors.percentage?.type === "required" && (
                                 <Typography
                                     color="error"
                                     role="alert"
@@ -378,20 +419,20 @@ export default function AddDiscounts({ handleClose }) {
                             )}
                         </Box>
                     </Box>
-                    <Box sx={{ marginBottom: "18px", display:  {md:"flex",xs:"block"}, width: "100%", gap: "16px" }}>
+                    <Box sx={{ marginBottom: "18px", display: { md: "flex", xs: "block" }, width: "100%", gap: "16px" }}>
                         <Box sx={{ flex: 1 }}>
                             <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
                                 {t("discount StartDate")}
                             </InputLabel>
                             <Controller
-                                name="discountStartDate"
+                                name="startDate"
                                 control={control}
                                 render={({ field }) => <TextField type="date" {...field} fullWidth />}
-                                {...register("discountStartDate", {
-                                    required: "discountStartDate is required",
+                                {...register("startDate", {
+                                    required: "startDate is required",
                                 })}
                             />
-                            {errors.discountStartDate?.type === "required" && (
+                            {errors.startDate?.type === "required" && (
                                 <Typography
                                     color="error"
                                     role="alert"
@@ -406,14 +447,14 @@ export default function AddDiscounts({ handleClose }) {
                                 {t("discount EndDate")}
                             </InputLabel>
                             <Controller
-                                name="discountEndDate"
+                                name="endDate"
                                 control={control}
                                 render={({ field }) => <TextField type="date" {...field} fullWidth />}
-                                {...register("discountEndDate", {
-                                    required: "discountEndDate is required",
+                                {...register("endDate", {
+                                    required: "endDate is required",
                                 })}
                             />
-                            {errors.discountEndDate?.type === "required" && (
+                            {errors.endDate?.type === "required" && (
                                 <Typography
                                     color="error"
                                     role="alert"
@@ -424,21 +465,21 @@ export default function AddDiscounts({ handleClose }) {
                             )}
                         </Box>
                     </Box>
-                    <Box sx={{ marginBottom: "18px", display:  {md:"flex",xs:"block"}, width: "100%", gap: "16px" }}>
+                    <Box sx={{ marginBottom: "18px", display: { md: "flex", xs: "block" }, width: "100%", gap: "16px" }}>
                         <Box sx={{ flex: 1 }}>
                             <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
                                 {t("description Arabic")}
                             </InputLabel>
                             <Controller
-                                name="descriptionArabic"
+                                name="descriptionAR"
                                 control={control}
                                 render={({ field }) => <TextField multiline rows={4} {...field} fullWidth />}
-                                {...register("descriptionArabic", {
-                                    required: "descriptionArabic is required",
+                                {...register("descriptionAR", {
+                                    required: "descriptionAR is required",
                                 })}
 
                             />
-                            {errors.descriptionArabic?.type === "required" && (
+                            {errors.descriptionAR?.type === "required" && (
                                 <Typography
                                     color="error"
                                     role="alert"
@@ -453,14 +494,14 @@ export default function AddDiscounts({ handleClose }) {
                                 {t("description English")}
                             </InputLabel>
                             <Controller
-                                name="descriptionEnglish"
+                                name="descriptionEN"
                                 control={control}
                                 render={({ field }) => <TextField multiline rows={4} {...field} fullWidth />}
-                                {...register("descriptionEnglish", {
-                                    required: "descriptionEnglish is required",
+                                {...register("descriptionEN", {
+                                    required: "descriptionEN is required",
                                 })}
                             />
-                            {errors.descriptionEnglish?.type === "required" && (
+                            {errors.descriptionEN?.type === "required" && (
                                 <Typography
                                     color="error"
                                     role="alert"
@@ -471,20 +512,20 @@ export default function AddDiscounts({ handleClose }) {
                             )}
                         </Box>
                     </Box>
-                    <Box sx={{ marginBottom: "18px", display: {md:"flex",xs:"block"}, width: "100%", gap: "16px" }}>
+                    <Box sx={{ marginBottom: "18px", display: { md: "flex", xs: "block" }, width: "100%", gap: "16px" }}>
                         <Box sx={{ flex: 1 }}>
                             <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
                                 {t("terms And Conditions English")}
                             </InputLabel>
                             <Controller
-                                name="termsAndConditionsEnglish"
+                                name="conditionsEN"
                                 control={control}
                                 render={({ field }) => <TextField multiline rows={4} {...field} fullWidth />}
-                                {...register("termsAndConditionsEnglish", {
-                                    required: "termsAndConditionsEnglish is required",
+                                {...register("conditionsEN", {
+                                    required: "conditionsEN is required",
                                 })}
                             />
-                            {errors.termsAndConditionsEnglish?.type === "required" && (
+                            {errors.conditionsEN?.type === "required" && (
                                 <Typography
                                     color="error"
                                     role="alert"
@@ -499,14 +540,14 @@ export default function AddDiscounts({ handleClose }) {
                                 {t("terms And Conditions Arabic")}
                             </InputLabel>
                             <Controller
-                                name="termsAndConditionsArabic"
+                                name="conditionsAR"
                                 control={control}
                                 render={({ field }) => <TextField multiline rows={4} {...field} fullWidth />}
-                                {...register("termsAndConditionsArabic", {
-                                    required: "termsAndConditionsArabic is required",
+                                {...register("conditionsAR", {
+                                    required: "conditionsAR is required",
                                 })}
                             />
-                            {errors.termsAndConditionsArabic?.type === "required" && (
+                            {errors.conditionsAR?.type === "required" && (
                                 <Typography
                                     color="error"
                                     role="alert"
@@ -517,79 +558,79 @@ export default function AddDiscounts({ handleClose }) {
                             )}
                         </Box>
                     </Box>
-                                <Box sx={{ marginBottom: "18px" }}>
-                                    <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
-                                        {t("Discount link (if you do not include documents related to the Discount, you must include a link to the Discount)")}
-                                    </InputLabel>
+                    <Box sx={{ marginBottom: "18px" }}>
+                        <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
+                            {t("Discount link (if you do not include documents related to the Discount, you must include a link to the Discount)")}
+                        </InputLabel>
 
-                                    <FormControl fullWidth margin='dense'>
-                                        <TextField type="text"  {...register("linkDiscount", {
-                                            required: {
-                                                // value: !file,
-                                                message: t("file_video-validation")
-                                            },
-                                            pattern: {
-                                                value: /^(https?:\/\/)?(www\.youtube\.com|youtu\.be)\/.+$/,
-                                                message: t("youtube_link")
-                                            }
-                                        })} />
+                        <FormControl fullWidth margin='dense'>
+                            <TextField type="text"  {...register("linkDiscount", {
+                                required: {
+                                    // value: !file,
+                                    message: t("file_video-validation")
+                                },
+                                pattern: {
+                                    value: /^(https?:\/\/)?(www\.youtube\.com|youtu\.be)\/.+$/,
+                                    message: t("youtube_link")
+                                }
+                            })} />
 
-                                        <p className='text-red-500'>{errors.linkDiscount?.message}</p>
-                                    </FormControl>
-                                </Box>
-                                 <Box sx={{ marginBottom: "18px", display:  {md:"flex",xs:"block"}, width: "100%", gap: "16px" }}>
-                                    <Box sx={{ flex: 1,marginBottom: "18px" }}>
-                                        <InputLabel sx={{ marginBottom: "6px", fontSize: "14px", fontWeight: 'bold', color: '#f50000' }}>
-                                            {t("Discount documents")}
-                                        </InputLabel>
-                                        <div {...getRootPropsFile()} style={{
-                                            border: '2px dashed #f50000',
-                                            padding: '20px',
-                                            textAlign: 'center',
-                                            cursor: 'pointer',
-                                            borderRadius: '4px'
-                                        }}>
-                                            <input {...getInputPropsFile()} />
-                                            <CloudUploadIcon sx={{ fontSize: "30px", color: "#f50000" }} />
-                                            <Typography sx={{ fontSize: "14px", color: "#f50000", marginTop: "8px" }}>
-                                                {t("Discount documents")}
-                                            </Typography>
-                                        </div>
+                            <p className='text-red-500'>{errors.linkDiscount?.message}</p>
+                        </FormControl>
+                    </Box>
+                    <Box sx={{ marginBottom: "18px", display: { md: "flex", xs: "block" }, width: "100%", gap: "16px" }}>
+                        <Box sx={{ flex: 1, marginBottom: "18px" }}>
+                            <InputLabel sx={{ marginBottom: "6px", fontSize: "14px", fontWeight: 'bold', color: '#f50000' }}>
+                                {t("Discount documents")}
+                            </InputLabel>
+                            <div {...getRootPropsFile()} style={{
+                                border: '2px dashed #f50000',
+                                padding: '20px',
+                                textAlign: 'center',
+                                cursor: 'pointer',
+                                borderRadius: '4px'
+                            }}>
+                                <input {...getInputPropsFile()} />
+                                <CloudUploadIcon sx={{ fontSize: "30px", color: "#f50000" }} />
+                                <Typography sx={{ fontSize: "14px", color: "#f50000", marginTop: "8px" }}>
+                                    {t("Discount documents")}
+                                </Typography>
+                            </div>
 
-                                        {/* عرض اسم المستند بعد اختياره */}
-                                        {fileName && (
-                                            <Typography sx={{ marginTop: "10px", fontSize: "17px", color: "red", textAlign: "center" }}>
-                                                {t("Selected File")}: {fileName}
-                                            </Typography>
-                                        )}
-                                    </Box>
+                            {/* عرض اسم المستند بعد اختياره */}
+                            {fileName && (
+                                <Typography sx={{ marginTop: "10px", fontSize: "17px", color: "red", textAlign: "center" }}>
+                                    {t("Selected File")}: {fileName}
+                                </Typography>
+                            )}
+                        </Box>
 
-                                    <Box sx={{ flex: 1,marginBottom: "18px" }}>
-                                        <InputLabel sx={{ marginBottom: "6px", fontSize: "14px", fontWeight: 'bold', color: '#f50000' }}>
-                                            {t("Choose a suitable image for the discount")}
-                                        </InputLabel>
-                                        <div {...getRootPropsImage()} style={{
-                                            border: '2px dashed #f50000',
-                                            padding: '20px',
-                                            textAlign: 'center',
-                                            cursor: 'pointer',
-                                            borderRadius: '4px'
-                                        }}>
-                                            <input {...getInputPropsImage()} />
-                                            <CloudUploadIcon sx={{ fontSize: "30px", color: "#f50000" }} />
-                                            <Typography sx={{ fontSize: "14px", color: "#f50000", marginTop: "8px" }}>
-                                                {t("Choose a suitable image for the discount")}
-                                            </Typography>
-                                        </div>
+                        <Box sx={{ flex: 1, marginBottom: "18px" }}>
+                            <InputLabel sx={{ marginBottom: "6px", fontSize: "14px", fontWeight: 'bold', color: '#f50000' }}>
+                                {t("Choose a suitable image for the discount")}
+                            </InputLabel>
+                            <div {...getRootPropsImage()} style={{
+                                border: '2px dashed #f50000',
+                                padding: '20px',
+                                textAlign: 'center',
+                                cursor: 'pointer',
+                                borderRadius: '4px'
+                            }}>
+                                <input {...getInputPropsImage()} />
+                                <CloudUploadIcon sx={{ fontSize: "30px", color: "#f50000" }} />
+                                <Typography sx={{ fontSize: "14px", color: "#f50000", marginTop: "8px" }}>
+                                    {t("Choose a suitable image for the discount")}
+                                </Typography>
+                            </div>
 
-                                        {/* عرض اسم الصورة بعد اختياره */}
-                                        {fileImageName && (
-                                            <Typography sx={{ marginTop: "10px", fontSize: "17px", color: "red", textAlign: "center" }}>
-                                                {t("selected Image")}: {fileImageName}
-                                            </Typography>
-                                        )}
-                                    </Box>
-                                </Box>
+                            {/* عرض اسم الصورة بعد اختياره */}
+                            {fileImageName && (
+                                <Typography sx={{ marginTop: "10px", fontSize: "17px", color: "red", textAlign: "center" }}>
+                                    {t("selected Image")}: {fileImageName}
+                                </Typography>
+                            )}
+                        </Box>
+                    </Box>
                     <Box sx={{ display: "flex", justifyContent: "center" }}>
                         <LoadingButton
                             type="submit"

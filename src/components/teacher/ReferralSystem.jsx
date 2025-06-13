@@ -60,9 +60,11 @@ const ReferralSystem = () => {
     navigator.clipboard.writeText(data.link);
     setCopySuccess(true);
   }, [data?.link]);
+    console.log(data);
 
   const handleRequestCheckout = useCallback(async () => {
-    convertCurrency(data.amountPoints / 50, "OMR", "USD")
+    
+    convertCurrency(data?.amountPoints / 50, "OMR", "USD")
         .then((result) => setAmount(result));
     console.log(amount);
     
@@ -136,16 +138,18 @@ const ReferralSystem = () => {
               <Alert severity="error">{error}</Alert>
             ) : data ? (
               <>
-                <Box display="flex" justifyContent="space-around" mb={3}>
+                <Box sx={{ marginBottom: "18px", display: "flex", width: "100%", gap: "16px" }}>
                   <Box sx={{
-                    background: "#3B82F6ED", color: "#fff", textAlign: "center",
+                    flex:1,
+                    background: "#e74c3c", color: "#fff", textAlign: "center",
                     borderRadius: "8px", padding: 4, width: "45%"
                   }}>
                     <Typography variant="h6" fontWeight="bold">{data.amountPoints}</Typography>
                     <Typography>{t("Number of points")}</Typography>
                   </Box>
                   <Box sx={{
-                    background: "#e5e7e9", color: "#3B82F6ED", textAlign: "center",
+                    flex:1,
+                    background: "#e5e7e9", color: "#f50000", textAlign: "center",
                     borderRadius: "8px", padding: 4, width: "45%"
                   }}>
                     <Typography variant="h6" fontWeight="bold">

@@ -8,24 +8,29 @@ import whatsapp from "../../../images/whatsapp.png";
 import email from "../../../images/email.png";
 
 const Wrapper = styled(Box)(({ theme }) => ({
-  backgroundPosition: "center",
+  backgroundImage: `
+    linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+    url('https://www.shutterstock.com/image-photo/waving-oman-flag-against-sunrise-600nw-2514550935.jpg')
+  `,
+  backgroundPosition: "top",
   backgroundRepeat: "no-repeat",
   backgroundSize: "cover",
   color: "white",
   display: "flex",
-  flexDirection: "row", // الوضع الافتراضي للأجهزة الكبيرة
+  flexDirection: "row",
   justifyContent: "space-around",
   alignItems: "center",
   textAlign: "center",
   height: "70vh",
   padding: "50px 10px",
   [theme.breakpoints.down("md")]: {
-    flexDirection: "column", // تحويل الاتجاه إلى عمودي على الشاشات الصغيرة
+    flexDirection: "column",
     height: "auto",
     padding: "30px 10px",
     gap: "20px",
   },
 }));
+
 
 export default function HomeBanner() {
   const { t } = useTranslation();
@@ -39,7 +44,7 @@ export default function HomeBanner() {
             fontSize: { md: "30px", xs: "22px" },
             fontWeight: "bold",
             width:"510px",
-            color: "#e74c3c",
+            color: "#fff",
           }}
         >
           {t("bannerTitle")}
@@ -50,7 +55,7 @@ export default function HomeBanner() {
             fontWeight: "400",
             maxWidth: "480px",
             paddingX: "10px",
-            color: "#000000",
+            color: "#fff",
           }}
         >
           {t("bannerDesc")}
@@ -63,7 +68,7 @@ export default function HomeBanner() {
             maxWidth: "480px",
             marginTop: "2rem",
             paddingX: "10px",
-            color: "#000000",
+            color: "#fff",
             display: "flex",
             flexDirection: { xs: "row", sm: "row" }, // ترتيب عمودي في الهواتف
             alignItems: "center",
@@ -83,7 +88,7 @@ export default function HomeBanner() {
               <Typography
                 sx={{
                   fontSize: { md: "20px", xs: "16px" },
-                  color: "#e74c3c",
+                  color: "#fff",
                   fontWeight: "700",
                 }}
               >
@@ -108,7 +113,7 @@ export default function HomeBanner() {
               <Typography
                 sx={{
                   fontSize: { md: "20px", xs: "16px" },
-                  color: "#e74c3c",
+                  color: "#fff",
                   fontWeight: "700",
                 }}
               >

@@ -30,6 +30,8 @@ export default function Login() {
     },
   });
   const lang = Cookies.get("i18next") || "en";
+  console.log(lang);
+  
 
   const input1 = useRef();
   const navigate = useNavigate();
@@ -64,6 +66,7 @@ export default function Login() {
           body: JSON.stringify({
             password: input1.current.state.value,
             email: data.email,
+            lang,
             long: location?.longitude,
             lat: location?.latitude,
           }),
@@ -102,7 +105,7 @@ export default function Login() {
 
   return (
     <Navbar>
-      <Container sx={{ marginTop: "110px" }}>
+      <Container sx={{ marginTop: "150px" }}>
         <Paper
           sx={{
             width: { md: "450px" },

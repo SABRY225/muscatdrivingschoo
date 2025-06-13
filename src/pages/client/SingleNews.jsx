@@ -97,8 +97,8 @@ export default function SingleCareer() {
     <Navbar>
       <div className="breadcrumb">
         <ul>
-          <li><a href="/home">{t("lnk_home")}</a></li>
-          <li><a href="/news">{t("news")}</a></li>
+          <li><a href="/">{t("lnk_home")}</a></li>
+          <li><a href="/">{t("news")}</a></li>
           <li><a href="javascript:void(0);">{lang==="ar"?currentObject?.titleAR:currentObject?.titleEN}</a></li>
         </ul>
       </div>
@@ -140,10 +140,6 @@ export default function SingleCareer() {
               <p className="p_details">{ lang === "en" ? country?.name_en : country?.name_ar }</p>
 
             </Paper>
-            </Grid>
-            <Grid data md={12} lg={4}>
-              <Paper sx={{ padding: "24px 12px", margin: "10px" }}>
-              </Paper>
             </Grid>
           </Grid>
         </Container>

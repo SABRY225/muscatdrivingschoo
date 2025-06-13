@@ -187,7 +187,6 @@ import TermsTeacher from "./pages/client/TermsTeacher.jsx";
 import UnderDevelopmentStudent from "./components/UnderDevelopmentStudent.jsx";
 import UnderDevelopment from "./components/UnderDevelopment.jsx";
 import NotFound from "./components/NotFound.jsx";
-import UnderDevelopmentTeacher from "./components/UnderDevelopmentTeacher.jsx";
 import InteractiveSystemInfo from "./pages/client/InteractiveSystemInfo";
 import Test from "./components/client/home/Test.jsx";
 import SingleTest from "./components/client/home/SingleTest.jsx";
@@ -197,6 +196,7 @@ import MyBillsTeacher from "./components/teacher/MyBills.jsx";
 import TeacherLectureUpdate from "./components/teacher/lecture/TeacherLectureUpdate.jsx";
 import EditPackage from "./pages/teacher/EditPackage.jsx";
 import EditExam from "./pages/teacher/EditExam.jsx";
+import EditDiscount from "./components/teacher/discounts/UpdateDicount.jsx";
 
 const theme = createTheme({
   direction: "rtl",
@@ -467,6 +467,10 @@ function App() {
             <Route
               path="teacher/discounts"
               element={teacher ? <TeacherDiscounts /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="teacher/edit-discount/:id"
+              element={teacher ? <EditDiscount /> : <Navigate to="/login" />}
             />
 
             <Route

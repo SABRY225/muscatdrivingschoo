@@ -502,9 +502,9 @@ function Navbar(props) {
         {/* nav */}
         <AppBar component="nav" sx={{
           background: "#e74c3c",
-          margin: "1rem 0rem",
+          margin: "0rem",
           padding:"0.5rem 0rem",
-          borderRadius: "50px",
+          borderRadius: "0px",
         }}>
           <Toolbar sx={{ display: 'flex',justifyContent:"space-between",justifyItems:"center" }}>
             <IconButton

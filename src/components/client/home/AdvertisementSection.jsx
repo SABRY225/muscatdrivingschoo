@@ -54,22 +54,7 @@ export default function AdvertisementSection() {
             marginTop: "2rem",
           }}
         >
-          <Link to="/advertisement">
-            <Box
-              sx={{
-                minWidth: "120px",
-                border: "1px solid",
-                borderRadius: "5px",
-                padding: "8px 12px",
-                color: "#EF0D0D",
-                backgroundColor: "#FFFFFF",
-                textAlign: "center",
-              }}
-            >
-              {t("Advertisements")}
-            </Box>
-          </Link>
-          <Link to="/guest">
+          <Link to="/loginGuest">
             <Box
               sx={{
                 minWidth: "120px",

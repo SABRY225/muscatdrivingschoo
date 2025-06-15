@@ -26,7 +26,7 @@ export default function DiscountSection() {
           sx={{
             fontSize: { md: "32px", xs: "20px" },
             fontWeight: "bold",
-            color: "#e74c3c",
+            color: "#800020",
           }}
         >
           {t("Offers and discounts on the Muscat Driving School platform: Take advantage now!")}
@@ -58,7 +58,7 @@ export default function DiscountSection() {
                 border: "1px solid",
                 borderRadius: "5px",
                 padding: "8px 12px",
-                color: "#e74c3c",
+                color: "#800020",
                 backgroundColor: "#FFFFFF",
                 textAlign: "center",
               }}

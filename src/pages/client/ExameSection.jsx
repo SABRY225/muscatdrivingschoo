@@ -1,89 +1,105 @@
-import { Box, Typography, styled } from "@mui/material";
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Box, Paper, Typography, styled } from '@mui/material'
+import React from 'react'
+import Cookies from 'js-cookie';
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
-const Wrapper = styled(Box)({
-    backgroundPosition: "center",
-  backgroundRepeat: "no-repeat",
-  backgroundSize: "cover",
-  color: "white",
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "space-around",
-  alignItems: "center",
-  textAlign: "center",
-  flexWrap: "wrap", 
+
+const Image = styled("img")({
+  width: "300px",
 });
 
-export default function ExamSection() {
+export default function HomeExam({ exams }) {
+  const navigate = useNavigate();
+  const lang = Cookies.get("i18next") || "en";
   const { t } = useTranslation();
 
+  var settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 3,
+    initialSlide: 0,
+    rtl: true,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+          infinite: true,
+          dots: true
+        }
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          initialSlide: 1
+        }
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1
+        }
+      }
+    ]
+  };
+
   return (
-    <Wrapper>
+    <>
+      <Box sx={{ padding: "32px 24px", marginY: "30px" }}>
+        <div className='contain_title'>
+
+        </div>
+        <Typography sx={{
+          fontSize: { md: "26px", xs: "22px" }, fontWeight: "700", color: "#800020", textAlign: "center",
+          marginBottom: "50px"
+        }}>{t('view_teacher_test')}</Typography>
+
+        <div className="slider-container">
+          <Slider {...settings}>
+            {exams?.length > 0 &&
+              exams?.map((item, index) => {
+                return (
+                  <>
+                    <div key={index}>
+                      <a href={`/test/${item.id}`}>
+                        <Paper sx={{
+                          padding: "0px", display: "flex", flexDirection: "column", alignItems: "center",
+                          backgroundColor: "#FFF", borderRadius: "20px", margin: "20px", textAlign: "right"
+                        }}>
 
 
+                          <Image
+                            alt={lang === "ar" ? item?.titleAR : item?.titleEN}
+                            src={item?.image?`${process.env.REACT_APP_API_KEY}images/${item?.image}`: "logo.png"}
+                            sx={{ width: "100%", height: "200px", objectFit: "cover", borderRadius: "20px" }}
+                          />
 
-            {/* إخفاء الصورة في الشاشات الصغيرة */}
-            <Box
-        sx={{
-          borderRadius: "12px",
-          width: "500px",
-          display: { xs: "none", md: "block" },
-          marginBottom:{md:6,xs:10},
-          marginTop:{md:5,xs:7}
-        }}
-      >
-        <img src="https://server.moalime.com/drive/5.png" alt="Exams" width="100%" />
+                          <a className='btndetails'
+                            onClick={() => navigate(`/test/${item.id}`)}
+                          >
+                            {t("view")}
+                          </a>
+                        </Paper>
+                      </a>
+                    </div>
+                  </>
+                )
+              }
+              )}
+
+          </Slider>
+        </div>
       </Box>
-            <Box sx={{ maxWidth: "650px", textAlign: "center" }}>
-        <Typography
-          sx={{
-            marginTop: "-10px",
-            fontSize: { md: "32px", xs: "22px" },
-            fontWeight: "bold",
-            color: "#e74c3c",
-          }}
-        >
-          {t("Educational tests on the Muscat Driving School platform. Evaluate your progress and develop your skills.")}
-        </Typography>
-        <Typography
-          sx={{
-            fontSize: { lg: "18px", md: "18px", xs: "14px" },
-            fontWeight: "400",
-            margin: "1.5rem 0",
-            paddingX: "10px",
-            color: "#000000",
-          }}
-        >
-          {t(
-            "The Muscat Driving School platform offers a variety of educational tests to help you measure your knowledge and achieve tangible progress in your field of study. Whether you're a student seeking to evaluate your performance or a teacher wanting to test your students' skills, you'll find carefully designed tests to suit all needs. Use these tests as a powerful tool to develop your skills and achieve excellence!"
-          )}
-        </Typography>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: "2rem",
-          }}
-        >
-          <Link to="/exames">
-            <Box
-              sx={{
-                minWidth: "150px",
-                border: "1px solid",
-                borderRadius: "5px",
-                padding: "8px 12px",
-                color: "#e74c3c",
-                backgroundColor: "#FFFFFF",
-                textAlign: "center",
-              }}
-            >
-              {t("View exams")}
-            </Box>
-          </Link>
-        </Box>
-      </Box>
-    </Wrapper>
-  );
+    </>
+  )
 }

@@ -1,63 +1,80 @@
-import { Box, Container, Grid, styled } from "@mui/material";
-import React  from "react";
-import home1  from "../../../images/home_1.jpg";
-import home2  from "../../../images/home_2.jpg";
+import { useTranslation } from 'react-i18next';
+import { Link as RouterLink } from 'react-router-dom';
+import { Box, Grid, Card, CardContent, Typography, Button, Avatar } from '@mui/material';
 
-import image1 from "../../../images/home1.jpeg";
-import image2 from "../../../images/home2.jpeg";
-import image3 from "../../../images/home3.jpeg";
-import image4 from "../../../images/home4.jpeg";
-import image5 from "../../../images/home5.jpeg";
-import image6 from "../../../images/home6.jpeg";
+const features = [
+  {
+    id: 1,
+    title: "Points And Rewards",
+    highlighted: true,
+    icon: "Invitation.png",
+    titleLink:"Getting to know the system",
+    link: "/ractiveSystemInfo"
+  },
+  {
+    id: 2,
+    title: "Advertisements",
+    highlighted: false,
+    icon: "ads.png",
+    titleLink:"addAds",
+    link: "/loginGuest"
+  },
+  {
+    id: 3,
+    title: "careers",
+    highlighted: true,
+    titleLink:"more careers",
+    icon: "jobs.png",
+    link: "/careers"
+  }
+];
 
-const Image = styled("img")({
-  width: "100%",
-  borderRadius: "10px",
-  height: "100%",
-  objectFit: "cover",
-});
+const FeaturesSection = () => {
+  const { t } = useTranslation();
 
-
-
-export default function HomeImages() {
   return (
-    <Box sx={{ backgroundColor: "#5bc0f80d" }}>
-      <Container sx={{ paddingY: "40px" }}>
-        <Grid container spacing={2}>
-          <Grid item xs={6} spacing={2}>
-            <Box sx={{ display: "flex", columnGap: "8px" }}>
-              <Box sx={{ width: "50%" }}>
-                <Image src={image3} />
-              </Box>
-              <Box sx={{ width: "50%" }}>
-                <Image src={image2} />
-              </Box>
-            </Box>
-            <Box sx={{ marginTop: "20px", width: "100%", aspectRatio: "1.38" }}>
-              <Image src={home2} />
-            </Box>
-          </Grid>
-          <Grid item xs={6} spacing={2}>
-            <Box
+    <Box sx={{ py: 4, px: 2,mx:7 }}>
+      <Grid container spacing={3} justifyContent="center">
+        {features.map((feature) => (
+          <Grid item xs={12} sm={6} md={4} key={feature.id}>
+            <Card
               sx={{
-                marginBottom: "16px",
-                maxWidth: "100%",
-                aspectRatio: "1.37",
+                height: '100%',
+                backgroundColor: feature.highlighted ? '#800020' : 'grey.100',
+                borderRadius:5,
+                transition: '0.3s',
+                '&:hover': {
+                  boxShadow: 8,
+                },
+                textAlign: 'center',
               }}
             >
-              <Image src={home1} />
-            </Box>
-            <Box sx={{ display: "flex", columnGap: "8px" }}>
-              <Box sx={{ width: "50%" }}>
-                <Image src={image5} />
-              </Box>
-              <Box sx={{ width: "50%" }}>
-                <Image src={image4} />
-              </Box>
-            </Box>
+              <CardContent>
+                <Avatar
+                  src={feature.icon}
+                  alt={feature.title}
+                  sx={{ width: 80, height: 80, mx: 'auto', mb: 2 ,bgcolor:"#fff",p:1,borderRadius:50}}
+                  variant="rounded"
+                />
+                <Typography variant="h6" component="h3" gutterBottom sx={{color:feature.highlighted ? '#fff' : '#000',}}>
+                  {t(feature.title)}
+                </Typography>
+                <Button
+                  variant={feature.highlighted ? 'contained' : 'outlined'}
+                  color="primary"
+                  component={RouterLink}
+                  to={feature.link}
+                  onClick={() => console.log('Link clicked:', feature.link)}
+                >
+                  {t(feature.titleLink)}
+                </Button>
+              </CardContent>
+            </Card>
           </Grid>
-        </Grid>
-      </Container>
+        ))}
+      </Grid>
     </Box>
   );
-}
+};
+
+export default FeaturesSection;

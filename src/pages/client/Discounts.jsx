@@ -1,12 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import Navbar from '../../components/Navbar';
-import LinksFooter from '../../components/client/home/LinksFooter';
-import Footer from '../../components/client/home/Footer';
+
 import { Paper, Typography, styled, Container, Grid, Button, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import { useDiscounts } from "../../hooks/useDiscounts";
 
 const Image = styled("img")({
   width: "100px",
@@ -18,36 +14,23 @@ const Image = styled("img")({
   padding: "4px",
 });
 
-export default function Discounts() {
+export default function Discounts({discounts}) {
   const navigate = useNavigate();
   const lang = Cookies.get("i18next") || "en";
   const { t } = useTranslation();
-  const { data } = useDiscounts();
-  const [Discounts, setDiscounts] = useState([]);
 
-  useEffect(() => {
-    if (data?.data) setDiscounts(data.data);
-  }, [data]);
 
   return (
-    <Navbar>
-      <Container sx={{ marginTop: "120px" }}>
-        <Box sx={{ padding: "20px", marginY: "60px" }}>
-          <Typography
-            variant="h4"
-            sx={{
-              fontWeight: 700,
-              color: "#151313",
-              textAlign: "center",
-              marginBottom: "50px",
-            }}
-          >
-            {t('home_discounts')}
-          </Typography>
+      <Container >
+        <Box sx={{ padding: "20px"}}>
+            <Typography sx={{
+                    fontSize: { md: "26px", xs: "22px" }, fontWeight: "700", color: "#800020", textAlign: "center",
+                    marginBottom: "50px"
+                  }}>{t('home_discounts')}</Typography>
 
           <Grid container spacing={3} justifyContent="center">
-            {Discounts?.length > 0 &&
-              Discounts.map((item) => (
+            {discounts?.length > 0 &&
+              discounts.map((item) => (
                 <Grid item xs={12} sm={6} md={4} lg={4} key={item.id}>
                   <Paper
                     elevation={3}
@@ -127,8 +110,5 @@ export default function Discounts() {
           </Grid>
         </Box>
       </Container>
-      <LinksFooter />
-      <Footer />
-    </Navbar>
   );
 }

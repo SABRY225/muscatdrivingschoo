@@ -42,7 +42,7 @@ import { useSocialMedia } from "../hooks/useSocialMedia";
 const drawerWidth = 240;
 
 const ImageLogo = styled("img")({
-  height: "60px",
+  height: "50px",
   backgroundColor:"#fff",
   padding:"0.3rem",
   borderRadius:"50%",
@@ -334,7 +334,7 @@ function Navbar(props) {
     .map((obj) => obj.link);
 // Change Style by eng.reem.shwky
   const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: "center", minHeight: "auto" , height:"100%" , overflow: "scroll", backgroundColor: "#800000" }}>
+    <Box onClick={handleDrawerToggle} sx={{ textAlign: "center", minHeight: "auto" , height:"100%" , overflow: "scroll", backgroundColor: "#800020" }}>
     <Typography variant="h6" sx={{ my: 2 }}><ImageLogo src={logoImage} /></Typography>
       <Divider />
       <List>
@@ -501,10 +501,10 @@ function Navbar(props) {
       <Box sx={{ display: "flex" }}>
         {/* nav */}
         <AppBar component="nav" sx={{
-          background: "#e74c3c",
-          margin: "0rem",
+          background: "#800020",
+          margin: "1rem 0rem",
           padding:"0.5rem 0rem",
-          borderRadius: "0px",
+          borderRadius: "20rem",
         }}>
           <Toolbar sx={{ display: 'flex',justifyContent:"space-between",justifyItems:"center" }}>
             <IconButton
@@ -530,37 +530,10 @@ function Navbar(props) {
                   sx={{
                     gap: 1,
                     padding: "0 0.6rem",
-                    fontSize: "15px"
+                    fontSize: "17px"
                   }}
                 >
                   {t("search_for_teachers")}
-                </Box>
-              </Link>
-              <Link to="/packages">
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
-                    padding: "0 0.6rem",
-                    fontSize: "15px"
-                  }}
-                >
-                  {t("packages")}
-                </Box>
-              </Link>
-              <Link to="/lectures">
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
-                    padding: "0 0.6rem",
-                    fontSize: "15px"
-                  }}
-                >
-                  {t("Lectures")}
-
                 </Box>
               </Link>
             </Box>
@@ -598,7 +571,7 @@ function Navbar(props) {
                           border: "1px solid",
                           borderRadius: "5px",
                           padding: "6px 4px",
-                          color: "#e74c3c",
+                          color: "#800020",
                           backgroundColor: "#FFFFFF",
                         }}
                       >

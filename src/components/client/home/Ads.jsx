@@ -1,28 +1,24 @@
-import { Box, TextField, Grid, Paper, Typography, styled, Button } from '@mui/material'
+import { Box, Paper, Typography, styled } from '@mui/material'
 import React from 'react'
 import Cookies from 'js-cookie';
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from "react";
-import Loading from "../../Loading";
 import { useAds } from '../../../hooks/useAds';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import currencies from "../../../data/currencies";
-import AdvertisementSection from './AdvertisementSection';
 const Image = styled("img")({
   width: "300px",
 });
 
-export default function Ads() {
+export default function Ads({ads}) {
   const navigate = useNavigate();
   const lang = Cookies.get("i18next") || "en";
-  const [searchInput, setSearchInput] = React.useState("");
   const { t } = useTranslation();
-  const { data, isLoading } = useAds();
-  const [AdsData, setAdsData] = useState([]);
-  const [counter, setCounter] = useState(1);
+  console.log(ads);
+  
   var settingsAds = {};
   settingsAds = {
     dots: true,
@@ -59,32 +55,14 @@ export default function Ads() {
       }
     ]
   };
-
-  useEffect(() => {
-    if (data?.data) {
-      console.log(data?.data.length);
-      let counter_val = 1;
-      if (data?.data.length > 3) {
-        setCounter(3);
-        counter_val = 3;
-        console.log(counter);
-        console.log("Geater Than 3");
-      } else {
-        setCounter(1);
-      }
-      setAdsData(data.data);
-    }
-  }, [data]);
-
-
   return (
     <Box sx={{ padding: "32px 24px", marginY: "30px" }}>
-      <Typography sx={{ fontSize: { md: "26px", xs: "22px" }, fontWeight: "700", color: "#EF0D0D", textAlign: "center", marginBottom: "50px" }}>{t('home_ads')}</Typography>
+      <Typography sx={{ fontSize: { md: "26px", xs: "22px" }, fontWeight: "700", color: "#800020", textAlign: "center", marginBottom: "50px" }}>{t('home_ads')}</Typography>
 
       <div className="slider-container">
         <Slider {...settingsAds}>
-          {AdsData?.length > 0 &&
-            AdsData?.map((item, index) => {
+          {ads?.length > 0 &&
+            ads?.map((item, index) => {
               let current_currency = "";
               current_currency = currencies.find((e) => e.title == item?.currency);
 
@@ -139,7 +117,7 @@ export default function Ads() {
             )}
         </Slider>
       </div>
-      <AdvertisementSection />
+      {/* <AdvertisementSection /> */}
     </Box>
   )
 }

@@ -39,7 +39,7 @@ export default function RescourceSection() {
           sx={{
             fontSize: { md: "32px", xs: "22px" },
             fontWeight: "bold",
-            color: "#e74c3c",
+            color: "#800020",
           }}
         >
           {t("Valuable educational resources on the Muscat Driving School platform: Your tools for success.")}
@@ -71,7 +71,7 @@ export default function RescourceSection() {
                 border: "1px solid",
                 borderRadius: "5px",
                 padding: "8px 12px",
-                color: "#e74c3c",
+                color: "#800020",
                 backgroundColor: "#FFFFFF",
                 textAlign: "center",
               }}

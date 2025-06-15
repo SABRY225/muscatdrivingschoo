@@ -71,7 +71,7 @@ export default function StudentLayout({ children }) {
   };
 
   const drawer = (
-    <Paper sx={{ padding: "20px 20px 100px", width: 230,backgroundColor:"#e74c3c",borderRadius:"20rem",margin:"0 1rem" }}>
+    <Paper sx={{ padding: "20px 20px 100px", width: 230,backgroundColor:"#800020",borderRadius:"20rem",margin:"0 1rem" }}>
       <Box sx={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
         <Avatar
           src={`${process.env.REACT_APP_API_KEY}images/${student?.image}`}

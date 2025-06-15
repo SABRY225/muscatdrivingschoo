@@ -197,6 +197,7 @@ import TeacherLectureUpdate from "./components/teacher/lecture/TeacherLectureUpd
 import EditPackage from "./pages/teacher/EditPackage.jsx";
 import EditExam from "./pages/teacher/EditExam.jsx";
 import EditDiscount from "./components/teacher/discounts/UpdateDicount.jsx";
+import SearchTest from "./test/searchTest";
 
 const theme = createTheme({
   direction: "rtl",
@@ -263,7 +264,8 @@ function App() {
           <Routes>
             {/** client pages */}
             <Route path="/" element={<Home />} />
-            <Route path="/landing" element={<Landing />} />
+            {/* <Route path="/searchtest" element={<SearchTest />} /> */}
+            <Route path="/landing" element={<SearchTest />} />
             <Route path="teachers/search" element={<SearchTeachers />} />
             <Route path="teacher/:id" element={<SingleTeacher />} />
             <Route path="course/:id" element={<SingleCourse />} />
@@ -283,7 +285,6 @@ function App() {
             <Route path="news-details/:id" element={<SingleNews />} />
 
             <Route path="map-browser" element={student ? <MapBrowser /> : <Navigate to="/" />} />
-            <Route path="advertisement" element={<UnderDevelopment />} />
             <Route path="ractiveSystemInfo" element={<InteractiveSystemInfo />} />
             <Route path="resource" element={<UnderDevelopment />} />
             <Route path="exames" element={<Test />} />

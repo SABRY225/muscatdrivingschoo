@@ -106,7 +106,7 @@ const topics = [
 
         <Grid container spacing={2} style={{marginTop: "78px",}}>
           <Grid item xs={12} lg={3} sx={{ display: { md: "block", xs: "none" },}}>
-            <Paper sx={{ padding: "20px 20px 100px", width: 230,backgroundColor:"#e74c3c",borderRadius:"0rem",margin:"0rem" }}>
+            <Paper sx={{ padding: "20px 20px 100px", width: 230,backgroundColor:"#800020",borderRadius:"0rem",margin:"0rem" }}>
              <Box sx={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
                 <Avatar
                   src={`${process.env.REACT_APP_API_KEY}images/${teacher?.image}`}

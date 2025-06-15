@@ -40,7 +40,7 @@ export default function InteractiveSystemInfoSection() {
             marginTop: "10px",
             fontSize: { md: "32px", xs: "22px" },
             fontWeight: "bold",
-            color: "#e74c3c",
+            color: "#800020",
           }}
         >
           {t("Points and rewards system on the Muscat Driving School platform")}
@@ -72,7 +72,7 @@ export default function InteractiveSystemInfoSection() {
                 border: "1px solid",
                 borderRadius: "5px",
                 padding: "8px 12px",
-                color: "#e74c3c",
+                color: "#800020",
                 backgroundColor: "#FFFFFF",
                 textAlign: "center",
               }}

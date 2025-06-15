@@ -44,7 +44,7 @@ export default function HomeWorks() {
             <div className='contain_title'>
       
       </div>
-                <Typography sx={{fontSize:{md:"26px",xs:"22px"},fontWeight:"700",color:"#e74c3c",textAlign:"center",
+                <Typography sx={{fontSize:{md:"26px",xs:"22px"},fontWeight:"700",color:"#800020",textAlign:"center",
                 marginBottom:"50px"}}>{t('websiteWork')}</Typography>
                 {
                     data.map((item,index)=>
@@ -53,8 +53,8 @@ export default function HomeWorks() {
                             <Grid container spacing={2} key={index+'m1'} sx={{marginBottom:{md:"12px",xs:"30px"}}}>
                                 <Grid item xs={10} sm={6} md={4} lg={3} sx={{margin:"auto"}}><Image src={item.image}/></Grid>
                                 <Grid item xs={12} md={8} lg={9} sx={{textAlign:{xs:"center",md:"start"}}}>
-                                    <Typography sx={{fontSize:"28px",color:"#e74c3c",fontWeight:"700"}}>0{index+1}</Typography>
-                                    <Typography sx={{color:"#e74c3c",fontWeight:"500",marginBottom:"10px"}}>{item.title}</Typography>
+                                    <Typography sx={{fontSize:"28px",color:"#800020",fontWeight:"700"}}>0{index+1}</Typography>
+                                    <Typography sx={{color:"#800020",fontWeight:"500",marginBottom:"10px"}}>{item.title}</Typography>
                                     <Typography sx={{fontSize:"14px",color:"#6D6D6D",width:{md:"80%",xs:"100%"}}}>{item.description}</Typography>
                                 </Grid>
                             </Grid>
@@ -62,7 +62,7 @@ export default function HomeWorks() {
                     })
                 }
                 <Box sx={{display:"flex",justifyContent:"center"}}>
-                    <Button variant="contained" sx={{backgroundColor:"#e74c3c"}} onClick={()=>navigate('/teacherRegister/step1')}>{t('becometeacher')}</Button>
+                    <Button variant="contained" sx={{backgroundColor:"#800020"}} onClick={()=>navigate('/teacherRegister/step1')}>{t('becometeacher')}</Button>
                 </Box>
             </Container>
         </Box>

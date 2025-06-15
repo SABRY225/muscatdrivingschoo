@@ -31,7 +31,7 @@ function Test() {
         <Box sx={{
           fontSize: '2rem',
           fontWeight: 'bold',
-          color: '#e74c3c',
+          color: '#800020',
         }}>
           {t("Educational tests on the Muscat driving platform for cars learn, valid your progress and develop your skills")}
         </Box>
@@ -91,7 +91,7 @@ function Test() {
                           borderRadius: "5px",
                           padding: "8px 12px",
                           color: "#FFF",
-                          backgroundColor: "#e74c3c",
+                          backgroundColor: "#800020",
                           textAlign: "center",
                         }}
                       >

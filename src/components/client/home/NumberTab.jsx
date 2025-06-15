@@ -26,7 +26,7 @@ function NumberTab() {
             <Grid container spacing={2} sx={{ padding: 2 }}>
                 <Grid item xs={12} sm={6} md={4} lg={6}>
                     <Card sx={{
-                        textAlign: "center", boxShadow: 3, borderRadius: "20px", background: "#e74c3c", display: "flex",
+                        textAlign: "center", boxShadow: 3, borderRadius: "20px", background: "#800020", display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
                     }}>
@@ -54,7 +54,7 @@ function NumberTab() {
                 </Grid>
                 <Grid item xs={12} sm={6} md={4} lg={6}>
                     <Card sx={{
-                        textAlign: "center", boxShadow: 3, borderRadius: "20px", background: "#e74c3c", display: "flex",
+                        textAlign: "center", boxShadow: 3, borderRadius: "20px", background: "#800020", display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
                     }}>
@@ -82,7 +82,7 @@ function NumberTab() {
                 </Grid>
                 <Grid item xs={12} sm={6} md={4} lg={6}>
                     <Card sx={{
-                        textAlign: "center", boxShadow: 3, borderRadius: "20px", background: "#e74c3c", display: "flex",
+                        textAlign: "center", boxShadow: 3, borderRadius: "20px", background: "#800020", display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
                     }}>
@@ -110,7 +110,7 @@ function NumberTab() {
                 </Grid>
                 <Grid item xs={12} sm={6} md={4} lg={6}>
                     <Card sx={{
-                        textAlign: "center", boxShadow: 3, borderRadius: "20px", background: "#e74c3c", display: "flex",
+                        textAlign: "center", boxShadow: 3, borderRadius: "20px", background: "#800020", display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
                     }}>

@@ -24,7 +24,7 @@ i18n
   .use(HttpApi)
   .init({
     supportedLngs: ["ar", "en"],
-    fallbackLng: "ar", // ← اللغة الافتراضية العربية
+    fallbackLng: "en", // ← اللغة الافتراضية العربية
     detection: {
       order: ["cookie"], // ← الكشف فقط من الكوكي
       caches: ["cookie"], // ← حفظ اللغة في الكوكي

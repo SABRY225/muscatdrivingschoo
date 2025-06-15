@@ -14,19 +14,12 @@ const Image = styled("img")({
     width: "300px",
 });
 
-export default function HomeLecture() {
+export default function HomeLecture({lectures}) {
     const navigate                  = useNavigate();
     const lang                      = Cookies.get("i18next") || "en";
     const [searchInput, setSearchInput] = React.useState("");
     const {t}                       = useTranslation();
-    const {data , isLoading}        = useLectures();
-    const [Lectures, setLectures]   = useState([]);
-    useEffect(() => {
-        if (data?.data) {
 
-            setLectures(data.data);
-        }
-      }, [data]);
 
     var settings = {
         dots: true,
@@ -69,19 +62,13 @@ export default function HomeLecture() {
   <div className='contain_title'>
       
       </div>
-          <Typography sx={{fontSize:{md:"26px",xs:"22px"},fontWeight:"700",color:"#151313",textAlign:"center",
+          <Typography sx={{fontSize:{md:"26px",xs:"22px"},fontWeight:"700",color:"#800020",textAlign:"center",
                 marginBottom:"10px"}}>{t('home_lectures')}</Typography>
-    <div className='contain_textbox_search'>
-      <TextField
-          sx={{ m: 1 ,width: "100%", borderRadius:"15px !important" }}
-          label={t("search")} variant="outlined" value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-      />
-    </div>
+
     <div className="slider-container">
       <Slider {...settings}>
-        {   Lectures?.length > 0 &&
-            Lectures?.map((item,index) =>
+        {   lectures?.length > 0 &&
+            lectures?.map((item,index) =>
             {
                 return(
                 <>
@@ -99,7 +86,7 @@ export default function HomeLecture() {
                         sx={{ width: "100%", height: "200px", objectFit:"cover" , borderRadius:"20px"}}
                         />
                         <Typography sx={{
-                            width:"90%",display:"block",fontWeight: "700", fontSize:   "16px",minHeight:  "auto",
+                            width:"100%",display:"block",fontWeight: "700", fontSize:   "16px",minHeight:  "auto",
                             margin:"20px auto 10px", textAlign:  "left !important",color:"#212121"
                         }}
                         >
@@ -107,10 +94,9 @@ export default function HomeLecture() {
                         <br />
 
                         </Typography>
-                        <p style={{ minHeight:"85px" , width:"90%", fontSize: "14px" , color:"#888" , textAlign:  "center" , margin:"auto"}}>
-                        {lang==="ar"?item?.descriptionAr:item?.descriptionEn}
-
-                        </p>
+                              <p style={{ width: "100%", fontSize: "14px", color: "#888", textAlign: "right !important" }}>
+                            {(lang === "ar" ? item?.descriptionAr : item?.descriptionEn)?.slice(0, 30)}...
+                          </p>
                         </a>
                         <a className='btndetails'
                         onClick={() => navigate(`/course/${item.id}`)}

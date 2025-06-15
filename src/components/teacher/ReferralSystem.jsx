@@ -141,7 +141,7 @@ const ReferralSystem = () => {
                 <Box sx={{ marginBottom: "18px", display: "flex", width: "100%", gap: "16px" }}>
                   <Box sx={{
                     flex:1,
-                    background: "#e74c3c", color: "#fff", textAlign: "center",
+                    background: "#800020", color: "#fff", textAlign: "center",
                     borderRadius: "8px", padding: 4, width: "45%"
                   }}>
                     <Typography variant="h6" fontWeight="bold">{data.amountPoints}</Typography>

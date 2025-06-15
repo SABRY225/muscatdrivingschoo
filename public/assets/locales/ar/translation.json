@@ -6,6 +6,7 @@
   "curriculumstoLevel": "إلحاق المنهج للمرحلة",
   "subjects": "المواد",
   "categories": "أنواع التدريب",
+  "Choose the type of training": "أختار نوع التدريب",
   "teachersapprove": "قبول المدربين",
   "changepassword": "تغيير كلمة المرور",
   "totalstudents": "الطلاب",
@@ -632,6 +633,8 @@
   "view_career"                       : "جميع الوظائف",
   "add_career"                        : "اضافه وظيفه جديد",
   "careers"                           : "الوظائف",
+  "more careers"                      : "تصفح الوظائف",
+  "Getting to know the system"        : "التعرف علي النظام",
   "advertiserName"                    : "اسم المعلن",
   "advertiserPhone"                   : "هاتف المعلن",
   "choose_career_department"          : "اختار القسم",
@@ -791,7 +794,7 @@
   "Muscat Driving School provides a platform for posting and viewing advertisements for driving instruction services in the Sultanate of Oman. Whether you're a professional instructor offering driving lessons or looking for an instructor near you, you can now easily list your services or browse available advertisements. The platform allows instructors to control their time and income, and allows learners to choose the right instructor based on location and skill.":"يوفر لك موقع مسقط  قيادة لتعليم السيارات منصة لنشر ومشاهدة الإعلانات الخاصة بخدمات تعليم القيادة في سلطنة عمان. سواء كنت مدربًا محترفًا ترغب في تقديم دروس قيادة، أو تبحث عن مدرب قريب منك، يمكنك الآن عرض خدماتك أو تصفح الإعلانات المتاحة بكل سهولة. المنصة تتيح للمدربين التحكم بوقتهم ودخلهم، وللمتعلمين اختيار المدرب المناسب حسب الموقع والمهارة.",
   "Advertisements":"الاعلانات",
   "Add Ad Here":"أضيف اعلانك هنا ",
-  "Points and rewards system on the Muscat Driving School platform":"نظام النقاط والمكافآت في منصة مسقط لتعليم قيادة السيارات",
+  "Points And Rewards":"نظام النقاط والمكافآت",
   "Learn more about the system":"تعرف اكثر علي النظام",
   "Offers and discounts on the Muscat Driving School platform: Take advantage now!":"عروض وخصومات على منصة مسقط لتعليم قيادة السيارات : استفد الآن!",
   "The Muscat Driving School platform offers you the best deals and discounts on services. Whether you're looking for discounts on training courses or educational tools, you'll find special offers here to help you save money and achieve your educational goals. Don't miss out! Check out the current discounts to start taking advantage!":"منصة مسقط لتعليم قيادة السيارات  تقدم لك أفضل العروض والخصومات على الخدمات . سواء كنت تبحث عن خصومات علي الدورات التدريبية، أو الأدوات التعليمية، ستجد هنا العروض المميزة التي تساعدك على توفير المال وتحقيق أهدافك التعليمية. لا تفوت الفرصة، وتحقق من الخصومات الحالية لتبدأ في الاستفادة!",
@@ -957,6 +960,14 @@
   "Know the details":"اعرف التفاصيل",
   "Invitation link":"رابط دعوة",
   "Edit Lecture":"تعديل المحاضرة",
-  "Points and invitations system":" نظام النقاط والدعوات"
-
+  "Points and invitations system":" نظام النقاط والدعوات",
+  "Let's start looking for a coach.":"لنبدأ البحث عن المدرب",
+  "Topics":"المواضيع",
+  "Specialization":"التخصص",
+  "education system":"نظام التعليم",
+  "Academic stage":"المرحلة الدراسية",
+  "Choose your academic level":"اختر المرحلة الدراسية",
+  "Next":"التالي",
+  "Choose a major":"اختر التخصص",
+  "Choose a training method":"اختر منهج تدريبي"
 }

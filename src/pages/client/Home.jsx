@@ -21,30 +21,40 @@ import InteractiveSystemInfoSection from "./InteractiveSystemInfoSection";
 import DiscountSection from "./DiscountSection";
 import RescourceSection from "./RescourceSection";
 import ExamSection from "./ExameSection";
+import FeaturesSection from "../../components/client/home/HomeImages";
+import { useDataHome } from "../../hooks/useDataHome";
+import HomeExam from "./ExameSection";
+import Discounts from "./Discounts";
 
 export default function Home() {
   const { student } = useSelector((state) => state.student);
+  const { data } = useDataHome();
+
+  const {
+    lectures = [],
+    packages = [],
+    exams = [],
+    discounts = [],
+    advertisements = [],
+    news = [],
+  } = data || {};
+  console.log(exams);
+  
   return (
     <Navbar>
       {student && student.lat && student.long && <MapBrowsing />}
-      <HomeBanner     />
-      <HomeAds       />
-      <HomeNews      />
-
-      {/* <HomeImages     /> */}
-      {/* <HomeAbout      /> */}
-      {/* <Teachers       /> */}
-      {/* <HomeDiscounts /> */}
-      {/* <HomeComment   /> */}
-      {/* <HomePackage   /> */}
-      {/* <HomeLecture   /> */}
-      <InteractiveSystemInfoSection />
-      <DiscountSection />
-      {/* <RescourceSection /> */}
-      <ExamSection />
+      <HomeBanner />
+      <FeaturesSection />
+      {lectures.length > 0 && <HomeLecture lectures={lectures} />}
+      {packages.length > 0 && <HomePackage packages={packages} />}
+      {exams.length > 0 && <HomeExam exams={exams} />}
+      {discounts.length > 0 && <Discounts discounts={discounts} />}
+      {advertisements.length > 0 && <HomeAds ads={advertisements} />}
+      {news.length > 0 && <HomeNews news={news} />}
 
 
-      <HomeWorks      />
+      {/* باقي الأقسام */}
+      <HomeWorks />
       <HomeQuestions />
       <DownloadApp />
       <LinksFooter />
@@ -52,3 +62,4 @@ export default function Home() {
     </Navbar>
   );
 }
+

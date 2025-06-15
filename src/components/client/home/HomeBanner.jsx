@@ -1,6 +1,5 @@
 import { Box, Button, styled, Typography } from "@mui/material";
 import React from "react";
-import cover from "../../../images/Rectangle7.png";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import NumberTab from "./NumberTab";
@@ -8,10 +7,6 @@ import whatsapp from "../../../images/whatsapp.png";
 import email from "../../../images/email.png";
 
 const Wrapper = styled(Box)(({ theme }) => ({
-  backgroundImage: `
-    linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
-    url('https://www.shutterstock.com/image-photo/waving-oman-flag-against-sunrise-600nw-2514550935.jpg')
-  `,
   backgroundPosition: "top",
   backgroundRepeat: "no-repeat",
   backgroundSize: "cover",
@@ -27,35 +22,41 @@ const Wrapper = styled(Box)(({ theme }) => ({
     flexDirection: "column",
     height: "auto",
     padding: "30px 10px",
-    gap: "20px",
+    gap: "30px",
   },
 }));
-
 
 export default function HomeBanner() {
   const { t } = useTranslation();
 
   return (
     <Wrapper>
-      <Box sx={{ mt: { md: "5rem", xs: "5rem" }, textAlign: "center" }}>
+      <Box
+        sx={{
+          mt: { md: "5rem", xs: "5rem" },
+          textAlign: "center",
+          maxWidth: "600px",
+          width: "100%",
+          px: 2,
+        }}
+      >
         <Typography
           sx={{
-            marginBottom: "8px",
-            fontSize: { md: "30px", xs: "22px" },
+            marginBottom: "12px",
+            fontSize: { md: "30px", xs: "20px" },
             fontWeight: "bold",
-            width:"510px",
-            color: "#fff",
+            color: "#800020",
           }}
         >
           {t("bannerTitle")}
         </Typography>
+
         <Typography
           sx={{
-            fontSize: { lg: "18px", md: "16px", xs: "14px" },
+            fontSize: { md: "16px", xs: "14px" },
             fontWeight: "400",
-            maxWidth: "480px",
-            paddingX: "10px",
-            color: "#fff",
+            color: "#000",
+            mb: 2,
           }}
         >
           {t("bannerDesc")}
@@ -65,12 +66,10 @@ export default function HomeBanner() {
           sx={{
             fontSize: { lg: "18px", md: "16px", xs: "14px" },
             fontWeight: "300",
-            maxWidth: "480px",
-            marginTop: "2rem",
-            paddingX: "10px",
+            mt: "1.5rem",
             color: "#fff",
             display: "flex",
-            flexDirection: { xs: "row", sm: "row" }, // ترتيب عمودي في الهواتف
+            flexDirection: { md: "row", xs: "column" },
             alignItems: "center",
             justifyContent: "center",
             gap: "16px",
@@ -88,7 +87,7 @@ export default function HomeBanner() {
               <Typography
                 sx={{
                   fontSize: { md: "20px", xs: "16px" },
-                  color: "#fff",
+                  color: "#800020",
                   fontWeight: "700",
                 }}
               >
@@ -113,7 +112,7 @@ export default function HomeBanner() {
               <Typography
                 sx={{
                   fontSize: { md: "20px", xs: "16px" },
-                  color: "#fff",
+                  color: "#800020",
                   fontWeight: "700",
                 }}
               >
@@ -125,7 +124,7 @@ export default function HomeBanner() {
         </Box>
       </Box>
 
-      <Box>
+      <Box sx={{ px: 2, width: { xs: "100%", md: "auto" } }}>
         <NumberTab />
       </Box>
     </Wrapper>

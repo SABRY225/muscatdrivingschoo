@@ -143,7 +143,7 @@ export default function TeacherLectureAdd({ handleClose }) {
             );
 
             enqueueSnackbar(t("A new lecture has been created."), { variant: "success", autoHideDuration: 8000 });
-            navigate("/teacher/lectures")
+            window.location.reload()
         } catch (err) {
             enqueueSnackbar(t("Something went wrong"), { variant: "error", autoHideDuration: 8000 });
         }

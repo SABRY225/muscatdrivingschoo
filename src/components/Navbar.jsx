@@ -12,10 +12,9 @@ import ListItemText from "@mui/material/ListItemText";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import { Link, useNavigate } from "react-router-dom";
 import ChangeLanguage from "./reusableUi/ChangeLanguage";
-import {Badge,Button,ListItemIcon,Menu,MenuItem,Stack,styled,} from "@mui/material";
+import {Badge,Button,Stack,styled,} from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutTeacher }  from "../redux/teacherSlice";
@@ -26,18 +25,16 @@ import SelectCurrency     from "./reusableUi/SelectCurrency";
 import logoImage from "../images/logo1.png";
 import cookies from "js-cookie";
 import PersonIcon from "@mui/icons-material/Person";
-import SearchIcon from "@mui/icons-material/Search";
 import EmailIcon from "@mui/icons-material/Email";
 import CastForEducationIcon from "@mui/icons-material/CastForEducation";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import LogoutIcon from "@mui/icons-material/Logout";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import Groups2Icon from "@mui/icons-material/Groups2";
-import call from "../images/callsvg.svg";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../firebase";
-import { useSocialMedia } from "../hooks/useSocialMedia";
+import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
+import axios from "axios";
 
 const drawerWidth = 240;
 
@@ -57,10 +54,6 @@ const ImageLogo = styled("img")({
   objectPosition: "bottom",
 });
 
-const ImageCall = styled("img")({
-  width: "18px",
-  height: "18px",
-});
 
 function Navbar(props) {
   const { t } = useTranslation();
@@ -245,70 +238,45 @@ function Navbar(props) {
       return () => unsubscribe();
     }
   }, [teacher, student]);
+  const [notSeenStudent, setNotSeenStudent] = React.useState(0);
+
+  React.useEffect(() => {
+    const fetchUnreadCount = async () => {
+      try {
+        if (student) {
+          const response = await axios.get(
+            `${process.env.REACT_APP_API_KEY}api/v1/notification/unread-count/${student?.id}`
+          );
+          const unreadCount = response.data.unreadCount || 0;
+          setNotSeenStudent(unreadCount);
+        }
+      } catch (error) {
+        console.error("Failed to fetch unread notifications count:", error);
+      }
+    };
+
+    fetchUnreadCount();
+
+    // تحديث العدد كل 5 ثواني
+    const interval = setInterval(fetchUnreadCount, 5000);
+
+    return () => clearInterval(interval); // تنظيف التوقيت عند إلغاء الكمبوننت
+  }, [student]); // فقط اعتماد على `student` لأنه اللي هيتغير
 
   const container =
     window !== undefined ? () => window().document.body : undefined;
 
-  /** teacher profile links */
-  const teacherProfile = [
-    {title: t("profile"),      link: "/about",    icon: <ManageAccountsIcon fontSize="small" />,  },
-    {title: t("lessons"),      link: "/lessons",  icon: <CastForEducationIcon fontSize="small" />,},
-    {title: t("my_students"),  link: "/students", icon: <Groups2Icon fontSize="small" />,},
-    {
-      title: t("messages"),
-      link: "/messages",
-      icon: <EmailIcon fontSize="small" />,
-    },
-    {
-      title: t("credit"),
-      link: "/credit",
-      icon: <CreditCardIcon fontSize="small" />,
-    },
-  ];
+
   const teacherProfileMobile = [
-    { title: t("profile"),      link: "/about",    icon: <ManageAccountsIcon fontSize="small" />,  },
+    { title: t("controlBoard"),      link: "/dashboard",    icon: <SpaceDashboardIcon fontSize="small" />,  },
     { title: t("lessons"),      link: "/sessions",  icon: <CastForEducationIcon fontSize="small" />,},
-    { title: t("view_teacher_lesson"),    link: "/lessons" },
-    { title: t("my_students"),  link: "/students", icon: <Groups2Icon fontSize="small" />,},
     { title: t("messages"),     link: "/messages", icon: <EmailIcon fontSize="small" />,},
-    { title: t("credit"),       link: "/credit",   icon: <CreditCardIcon fontSize="small" />,},
-    { title: t("profile_photo"),         link: "/photo",   icon: <CreditCardIcon fontSize="small" />,},
-    { title: t("additionalInformation"), link: "/additionalInformation" },
-    { title: t("subjects"),                link: "/subjects" },
-    { title: t("resume"),                 link: "/resume" },
-    { title: t("availability"),           link: "/availability" },
-    { title: t("description"),            link: "/description" },
-    { title: t("video"),                  link: "/video" },
-    { title: t("setting_changepassword"), link: "/changepassword" },
-    { title: t("students"),               link: "/students" },
-    { title: t("certification"),          link: "/certificates" },
     { title: t("lectures"),               link: "/lectures" },
     { title: t("quesiton"),               link: "/question" },
     { title: t("quesiton_choose"),        link: "/question-choose" },
     { title: t("package"),                link: "/package" },
     { title: t("tests"),                  link: "/tests" },
     { title: t("discounts"),              link: "/discounts" },
-    { title: t("refunds"),                link: "/refunds" },
-    { title: t("setting_page"),           link: "/settings" },
-  ];
-
-  const studentProfileMobile = [
-    { title: t("profile"),            link: "/profile" },
-    { title: t("profile_photo"),      link: "/profile_photo" },
-    { title: t("lessons"),            link: "/lessons" },
-    { title: t("my_teachers"),        link: "/teachers" },
-    { title: t("setting_parent"),     link: "/parents" },
-    { title: t("setting_changepassword"), link: "/changepassword" },
-    { title: t("messages"),           link: "/messages" },
-    { title: t("credit"),             link: "/credit" },
-    { title: t("payment_history"),    link: "/payment-history" },
-    { title: t("paymentOperations"),  link: "/financial-records" },
-    { title: t("refunds"),            link: "/refunds" },
-    { title: t("tests"),              link: "/tests" },
-    { title: t("lectures"),           link: "/lectures" },
-    { title: t("packages"),           link: "/packages" },
-    { title: t("discounts"),           link: "/discounts" },
-    { title: t("setting_page"),           link: "/settings" },
   ];
 
   const parentProfileMobile = [
@@ -324,14 +292,8 @@ function Navbar(props) {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  const { data } = useSocialMedia();
-  const links = data?.data;
-  const whatsAppLink = links
-    ?.filter((obj) => obj.type === "Whatsapp")
-    .map((obj) => obj.link);
+
+
 // Change Style by eng.reem.shwky
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center", minHeight: "auto" , height:"100%" , overflow: "scroll", backgroundColor: "#800020" }}>
@@ -339,28 +301,35 @@ function Navbar(props) {
       <Divider />
       <List>
         <ListItem disablePadding>
-          <ListItemButton sx={{ textAlign: "center" }}>
-            <ListItemText primary="" />
-          </ListItemButton>
         </ListItem>
-        <a target="_blank" href="mailto:info@muscatdrivingschool.com">
-          <Box sx={{display: "flex",alignItems: "center",columnGap: "4px",justifyContent: "center",color: "white", marginBottom: "12px", }}>
-            <EmailOutlinedIcon sx={{ fontSize: "15px" }} />
-            <Typography sx={{ fontSize: "14px" }}>info@muscatdrivingschool.com</Typography>
+            <Link to="/landing">
+              <ListItem
+                sx={{ color: "white", display: "flex", justifyContent: "center",}}>
+                {t("search_for_teachers")}
+              </ListItem>
+            </Link>
+        {!teacher && !parent && !student && !guest &&(
+          <Box sx={{ display: "flex", flexDirection: "column",alignItems: "center",}}>
+            <Button sx={{my: 1, color: "white",display: "block",textTransform: "capitalize",padding: "1px 18px",}}
+              variant="text" onClick={() => navigate("/login")}>
+              {t("login")}
+            </Button>
+            <Button
+              onClick={() => navigate("/teacherRegister/step1")}
+              sx={{
+                display: "block",textTransform: "capitalize",padding: "1px 13px",
+                // backgroundColor: "#ffc93c",
+                color:"#fff",
+                fontSize: "14px",height: "50px",borderRadius: "10px",
+              }}
+              variant="text"
+            >
+              {t("becometeacher")}
+            </Button>
           </Box>
-        </a>
-        <a target="_blank" href={whatsAppLink || "/"}>
-          <Box sx={{display: "flex", alignItems: "center", columnGap: "8px",justifyContent: "center",color: "white", marginBottom: "12px",}}>
-            <ImageCall src={call} />
-            <Typography sx={{ fontSize: "14px" }}>{t("call")}</Typography>
-          </Box>
-        </a>
+       )}
         <SelectCurrency />
-        <a href="/careers">
-        <Box sx={{display: "flex", alignItems: "center",columnGap: "8px",justifyContent: "center",color: "white", marginBottom: "8px", marginTop:"10px",
-              textTransform: "capitalize",padding: "1px 13px",
-              backgroundColor: "#ffc93c",color:"#FFF", width:"78%", margin:"auto",
-              fontSize: "14px",height: "50px",borderRadius: "10px",}}><Typography sx={{ fontSize: "14px" }}>{t("careers")}</Typography></Box></a>
+
         {teacher && (
           <>
             <Link to="/teacher/notifications">
@@ -389,21 +358,18 @@ function Navbar(props) {
         )}
         {student && (
           <>
+            <Link to="/student/dashboard">
+              <ListItem
+                sx={{ color: "white", display: "flex", justifyContent: "center",}}>
+                {t("controlBoard")}
+              </ListItem>
+            </Link>
             <Link to="/student/notifications">
               <ListItem
                 sx={{ color: "white", display: "flex", justifyContent: "center",}}>
                 {t("notifications")}
               </ListItem>
             </Link>
-            {studentProfileMobile.map((item, index) => {
-              return (
-                <Link to={`/student${item.link}`} key={index + "a1"}>
-                  <ListItem sx={{ color: "white", display: "flex", justifyContent: "center", }}>
-                    {item.title}
-                  </ListItem>
-                </Link>
-              );
-            })}
             <Link to="/" onClick={handleStudentLogout}>
               <ListItem sx={{ color: "white",display: "flex", justifyContent: "center",}}>{t("logout")}</ListItem>
             </Link>
@@ -464,34 +430,7 @@ function Navbar(props) {
               </Link>
             </>
         )}
-       {!teacher && !parent && !student && !guest &&(
-          <Box sx={{ display: "flex", flexDirection: "column",alignItems: "center",}}>
-            <Button sx={{my: 1, color: "white",display: "block",textTransform: "capitalize",padding: "1px 18px",}}
-              variant="text" onClick={() => navigate("/login")}>
-              {t("login")}
-            </Button>
-            <Button
-              onClick={() => navigate("/teacherRegister/step1")}
-              sx={{
-                display: "block",textTransform: "capitalize",padding: "1px 13px",
-                backgroundColor: "#ffc93c",color:"#000",
-                fontSize: "14px",height: "50px",borderRadius: "10px",
-              }}
-              variant="text"
-            >
-              {t("becometeacher")}
-            </Button>
-
-            <Button
-                  onClick={() => navigate("/guestRegister/step1")}
-                  sx={{
-                    my: 2,color: "white",display: "block",textTransform: "capitalize",padding: "1px 13px",backgroundColor: "#000",fontSize: "14px",height: "50px",borderRadius: "10px",}}
-                  variant="text"
-                >
-                  {t("addAds")}
-            </Button>
-          </Box>
-       )}
+       
       </List>
     </Box>
   );
@@ -611,7 +550,7 @@ function Navbar(props) {
                           alignItems: "center",
                           columnGap: "6px",
                         }}
-                        onClick={handleClick}
+                        onClick={() => navigate("/teacher/dashboard")}
                       >
                         <Box
                           sx={{
@@ -630,62 +569,7 @@ function Navbar(props) {
                           ? teacher?.firstName + " " + teacher?.lastName
                           : t("username")}
                       </Box>
-                      <Menu
-                        id="account-menu"
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleClose}
-                        PaperProps={{
-                          elevation: 0,
-                          sx: {
-                            overflow: "visible",
-                            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-                            mt: 1.5,
-                            "& .MuiAvatar-root": {
-                              width: 32,
-                              height: 32,
-                              ml: -0.5,
-                              mr: 1,
-                            },
-                            "&:before": {
-                              content: '""',
-                              display: "block",
-                              position: "absolute",
-                              top: 0,
-                              right: 14,
-                              width: 10,
-                              height: 10,
-                              bgcolor: "background.paper",
-                              transform: "translateY(-50%) rotate(45deg)",
-                              zIndex: 0,
-                            },
-                          },
-                        }}
-                      >
-                        {teacherProfile.map((item) => {
-                          return (
-                            <MenuItem
-                              sx={{ fontSize: "14px" }}
-                              onClick={() => {
-                                navigate(`/teacher${item.link}`);
-                                handleClose();
-                              }}
-                            >
-                              <ListItemIcon>{item.icon}</ListItemIcon>
-                              {item.title}
-                            </MenuItem>
-                          );
-                        })}
-                        <MenuItem
-                          sx={{ fontSize: "14px" }}
-                          onClick={handleTeacherLogout}
-                        >
-                          <ListItemIcon>
-                            <LogoutIcon fontSize="small" />
-                          </ListItemIcon>
-                          {t("logout")}
-                        </MenuItem>
-                      </Menu>
+                  
                     </Box>
                   </Stack>
                 )}
@@ -705,7 +589,7 @@ function Navbar(props) {
                       onClick={() => navigate("/student/notifications")}
                     >
                       <Badge 
-                      // badgeContent={notSeenStudent} 
+                      badgeContent={notSeenStudent} 
                       color="success">
                         <NotificationsIcon sx={{ fontSize: "22px" }} />
                       </Badge>
@@ -714,7 +598,7 @@ function Navbar(props) {
                       color="Blue"
                       variant="contained"
                       sx={{ mx: "8px" }}
-                      onClick={() => navigate("/student/profile")}
+                      onClick={() => navigate("/student/dashboard")}
                     >
                       {student?.name ? student.name : t("username")}
                     </Button>
@@ -747,19 +631,6 @@ function Navbar(props) {
                   columnGap: "10px",
                 }}
               >
-                {/* <Link to="/landing">
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "white",
-                  marginBottom: "12px",
-                }}
-              >
-                <SearchIcon />
-              </Box>
-            </Link> */}
                 <ChangeLanguage lang={lang} />
               </Box>
             </Box>
@@ -782,6 +653,7 @@ function Navbar(props) {
                 boxSizing: "border-box",
                 width: drawerWidth,
               },
+              
             }}
           >
             {drawer}

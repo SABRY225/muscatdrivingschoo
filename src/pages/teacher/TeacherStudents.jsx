@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { useMyStudents } from "../../hooks/useMyStudents";
 import Loading from "../../components/Loading";
 import StudentCard from "../../components/client/StudentCard";
+import TeacherLayout from "../../components/teacher/TeacherLayout";
 
 function TeacherStudents() {
   const { t } = useTranslation();
@@ -13,7 +14,7 @@ function TeacherStudents() {
   console.log(students);
   return (
     <Navbar>
-      <Container sx={{ marginY: "120px" }}>
+      <TeacherLayout>
         <Paper sx={{ padding: "40px 20px" }}>
           <Typography
             sx={{
@@ -43,7 +44,8 @@ function TeacherStudents() {
             </>
           )}
         </Paper>
-      </Container>
+      </TeacherLayout>
+
     </Navbar>
   );
 }

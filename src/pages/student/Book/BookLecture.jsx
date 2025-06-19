@@ -49,6 +49,7 @@ export default function BookLecture() {
             StudentId     : student.id,
             TeacherId     : ObjLecture?.TeacherId,
             price         : price,//.toFixed(3),
+            TeacherLectureId :lectureId,
             currency      : currency,
             typeOfPayment : data.typeofbook,
             date          : "",

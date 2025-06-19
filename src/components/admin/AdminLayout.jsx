@@ -53,6 +53,10 @@ import EmailIcon            from "@mui/icons-material/Email";
 import Inventory2Icon       from "@mui/icons-material/Inventory2";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import MoneyOffIcon         from "@mui/icons-material/AttachMoney";
+import SupportIcon from "@mui/icons-material/Support";
+import AnalyticsIcon from '@mui/icons-material/Analytics';
+import GradingIcon from '@mui/icons-material/Grading';
+
 //teachers-account-statment
 const drawerWidth = 240;
 
@@ -87,6 +91,11 @@ function AdminLayout(props) {
       link: "",
     },
     {
+      title: t("Distinctive settings on the platform"),
+      icon: AnalyticsIcon,
+      link: "/counts",
+    },
+    {
       title: t("studylevels"),
       icon: SchoolIcon,
       link: "/levels",
@@ -95,6 +104,11 @@ function AdminLayout(props) {
       title: t("trainingcategorytype"),
       icon: CategoryIcon,
       link: "/trainingcategorytypes",
+    },
+    {
+      title: t("Lesson booking requests"),
+      icon: GradingIcon,
+      link: "/request-lesson",
     },
     {
       title: t("package"),
@@ -183,6 +197,11 @@ function AdminLayout(props) {
       title: t("add_profit"),
       icon: PercentIcon,
       link: "/add-profit",
+    },
+    {
+      title: t("Complaints"),
+      icon: SupportIcon,
+      link: "/complaints",
     },
     {
       title: t("messages"),

@@ -9,20 +9,20 @@ import TableRow from "@mui/material/TableRow";
 import { Box, Button } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import Cookies from 'js-cookie';
+import Loading from "../../components/Loading";
 import { useEffect } from "react";
 import { useSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
 import DoneIcon from "@mui/icons-material/Done";
 import ClearIcon from "@mui/icons-material/Clear";
-import { useSelector } from "react-redux";
-import Loading from "../../Loading";
 
-export default function PendingLessons() {
+export default function PendingLesson() {
   const lang = Cookies.get("i18next") || "en";
   const { closeSnackbar, enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation();
   const [Lesson, setLesson] = useState([]);
-  const { teacher } = useSelector((state) => state.teacher);
   const [isLoading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const [error, setError] = useState(null);
   
   useEffect(() => {
@@ -35,7 +35,7 @@ export default function PendingLessons() {
 
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_API_KEY}api/v1/lesson/teacher/panding/${teacher.id}`,
+          `${process.env.REACT_APP_API_KEY}api/v1/lesson/panding`,
           { signal }
         );
 
@@ -65,13 +65,14 @@ export default function PendingLessons() {
 
  
   const columns = [
-    { id: "#", label: t("#"), minWidth: 50 },
+    { id: "#", label: t("#"), minWidth: 150 },
+    { id: "teacher", label: t("teacher"), minWidth: 150 },
     { id: "student", label: t("student"), minWidth: 150 },
     { id: "lessonType", label: t("lessonType"), minWidth: 150 },
     { id: "price", label: t("price"), minWidth: 150 },
-    { id: "Session number", label: t("Session number"), minWidth: 100 },
+    { id: "Session number", label: t("Session number"), minWidth: 150 },
     { id: "status", label: t("status"), minWidth: 150 },
-    { id: "actions", label: t("actions"), minWidth: 300 },
+    { id: "actions", label: t("actions"), minWidth: 150 },
   ];
 
   const [page, setPage] = React.useState(0);
@@ -87,45 +88,44 @@ export default function PendingLessons() {
   };
 
 
+  async function acceptLesson(id) {
+    closeSnackbar();
 
-async function acceptLesson(id) {
-  closeSnackbar();
-
-  try {
-    const response = await fetch(
-      `${process.env.REACT_APP_API_KEY}api/v1/lesson/accept-request/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          lang,  // إرسال اللغة في الـ body
-        }),
-      }
-    );
-
-    if (!response.ok) {
-      enqueueSnackbar(t("error"), {
-        variant: "error",
-        autoHideDuration: 8000,
-      });
-    } else {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_KEY}api/v1/lesson/accept-request/${id}`,
+        {lang},
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );    
+      console.log(response);
+      
+      if (!response.ok) {
+        enqueueSnackbar(t("error"), {
+          variant: "error",
+          autoHideDuration: 8000,
+        });
+      }else{
       enqueueSnackbar(t("The Lesson has been verified."), {
         variant: "success",
         autoHideDuration: 8000,
       });
 
       filterTeachers(id);
+
+      }
+
+    } catch (error) {
+      enqueueSnackbar(t("The Lesson has been verified."), {
+        variant: "error",
+        autoHideDuration: 8000,
+      });
     }
-
-  } catch (error) {
-    enqueueSnackbar(t("The Lesson has been verified."), {
-      variant: "error",
-      autoHideDuration: 8000,
-    });
   }
-}
-
 
   async function rejectLesson(id) {
     closeSnackbar();
@@ -206,39 +206,25 @@ async function acceptLesson(id) {
                       return (
                         <TableRow hover role="checkbox" key={row.id + "demj"}>
                           <TableCell align="center">{t(row.id)}</TableCell>
-                          <TableCell align="center">{t(row?.student?.name)}</TableCell>
+                          <TableCell align="center">{row?.teacher.firstName}{" "}{row?.teacher.lastName}</TableCell>
+                          <TableCell align="center">{t(row?.student.name)}</TableCell>
                           <TableCell align="center">{t(row?.type)}</TableCell>
-                          <TableCell align="center">{row?.price}{" "}{t(row?.currency)}</TableCell>
+                          <TableCell align="center">{row?.price}{" "}{t(row.currency)}</TableCell>
                           <TableCell align="center">{row?.period}</TableCell>
-                          {row.isVerified ? <>
-                            <TableCell align="center" >
-                              {t("Available")}
-                            </TableCell>
-                          </> : <>
                             <TableCell align="center">
-                              {t("Review")}
+                              {t(row.status)}
                             </TableCell>
-                          </>}
-                          <TableCell align="center" sx={{
-                            display:"flex",
-                            justifyContent:"space-around",
-                            gap:"1"
-                          }}>
-                            <Button
-                              variant="contained"
-                            color="success">
+                          <TableCell align="center">
+                            <Button color="success">
                               <DoneIcon 
-                              onClick={() => acceptLesson(row?.id)} 
+                              onClick={() => acceptLesson(row.id)} 
                               />
-                              {t("accept")}
                             </Button>
                             <Button
                               color="error"
-                              variant="contained"
-                              onClick={() => rejectLesson(row?.id)}
+                              onClick={() => rejectLesson(row.id)}
                             >
                               <ClearIcon />
-                              {t("reject")}
                             </Button>
                           </TableCell>
                         </TableRow>

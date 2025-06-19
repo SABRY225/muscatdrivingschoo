@@ -51,18 +51,12 @@ export default function TeacherLecturesView() {
 
   useEffect(() => {
     if (data?.data) {
+      console.log(data.data);
+      
       setLectures(data.data);
     }
   }, [data]);
   
-  /** handle open dialog */
-  const [open, setOpen] = React.useState(false);
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-console.log(Lectures);
-
   const handleDelete = async (id) => {
     closeSnackbar();
     const isConfirmed = window.confirm(t("confirm_dangerous_action"));

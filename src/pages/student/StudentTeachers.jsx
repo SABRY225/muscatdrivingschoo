@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import StudentLayout from "../../components/student/StudentLayout";
 import { Paper, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";

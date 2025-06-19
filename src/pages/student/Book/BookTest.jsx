@@ -61,6 +61,7 @@ export default function BookTest() {
             StudentId: student.id,
             TeacherId: test?.TeacherId,
             price: price,//.toFixed(3),
+            TestId:testId,
             currency: currency,
             typeOfPayment: data.typeofbook,
             date: data.date + " * " + data.time,

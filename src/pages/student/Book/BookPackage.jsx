@@ -49,6 +49,7 @@ export default function BookPackage() {
             StudentId     : student.id,
             TeacherId     : objPackage?.TeacherId,
             price         : price,//.toFixed(3),
+            PackageId     : packageId,
             currency      : currency,
             typeOfPayment : data.typeofbook,
             date          : "",

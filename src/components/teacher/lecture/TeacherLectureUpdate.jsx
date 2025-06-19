@@ -255,6 +255,58 @@ export default function TeacherLectureUpdate() {
                 )}
               </Box>
             </Box>
+                        <Box sx={{
+              display: { md: "flex", xs: "block" },
+              justifyContent: "space-around",
+              gap: "20px",
+            }}>
+
+              <Box sx={{ flex: 1, marginBottom: "18px" }}>
+                <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
+                  {t("locationAr")}
+                </InputLabel>
+                <Controller
+                  name="locationAr"
+                  control={control}
+                  render={({ field }) => <TextField {...field} fullWidth />}
+                  {...register("locationAr", {
+                    required: "title Address is required",
+                  })}
+                />
+                {errors.titleAR?.type === "required" && (
+                  <Typography
+                    color="error"
+                    role="alert"
+                    sx={{ fontSize: "13px", marginTop: "6px" }}
+                  >
+                    {t("required")}
+                  </Typography>
+                )}
+              </Box>
+
+              <Box sx={{ flex: 1, marginBottom: "18px" }}>
+                <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
+                  {t("locationEn")}
+                </InputLabel>
+                <Controller
+                  name="locationEn"
+                  control={control}
+                  render={({ field }) => <TextField {...field} fullWidth />}
+                  {...register("locationEn", {
+                    required: "title Address is required",
+                  })}
+                />
+                {errors.titleEN?.type === "required" && (
+                  <Typography
+                    color="error"
+                    role="alert"
+                    sx={{ fontSize: "13px", marginTop: "6px" }}
+                  >
+                    {t("required")}
+                  </Typography>
+                )}
+              </Box>
+            </Box>
             <Box sx={{
               display: { md: "flex", xs: "block" },
               justifyContent: "space-around",

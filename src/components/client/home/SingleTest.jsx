@@ -9,8 +9,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import SchoolIcon from "@mui/icons-material/School";
-// import AboutTest from "../../components/client/singleTeacher/AboutTest";
-// import Loading from "../../components/Loading";
+import AboutTest from "../../../components/client/singleTeacher/AboutTest";
 import Navbar from "../../Navbar";
 import Loading from "../../Loading";
 
@@ -36,8 +35,11 @@ export default function SingleTest() {
                     }
                 );
                 const res2 = await axios.get(
-                    `${process.env.REACT_APP_API_KEY}api/v1/teacher/exams/${testId}`
+                    `${process.env.REACT_APP_API_KEY}api/v1/teacher/test/${testId}`
                 );
+                console.log(res.data);
+                console.log(res2.data.data);
+                
                 setTeacherData(res.data);
                 setTestData(res2.data.data);
             } catch (error) {
@@ -55,12 +57,12 @@ export default function SingleTest() {
         navigate(`/student/messages`);
     };
 
-    const handleRequestPackage = () => {
+    const handleRequestTest = () => {
         if (!student) {
             swal({ text: t("login_as_student"), icon: "error", button: t("ok") });
             return;
         }
-        navigate(`/request-test/${id}/${testId}`);
+        navigate(`/book-test/${testId}`);
     };
    console.log(testData);
    
@@ -69,7 +71,7 @@ export default function SingleTest() {
             <Container sx={{ marginBottom: "40px", marginTop: "80px" }}>
                 {testData ?<Grid container spacing={3}>
                     <Grid item sm={12} md={12} lg={7}>
-                        {/* {testData && <AboutTest testData={testData} />} */}
+                        {testData && <AboutTest testData={testData} />}
                     </Grid>
                     <Grid item sm={12} md={12} lg={5}>
                         <Grid item md={12}>
@@ -173,14 +175,14 @@ export default function SingleTest() {
                                 </Box>
                             </Paper>
                         </Grid>
-                        {/* <Grid item md={12}>
+                        <Grid item md={12}>
                             <Paper sx={{ padding: "24px 12px", marginY: "30px" }}>
                                 {testId && (
                                     <Button
                                         variant="contained"
                                         fullWidth
                                         sx={{ textTransform: "capitalize", marginBottom: "16px" }}
-                                        onClick={handleRequestPackage}
+                                        onClick={handleRequestTest}
                                     >
                                         {t("Request Test")}
                                     </Button>
@@ -194,7 +196,7 @@ export default function SingleTest() {
                                     {t("contactTeacher")}
                                 </Button>
                             </Paper>
-                        </Grid> */}
+                        </Grid>
                     </Grid>
                 </Grid>:<Loading />}
                 

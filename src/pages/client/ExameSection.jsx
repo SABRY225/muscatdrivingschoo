@@ -1,7 +1,7 @@
 import { Box, Paper, Typography, styled } from '@mui/material'
 import React from 'react'
 import Cookies from 'js-cookie';
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -17,21 +17,23 @@ export default function HomeExam({ exams }) {
   const lang = Cookies.get("i18next") || "en";
   const { t } = useTranslation();
 
-  var settings = {
+  const slideCount = exams.length;
+
+  const settings = {
     dots: true,
-    infinite: true,
+    infinite: slideCount > 3,
     speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 3,
+    slidesToShow: slideCount >= 3 ? 3 : slideCount,
+    slidesToScroll: slideCount >= 3 ? 3 : slideCount,
     initialSlide: 0,
     rtl: true,
     responsive: [
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: 3,
-          slidesToScroll: 3,
-          infinite: true,
+          slidesToShow: slideCount >= 3 ? 3 : slideCount,
+          slidesToScroll: slideCount >= 3 ? 3 : slideCount,
+          infinite: slideCount > 3,
           dots: true
         }
       },
@@ -53,6 +55,7 @@ export default function HomeExam({ exams }) {
     ]
   };
 
+
   return (
     <>
       <Box sx={{ padding: "32px 24px", marginY: "30px" }}>
@@ -73,22 +76,28 @@ export default function HomeExam({ exams }) {
                     <div key={index}>
                       <a href={`/test/${item.id}`}>
                         <Paper sx={{
-                          padding: "0px", display: "flex", flexDirection: "column", alignItems: "center",
-                          backgroundColor: "#FFF", borderRadius: "20px", margin: "20px", textAlign: "right"
+                          padding: "0px",
+                          maxWidth: "320px",
+                          margin: "0 auto",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          backgroundColor: "#FFF",
+                          borderRadius: "20px",
+                          textAlign: "right",
+                          marginBottom: "1rem"
                         }}>
-
-
                           <Image
                             alt={lang === "ar" ? item?.titleAR : item?.titleEN}
-                            src={item?.image?`${process.env.REACT_APP_API_KEY}images/${item?.image}`: "logo.png"}
-                            sx={{ width: "100%", height: "200px", objectFit: "cover", borderRadius: "20px" }}
+                            src={item?.image ? `${process.env.REACT_APP_API_KEY}images/${item?.image}` : "logo.png"}
+                            sx={{ width: "100%", height: "200px", objectFit: "cover", borderRadius: "20px", marginBottom: "1rem" }}
                           />
 
-                          <a className='btndetails'
-                            onClick={() => navigate(`/test/${item.id}`)}
+                          <Link className='btndetails'
+                            to={`/test/${item.TeacherId}/${item.id}`}
                           >
                             {t("view")}
-                          </a>
+                          </Link>
                         </Paper>
                       </a>
                     </div>

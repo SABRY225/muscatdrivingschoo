@@ -65,7 +65,7 @@ export default function LectureRejectedView() {
     filterList(id);
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_KEY}api/v1/admin/acceptPackage/${id}`,
+        `${process.env.REACT_APP_API_KEY}api/v1/admin/acceptLecture/${id}`,
         {
           method: "POST",
           headers: {
@@ -98,7 +98,7 @@ export default function LectureRejectedView() {
     filterList(id);
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_KEY}api/v1/admin/rejectPackage/${id}`,
+        `${process.env.REACT_APP_API_KEY}api/v1/admin/rejectLecture/${id}`,
         {
           method: "POST",
           headers: {

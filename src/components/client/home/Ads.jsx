@@ -63,20 +63,6 @@ export default function Ads({ads}) {
         <Slider {...settingsAds}>
           {ads?.length > 0 &&
             ads?.map((item, index) => {
-              let current_currency = "";
-              current_currency = currencies.find((e) => e.title == item?.currency);
-
-              function __short(txt, len = 200) {
-                // get the first space after 200 charter
-                let new_txt = txt;
-                if (txt.length > len) {
-                  let ind = txt.indexOf(" ", len);
-                  new_txt = txt.slice(0, ind) + " ... ";
-                }
-                return new_txt;
-              }
-              let desc = (lang === "ar") ? item.descriptionAR : item.descriptionEN;
-              let new_desc = __short(desc, 80);
 
               return (
                 <>

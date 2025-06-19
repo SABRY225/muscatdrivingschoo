@@ -51,6 +51,7 @@ export default function BookDiscount() {
             StudentId     : student.id,
             TeacherId     : objDiscount?.TeacherId,
             price         : price,//.toFixed(3),
+            DiscountId  :discountId,
             currency      : currency,
             typeOfPayment : data.typeofbook,
             date          : "",

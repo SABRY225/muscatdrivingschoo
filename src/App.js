@@ -7,8 +7,6 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { changeCurrency } from "./redux/currency";
 import { Helmet } from "react-helmet";
 import Cookies from "js-cookie";
-import Landing from "./pages/client/Landing";
-
 import TeacherAbout from "./pages/teacher/TeacherAbout";
 import TeacherPhoto from "./pages/teacher/TeacherPhoto";
 import AdminHome from "./pages/admin/AdminHome";
@@ -198,6 +196,20 @@ import EditPackage from "./pages/teacher/EditPackage.jsx";
 import EditExam from "./pages/teacher/EditExam.jsx";
 import EditDiscount from "./components/teacher/discounts/UpdateDicount.jsx";
 import SearchTest from "./test/searchTest";
+import TechnicalSupport from "./pages/student/TechnicalSupport.jsx";
+import TeacherDashboard from "./components/teacher/TeacherDashboard.jsx";
+import StudentDashboard from "./components/student/StudentDashboard.jsx";
+import CustomerComplaints from "./pages/admin/CustomerComplaints.jsx";
+import ReplyComplaint from "./pages/admin/ReplyComplaint.jsx";
+import AdminCounts from "./pages/admin/AdminCounts.jsx";
+import StudentLesson from "./pages/student/StudentLesson.jsx";
+import PayLesson from "./pages/student/PayLesson.jsx";
+import AdminRequestLesson from "./pages/admin/AdminRequestLesson.jsx";
+import StudentPackage from "./pages/student/StudentPackage.jsx";
+import StudentLecture from "./pages/student/StudentLecture.jsx";
+import StudentQuestion from "./pages/student/StudentQuestion.jsx";
+import StudentExam from "./pages/student/StudentExam.jsx";
+import StudentDiscount from "./pages/student/StudentDiscount.jsx";
 
 const theme = createTheme({
   direction: "rtl",
@@ -288,7 +300,7 @@ function App() {
             <Route path="ractiveSystemInfo" element={<InteractiveSystemInfo />} />
             <Route path="resource" element={<UnderDevelopment />} />
             <Route path="exames" element={<Test />} />
-            <Route path="test/:testId" element={<SingleTest />} />
+            <Route path="test/:id/:testId" element={<SingleTest />} />
             <Route path="*" element={<NotFound />} />
 
             {/** login page */}
@@ -333,16 +345,21 @@ function App() {
             {/** student pages */}
             <Route path="student/profile" element={student ? <StudentProfile /> : <Navigate to="/login" />} />
             <Route path="student/referral-system" element={student ? <UnderDevelopmentStudent /> : <Navigate to="/login" />} />
-            <Route path="student/request-lesson" element={student ? <UnderDevelopmentStudent /> : <Navigate to="/login" />} />
-            <Route path="student/package" element={student ? <UnderDevelopmentStudent /> : <Navigate to="/login" />} />
-            <Route path="student/lecture" element={student ? <UnderDevelopmentStudent /> : <Navigate to="/login" />} />
-            <Route path="student/questions" element={student ? <UnderDevelopmentStudent /> : <Navigate to="/login" />} />
-            <Route path="student/exam" element={student ? <UnderDevelopmentStudent /> : <Navigate to="/login" />} />
-            <Route path="student/resource" element={student ? <UnderDevelopmentStudent /> : <Navigate to="/login" />} />
-            <Route path="student/discount" element={student ? <UnderDevelopmentStudent /> : <Navigate to="/login" />} />
-            <Route path="student/technical-support" element={student ? <UnderDevelopmentStudent /> : <Navigate to="/login" />} />
+            <Route path="student/request-lesson" element={student ? <StudentLesson /> : <Navigate to="/login" />} />
+            <Route path="student/package" element={student ? <StudentPackage /> : <Navigate to="/login" />} />
+            <Route path="student/questions" element={student ? <StudentQuestion /> : <Navigate to="/login" />} />
+            <Route path="student/exam" element={student ? <StudentExam /> : <Navigate to="/login" />} />
+            <Route path="student/discount" element={student ? <StudentDiscount /> : <Navigate to="/login" />} />
+            <Route path="student/technical-support" element={student ? <TechnicalSupport /> : <Navigate to="/login" />} />
             <Route path="student/mybills" element={student ? <UnderDevelopmentStudent /> : <Navigate to="/login" />} />
-
+             <Route
+              path="student/payLesson/:id"
+              element={student ? <PayLesson /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="student/dashboard"
+              element={student ? <StudentDashboard /> : <Navigate to="/login" />}
+            />
             <Route path="student/settings" element={student ? <StudentSettings /> : <Navigate to="/login" />} />
             <Route path="student/parents" element={student ? <StudentParent /> : <Navigate to="/login" />} />
             <Route path="student/changepassword" element={student ? <StudentChangePassword /> : <Navigate to="/login" />} />
@@ -371,7 +388,10 @@ function App() {
               path="/book-package/:packageId"
               element={student ? <BookPackage /> : <Navigate to="/login" />}
             />
-
+            <Route
+              path="/student/lecture"
+              element={student ? <StudentLecture /> : <Navigate to="/login" />}
+            />
             <Route
               path="/book-discount/:discountId"
               element={student ? <BookDiscount /> : <Navigate to="/login" />}
@@ -413,7 +433,10 @@ function App() {
               path="teacher/about"
               element={teacher ? <TeacherAbout /> : <Navigate to="/login" />}
             />
-
+            <Route
+              path="teacher/dashboard"
+              element={teacher ? <TeacherDashboard /> : <Navigate to="/login" />}
+            />
             <Route
               path="teacher/mybills"
               element={teacher ? <MyBillsTeacher /> : <Navigate to="/login" />}
@@ -562,7 +585,22 @@ function App() {
                 admin ? <AdminCurriculums /> : <Navigate to="/admin/login" />
               }
             />
-
+            <Route
+              path="admin/complaints"
+              element={
+                admin ? <CustomerComplaints /> : <Navigate to="/admin/login" />
+              }
+            />
+            <Route
+              path="admin/reply-complaint/:messageId/:studentId"
+              element={
+                admin ? <ReplyComplaint /> : <Navigate to="/admin/login" />
+              }
+            />
+            <Route
+              path="admin/counts"
+              element={admin ? <AdminCounts /> : <Navigate to="/admin" />}
+            />
             <Route
               path="admin/trainingcategorytypes"
               element={
@@ -573,8 +611,10 @@ function App() {
             <Route
               path="admin/limetype"
               element={admin ? <AdminLimeType /> : <Navigate to="/admin/login" />}
+            /><Route
+              path="admin/request-lesson"
+              element={admin ? <AdminRequestLesson /> : <Navigate to="/admin/login" />}
             />
-
             <Route
               path="admin/subjects"
               element={admin ? <Subjects /> : <Navigate to="/admin/login" />}

@@ -86,10 +86,10 @@ export default function Login() {
       localStorage.clear();
       if (resData.role === "teacher") {
         dispatch(loginTeacher({ token: resData.token, teacher: resData.data }));
-        navigate("/teacher/about");
+        navigate("/teacher/dashboard");
       } else if (resData.role === "student") {
         dispatch(loginStudent({ token: resData.token, student: resData.data }));
-        navigate("/");
+        navigate("/student/dashboard");
       } else if (resData.role === "parent") {
         dispatch(loginParent({ token: resData.token, parent: resData.data }));
         navigate("/parent");

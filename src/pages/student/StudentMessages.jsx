@@ -1,4 +1,4 @@
-import {Box,Divider,Grid,Paper, Stack,Typography,styled,} from "@mui/material";
+import {Box,Divider,  Alert,Paper, Stack,Typography,styled, useTheme,} from "@mui/material";
 import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import ContactPerson from "../../components/reusableUi/ContactPerson";
@@ -9,6 +9,7 @@ import { db } from "../../firebase";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import lgo from "../../images/messge.jpg";
+import { Link } from "react-router-dom";
 
 const Image = styled("img")({
   width: "160px",
@@ -18,6 +19,7 @@ export default function StudentMessages() {
   const [conversaition, setConversaition] = useState([]);
   const scroll = useRef();
   const { t } = useTranslation();
+  const theme = useTheme();
 
   const { student } = useSelector((state) => state.student);
 
@@ -59,6 +61,22 @@ export default function StudentMessages() {
 
   return (
     <StudentLayout>
+        <Stack spacing={2} mb={3}>
+          <Alert severity="warning" sx={{ width: '100%' }}>
+            {t("In order to maintain your rights, do not communicate with anyone outside the site")}
+          </Alert>
+          
+          <Alert severity="warning" sx={{ width: '100%' }}>
+            {t("Beware of fraud and do not transfer any amounts to the user outside the Muscat Driving Learning Platform. ")}{" "}
+            <Link to="/student/technical-support" style={{ 
+              color: theme.palette.primary.main,
+              marginLeft: theme.spacing(1),
+              textDecoration: 'none'
+            }}>
+              {t("Report any suspicious requests directly to us")}
+            </Link>
+          </Alert>
+        </Stack>
       <Stack direction={{ md: "row", xs: "column" }} gap="10px">
         <Box sx={{ width: { xs: "100%", md: "70%" } }}>
           {chatId ? (

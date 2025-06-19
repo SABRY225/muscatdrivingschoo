@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { t } from "i18next";
 import Container from "@mui/material/Container";
 import { Grid, Card, CardContent, Typography } from "@mui/material";
-// import { useCount } from "../../../hooks/useCount";
+import { useCount } from "../../../hooks/useCount";
 import student from '../../../images/student.png'
 import teacher from '../../../images/teacher.png'
 import lesson from '../../../images/lesson.png'
@@ -10,14 +10,14 @@ import lecture from '../../../images/lecture.png'
 
 
 function NumberTab() {
-    //   const { data } = useCount();
+      const { data } = useCount();
     const [dataCount, setDataCount] = useState(null); // ✅ تخزين البيانات باستخدام useState
 
-    //   useEffect(() => {
-    //     if (data?.data) {
-    //       setDataCount(data.data);
-    //     }
-    //   }, [data]);
+      useEffect(() => {
+        if (data?.data) {
+          setDataCount(data.data);
+        }
+      }, [data]);
 
     return (
         <Container sx={{
@@ -36,7 +36,7 @@ function NumberTab() {
                                 borderRadius: "50%",
                                 width: "100px",
                                 height: "100px",
-                                                                display: "flex",        
+                                display: "flex",        
                                 justifyContent: "center", 
                                 alignItems: "center",    
                                 margin: "0 auto",   

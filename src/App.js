@@ -91,8 +91,9 @@ import StudentFinancialRecords from "./pages/student/StudentFinancialRecords";
 import ForgetPassSecondStep from "./pages/auth/forgetPassword/ForgetPassSecondStep";
 import ForgetPassThirdStep from "./pages/auth/forgetPassword/ForgetPassThirdStep";
 import StudentNotifications from "./pages/student/StudentNotifications";
-
-// Developer by eng.reem.shwky@gmail.com
+import AdminGhostStudens from "./pages/admin/AdminGhostStudents.jsx";
+import AdminGhostTeachers from "./pages/admin/AdminGhostTeachers.jsx";
+import AdminGhostParents from "./pages/admin/AdminGhostParents.jsx";
 import AdminLimeType from "./pages/admin/AdminLimeType";
 import AdminTrainingCategoryTypes from "./pages/admin/AdminTrainingCategoryTypes";
 import StudentParent from "./pages/student/StudentParent";
@@ -210,6 +211,10 @@ import StudentLecture from "./pages/student/StudentLecture.jsx";
 import StudentQuestion from "./pages/student/StudentQuestion.jsx";
 import StudentExam from "./pages/student/StudentExam.jsx";
 import StudentDiscount from "./pages/student/StudentDiscount.jsx";
+import AdminBalance from "./pages/admin/AdminBalance.jsx";
+import AdminNotification from "./pages/admin/AdminNotification.jsx";
+import SendGroupMessage from "./pages/admin/SendGroupMessage.jsx";
+import StudentReferralSystem from "./pages/student/StudentReferralSystem.jsx";
 
 const theme = createTheme({
   direction: "rtl",
@@ -344,7 +349,7 @@ function App() {
             <Route path="forgetPassword/step3" element={<ForgetPassThirdStep />} />
             {/** student pages */}
             <Route path="student/profile" element={student ? <StudentProfile /> : <Navigate to="/login" />} />
-            <Route path="student/referral-system" element={student ? <UnderDevelopmentStudent /> : <Navigate to="/login" />} />
+            <Route path="student/referral-system" element={student ? <StudentReferralSystem /> : <Navigate to="/login" />} />
             <Route path="student/request-lesson" element={student ? <StudentLesson /> : <Navigate to="/login" />} />
             <Route path="student/package" element={student ? <StudentPackage /> : <Navigate to="/login" />} />
             <Route path="student/questions" element={student ? <StudentQuestion /> : <Navigate to="/login" />} />
@@ -579,6 +584,40 @@ function App() {
                 admin ? <AdminClasses /> : <Navigate to="/admin/login" />
               }
             />
+
+            <Route
+              path="admin/ghost-teachers"
+              element={
+                admin ? <AdminGhostTeachers /> : <Navigate to="/admin/login" />
+              }
+            />
+            <Route
+              path="admin/ghost-students"
+              element={
+                admin ? <AdminGhostStudens /> : <Navigate to="/admin/login" />
+              }
+            />
+            <Route
+              path="admin/ghost-parents"
+              element={
+                admin ? <AdminGhostParents /> : <Navigate to="/admin/login" />
+              }
+            />
+            <Route
+              path="admin/balance"
+              element={admin ? <AdminBalance /> : <Navigate to="/admin" />}
+            />
+            <Route
+              path="admin/notifications"
+              element={admin ? <AdminNotification /> : <Navigate to="/admin/login" />}
+            />
+            <Route
+              path="admin/send-groupmessages"
+              element={
+                admin ? <SendGroupMessage /> : <Navigate to="/admin/login" />
+              }
+            />
+
             <Route
               path="admin/curriculums"
               element={

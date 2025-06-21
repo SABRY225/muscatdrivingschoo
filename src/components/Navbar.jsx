@@ -7,8 +7,7 @@ import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
+import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -27,10 +26,7 @@ import cookies from "js-cookie";
 import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from "@mui/icons-material/Email";
 import CastForEducationIcon from "@mui/icons-material/CastForEducation";
-import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import CreditCardIcon from "@mui/icons-material/CreditCard";
-import Groups2Icon from "@mui/icons-material/Groups2";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../firebase";
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
@@ -207,61 +203,39 @@ function Navbar(props) {
     dispatch(logoutGuest());
     navigate("/loginGuest");
   }
-
-  const [notSeen, setNotSeen] = React.useState(0);
-  React.useEffect(() => {
-    if (teacher) {
-      const q = query(
-        collection(db, "Notifications"),
-        where("TeacherId", "==", `${teacher.id}`)
-      );
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        let conv = [];
-        querySnapshot.forEach((doc) => {
-          conv.push({ ...doc.data(), id: doc.id });
-        });
-        setNotSeen(conv.filter((not) => not.seen === false).length);
-      });
-      return () => unsubscribe();
-    } else if (student) {
-      const q = query(
-        collection(db, "Notifications"),
-        where("StudentId", "==", `${student.id}`)
-      );
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        let conv = [];
-        querySnapshot.forEach((doc) => {
-          conv.push({ ...doc.data(), id: doc.id });
-        });
-        setNotSeen(conv.filter((not) => not.seen === false).length);
-      });
-      return () => unsubscribe();
-    }
-  }, [teacher, student]);
+const [notSeenTeacher, setNotSeenTeacher] = React.useState(0);
   const [notSeenStudent, setNotSeenStudent] = React.useState(0);
-
+const useUnreadNotification = (user, setUserCount) => {
   React.useEffect(() => {
+    if (!user) return;
+
+    let isMounted = true;
+
     const fetchUnreadCount = async () => {
       try {
-        if (student) {
-          const response = await axios.get(
-            `${process.env.REACT_APP_API_KEY}api/v1/notification/unread-count/${student?.id}`
-          );
-          const unreadCount = response.data.unreadCount || 0;
-          setNotSeenStudent(unreadCount);
-        }
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_KEY}api/v1/notification/unread-count/${user.id}`
+        );
+        const count = response.data.unreadCount || 0;
+        if (isMounted) setUserCount(count);
       } catch (error) {
         console.error("Failed to fetch unread notifications count:", error);
       }
     };
 
     fetchUnreadCount();
+    const interval = setInterval(fetchUnreadCount, 15000); // كل 15 ثانية
 
-    // تحديث العدد كل 5 ثواني
-    const interval = setInterval(fetchUnreadCount, 5000);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, [user]);
+};
 
-    return () => clearInterval(interval); // تنظيف التوقيت عند إلغاء الكمبوننت
-  }, [student]); // فقط اعتماد على `student` لأنه اللي هيتغير
+// في الكومبوننت:
+useUnreadNotification(student, setNotSeenStudent);
+useUnreadNotification(teacher, setNotSeenTeacher);
 
   const container =
     window !== undefined ? () => window().document.body : undefined;
@@ -306,6 +280,7 @@ function Navbar(props) {
               <ListItem
                 sx={{ color: "white", display: "flex", justifyContent: "center",}}>
                 {t("search_for_teachers")}
+                <PersonSearchIcon />
               </ListItem>
             </Link>
         {!teacher && !parent && !student && !guest &&(
@@ -468,11 +443,16 @@ function Navbar(props) {
                 <Box
                   sx={{
                     gap: 1,
+                    display:"flex",
+                    justifyContent:"center",
+                    alignItems:"center",
                     padding: "0 0.6rem",
                     fontSize: "17px"
                   }}
                 >
+                  <PersonSearchIcon />
                   {t("search_for_teachers")}
+                 
                 </Box>
               </Link>
             </Box>
@@ -536,7 +516,7 @@ function Navbar(props) {
                       onClick={() => navigate("/teacher/notifications")}
                     >
                       <Badge 
-                      // badgeContent={notSeenTeacher} 
+                      badgeContent={notSeenTeacher} 
                       color="success">
                         <NotificationsIcon sx={{ fontSize: "22px" }} />
                       </Badge>

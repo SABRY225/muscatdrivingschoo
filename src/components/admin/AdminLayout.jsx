@@ -7,9 +7,9 @@ import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import { Link, useNavigate } from "react-router-dom";
 import cookies from "js-cookie";
-import { Button } from "@mui/material";
+import { Badge, Button } from "@mui/material";
 import { styled } from "@mui/material";
-import logo from "../../images/logo.png";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 import { useTranslation } from "react-i18next";
 import { adminLogout } from "../../redux/adminSlice";
 import { useDispatch } from "react-redux";
@@ -56,6 +56,10 @@ import MoneyOffIcon         from "@mui/icons-material/AttachMoney";
 import SupportIcon from "@mui/icons-material/Support";
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 import GradingIcon from '@mui/icons-material/Grading';
+import PersonOffIcon from '@mui/icons-material/PersonOff';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import axios from "axios";
+import DraftsIcon from '@mui/icons-material/Drafts';
 
 //teachers-account-statment
 const drawerWidth = 240;
@@ -94,6 +98,11 @@ function AdminLayout(props) {
       title: t("Distinctive settings on the platform"),
       icon: AnalyticsIcon,
       link: "/counts",
+    },
+        {
+      title: t("Balance"),
+      icon: MonetizationOnIcon,
+      link: "/balance",
     },
     {
       title: t("studylevels"),
@@ -256,7 +265,21 @@ function AdminLayout(props) {
       icon: MoneyIcon,
       link: "/exchange-requests",
     },
-
+    {
+      title: t("Ghost teachers"),
+      icon: PersonOffIcon,
+      link: "/ghost-teachers",
+    },
+    {
+      title: t("Ghost students"),
+      icon: PersonOffIcon,
+      link: "/ghost-students",
+    },
+    {
+      title: t("Ghost parents"),
+      icon: PersonOffIcon,
+      link: "/ghost-parents",
+    },
     {
       title: t("ads_department"),
       icon: CareetDepartmentIcon,
@@ -274,7 +297,11 @@ function AdminLayout(props) {
       icon: DiscountIcon,
       link: "/discounts",
     },
-
+    {
+      title: t("Group messages"),
+      icon: DraftsIcon,
+      link: "/send-groupmessages",
+    },
     {
       title: t("checkout_requests"),
       icon: CurrencyExchangeIcon,
@@ -318,6 +345,7 @@ function AdminLayout(props) {
     </div>
   );
 
+
   const container =
     window !== undefined ? () => window().document.body : undefined;
 
@@ -325,6 +353,32 @@ function AdminLayout(props) {
     dispatch(adminLogout());
     navigate("/admin");
   }
+  const [notSeenAdmin, setNotSeenAdmin] = React.useState(0);
+  const admin=1
+  React.useEffect(() => {
+    const fetchUnreadCount = async () => {
+      try {
+        if (admin) {
+          const response = await axios.get(
+            `${process.env.REACT_APP_API_KEY}api/v1/notification/unread-count/1`
+          );
+          console.log(response.data);
+          
+          setNotSeenAdmin(response.data.unreadCount || 0);
+        }
+      } catch (error) {
+        console.error("Failed to fetch unread notifications count:", error);
+      }
+    };
+
+    fetchUnreadCount();
+    
+    // لو حابب يحدث كل 30 ثانية مثلا
+    const interval = setInterval(fetchUnreadCount, 5000);
+
+    return () => clearInterval(interval);
+  }, [admin]);
+  console.log(notSeenAdmin);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -357,14 +411,31 @@ function AdminLayout(props) {
               >
                 <MenuIcon />
               </IconButton>
-              <Typography variant="h6" noWrap component="div">
+              {/* <Typography variant="h6" noWrap component="div">
                 <Link to="/">
                   <Image src={logo} />
                 </Link>
-              </Typography>
+              </Typography> */}
             </Box>
-            <Box>
+            <Box sx={{display:"flex"}}>
               <ChangeLanguage lang={lang} />
+              <Box
+                sx={{
+                  width: "35px",
+                  height: "35px",
+                  backgroundColor: "#fc5a5a",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: "50%",
+                  cursor: "pointer",
+                }}
+                onClick={() => navigate("/admin/notifications")}
+              >
+                <Badge badgeContent={notSeenAdmin} color="success">
+                  <NotificationsIcon sx={{ fontSize: "22px" }} />
+                </Badge>
+              </Box>
               <Button
                 variant="contained"
                 color="secondary"

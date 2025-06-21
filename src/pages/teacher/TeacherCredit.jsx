@@ -60,23 +60,7 @@ export default function TeacherCredit() {
   return (
     <Navbar>
       <Container sx={{ marginY: "120px" }}>
-        {isLoading || data.data.totalAmount - data.data.dues < 35.5 ? (
-          <Button
-            sx={{
-              textTransform: "capitalize",
-              marginBottom: "20px",
-              fontSize: "18px",
-              fontWeight: "600",
-              opacity: 0.7,
-            }}
-            variant="contained"
-            color="success"
-            title={t("lowBalance")}
-            onClick={() => alert(t("lowBalance"))}
-          >
-            {t("requestPayment")}
-          </Button>
-        ) : (
+     
           <Button
             sx={{
               textTransform: "capitalize",
@@ -90,7 +74,6 @@ export default function TeacherCredit() {
           >
             {t("requestPayment")}
           </Button>
-        )}
         {!isLoading && conversionRate ? (
           <Paper sx={{ padding: "40px 20px" }}>
             <Grid

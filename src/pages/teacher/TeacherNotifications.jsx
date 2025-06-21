@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
-import { Container, styled, Box, Typography, Paper , Button} from "@mui/material";
+import { Container, styled, Box, Typography, Paper, IconButton, Button } from "@mui/material";
 import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
-import { collection, query, onSnapshot, where, doc , updateDoc , arrayRemove , deleteDoc} from "firebase/firestore";
-import { db } from "../../firebase";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useSelector } from "react-redux";
-import { format } from "timeago.js";
-import { useSnackbar } from "notistack";
-import { useTranslation } from "react-i18next";
 import Cookies from "js-cookie";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { format } from "timeago.js";
+import { useTranslation } from "react-i18next";
 
-const Wrapper = styled(Box)({display: "flex",  columnGap: "10px",  justifyContent: "center",});
+const Wrapper = styled(Box)({
+  display: "flex",
+  columnGap: "10px",
+  justifyContent: "space-between",
+  alignItems: "center",
+});
 
 const IconWrapper = styled(Box)({
   width: "55px",
@@ -23,74 +25,77 @@ const IconWrapper = styled(Box)({
 });
 
 export default function TeacherNotifications() {
-  const { t } = useTranslation();
   const { teacher, token } = useSelector((s) => s.teacher);
   const lang = Cookies.get("i18next") || "en";
-  const [notifications, setNotifications]   = useState([]);
-  const { closeSnackbar, enqueueSnackbar }  = useSnackbar();
-  async function getAllNotifocation() {
-    const q = query(
-      collection(db, "Notifications"),
-      where("TeacherId", "==", `${teacher.id}`)
-    );
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      let conv = [];
-      querySnapshot.forEach((doc) => {
-        conv.push({ ...doc.data(), id: doc.id });
-      });
-      setNotifications(conv);
-    });
-    return () => unsubscribe();
-  }
-  useEffect(() => {
-    getAllNotifocation();
-  }, [teacher]);
+  const [notifications, setNotifications] = useState([]);
+  const { t } = useTranslation();
 
+  // Fetch Notifications
   useEffect(() => {
-    async function updateNotification() {
+    async function getNotifications() {
       try {
-        const response = await fetch(
-          `${process.env.REACT_APP_API_KEY}api/v1/teacher/updateNotification/${teacher.id}`,
+        const res = await fetch(
+          `${process.env.REACT_APP_API_KEY}api/v1/notification/${teacher.id}`,
           {
             headers: {
               Authorization: token,
               "Content-Type": "application/json",
             },
-            method: "PUT",
           }
         );
-        const resData = await response.json();
-        if (response.status !== 200 && response.status !== 201) {
-          throw new Error("failed occured");
-        }
-      } catch (err) {
-        console.log(err);
+        const data = await res.json();
+        setNotifications(data.data.notifications || []); 
+      } catch (error) {
+        console.error(error);
       }
     }
-    setTimeout(() => {
-      updateNotification();
-    }, 5000);
+    if (teacher?.id) {
+      getNotifications();
+    }
   }, [teacher, token]);
 
-  // Added by eng.reem.shwky@gmail.com
-  const handleDelete = async (itemToDelete) => {
-    console.log("Delete ID : ");
-    console.log(itemToDelete);
-    console.log(itemToDelete.id);
-
-    closeSnackbar();
-    const isConfirmed = window.confirm(t("confirm_dangerous_action"));
-    if (!isConfirmed) return;
-
-    
+  // Read notification
+  const handleReadNotification = async (id) => {
     try {
-      await deleteDoc(doc(db, "Notifications", itemToDelete?.id))
-      enqueueSnackbar( t("success_message") , { variant: "success" });
+      await fetch(
+        `${process.env.REACT_APP_API_KEY}api/v1/notification/read/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setNotifications((prev) =>
+        prev.map((not) =>
+          not.id === id ? { ...not, isRead: true } : not
+        )
+      );
     } catch (error) {
-      enqueueSnackbar(error, { variant: "error" });
+      console.error(error);
     }
-
   };
+
+  // Delete notification
+  const handleDeleteNotification = async (id) => {
+    try {
+      await fetch(
+        `${process.env.REACT_APP_API_KEY}api/v1/notification/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setNotifications((prev) => prev.filter((not) => not.id !== id));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <Navbar>
       <Container
@@ -101,12 +106,15 @@ export default function TeacherNotifications() {
         }}
         component={Paper}
       >
-        { notifications.length > 0 ?
-          notifications.map((not) => {
-            return (
-              <Wrapper sx={{ marginBottom: "35px" }} key={not.id}>
+        {notifications.length > 0 ? (
+          notifications.map((not) => (
+            <Wrapper sx={{ marginBottom: "35px" }} key={not.id}>
+              <Box sx={{ display: "flex", alignItems: "center", columnGap: "10px", flexGrow: 1 }}>
                 <IconWrapper
-                  sx={{backgroundColor: !not.seen ? "#e66b4c47" : "#40c0dc33",}}>
+                  sx={{
+                    backgroundColor: !not.isRead? "#e66b4c47" : "#40c0dc33",
+                  }}
+                >
                   <NotificationsActiveOutlinedIcon
                     sx={{
                       color: "black",
@@ -115,13 +123,16 @@ export default function TeacherNotifications() {
                     }}
                   />
                 </IconWrapper>
-                <Box sx={{ width: "90%" }}>
+                <Box>
                   <Typography
                     sx={{
                       fontSize: "15px",
                       color: "#303030",
-                      fontWeight: "400",marginBottom: "8px",}}>
-                    {lang === "en" ? not.titleEn : not.titleAR}
+                      fontWeight: "400",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    {lang === "en" ? not.messageEn : not.messageAr}
                   </Typography>
                   <Typography
                     sx={{
@@ -130,20 +141,30 @@ export default function TeacherNotifications() {
                       fontWeight: "500",
                     }}
                   >
-                    {typeof not?.date !== "undefined" && format(not?.date)}
+                    {typeof not?.createdAt !== "undefined" && new Date(not?.createdAt).toLocaleString()}
                   </Typography>
 
-                    <Button color="error"
-                            onClick={() => handleDelete(not)}>
-                      <DeleteIcon /> {t("delete")}
+                  {!not.isRead && (
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      sx={{ marginTop: "8px" }}
+                      onClick={() => handleReadNotification(not.id)}
+                    >
+                      {t("Mark as Read")}
                     </Button>
-
+                  )}
                 </Box>
-              </Wrapper>
-            );
-          }):
-          <p class="notfound">{t("notfound_notification")}</p>
-        }
+              </Box>
+
+              <IconButton onClick={() => handleDeleteNotification(not.id)}>
+                <DeleteOutlineIcon sx={{ color: "#c62828" }} />
+              </IconButton>
+            </Wrapper>
+          ))
+        ) : (
+          <>{t("There are currently no messages available")}</>
+        )}
       </Container>
     </Navbar>
   );

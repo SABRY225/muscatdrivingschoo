@@ -266,12 +266,12 @@ export default function DetailsBook() {
                         )}
                         {data?.data.F2FSessionStd && (
                           <MenuItem value={"student"}>
-                            {lang === "ar" ? "في منزل الطالب" : "Student home"}
+                            {lang === "ar" ? "في موقع الطالب" : "Student Location"}
                           </MenuItem>
                         )}
                         {data?.data.F2FSessionTeacher && (
                           <MenuItem value={"teacher"}>
-                            {lang === "ar" ? "في منزل المعلم" : "Teacher home"}
+                            {lang === "ar" ? "في موقع المدرب" : "Teacher Location"}
                           </MenuItem>
                         )}
                       </Select>

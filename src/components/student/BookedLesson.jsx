@@ -16,6 +16,7 @@ import {
 import { db } from "../../firebase";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
+import cookies from "js-cookie";
 
 export default function BookedLesson({
   image,
@@ -38,6 +39,7 @@ export default function BookedLesson({
   const [edited, setEdited] = useState(false);
   const navigate = useNavigate();
   const { closeSnackbar, enqueueSnackbar } = useSnackbar();
+  const lang = cookies.get("i18next") || "en";
 
   const [showAttend, setShowAttend] = useState(
     (isStudent && !studentAccept) || (!isStudent && !teacherAccept)
@@ -101,7 +103,7 @@ export default function BookedLesson({
               "Content-Type": "application/json",
               Authorization: student?.token,
             },
-            body: JSON.stringify({ SessionId: sessionId }),
+            body: JSON.stringify({ SessionId: sessionId,lang }),
           }
         );
         await addDoc(collection(db, "Notifications"), {
@@ -120,7 +122,7 @@ export default function BookedLesson({
               "Content-Type": "application/json",
               Authorization: teacher?.token,
             },
-            body: JSON.stringify({ SessionId: sessionId }),
+            body: JSON.stringify({ SessionId: sessionId,lang }),
           }
         );
         await addDoc(collection(db, "Notifications"), {

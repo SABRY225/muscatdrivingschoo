@@ -228,7 +228,7 @@ export default function BookTest() {
                   </Typography>
                 </Box>
                 <Typography>
-                  {parseFloat(test?.price * conversionRate).toFixed(2)} {currency}
+                  {parseFloat(test?.price * conversionRate).toFixed(2)} {t(currency)}
                 </Typography>
               </Box>
               <Box
@@ -268,7 +268,7 @@ export default function BookTest() {
                   {parseFloat(test?.price * watch("hours") * conversionRate).toFixed(
                     2
                   )}{" "}
-                  {currency}
+                  {t(currency)}
                 </Typography>
               </Box>
             </Box>

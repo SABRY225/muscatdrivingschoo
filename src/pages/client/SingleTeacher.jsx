@@ -30,30 +30,23 @@ export default function SingleTeacher() {
   const { t } = useTranslation();
   
   const navigate = useNavigate();
-  const handleCreateMessage = async () => {
+    const handleCreateMessage = async () => {
     if (!student) {
       swal({ text: t("login_as_student"), icon: "error", button: t("ok") });
       return;
     }
-    const q = query(
-      collection(db, "chats"),
-      where("studentId", "==", `${student.id}`),
-      where("teacherId", "==", `${id}`)
-    );
-    const res = await getDocs(q);
-    if (res.empty) {
-      const time = Timestamp.now();
-      await addDoc(collection(db, "chats"), {
-        messages    : [],
-        teacherId   : `${id}`,
-        studentId   : `${student.id}`,
-        studentName : student.name,
-        studentImage: student.image,
-        teacherName : `${data?.data?.firstName} ${data?.data?.lastName}`,
-        teacherImage: data?.data?.image,
-        lastmessage : time,
+    const addFrind=(async () => {
+      await fetch(`${process.env.REACT_APP_API_KEY}api/v1/chat/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user1Id: student?.id, user1Type:"student", user2Id:id, user2Type:"teacher"
+        })
       });
-    }
+    })
+    addFrind();
     navigate(`/student/messages`);
   };
 

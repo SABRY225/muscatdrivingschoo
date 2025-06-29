@@ -95,6 +95,11 @@ function AdminLayout(props) {
       link: "",
     },
     {
+      title: t("studentlist"),
+      icon: PeopleAltIcon,
+      link: "/student-new",
+    },
+    {
       title: t("Distinctive settings on the platform"),
       icon: AnalyticsIcon,
       link: "/counts",
@@ -167,7 +172,7 @@ function AdminLayout(props) {
       link: "/rate",
     },
     {
-      title: t("bookedLessons"),
+      title: t("Booking"),
       icon: BookIcon,
       link: "/booked-lessons",
     },

@@ -1,4 +1,4 @@
-import { Container, Paper, Typography } from "@mui/material";
+import { Paper, Typography } from "@mui/material";
 import Navbar from "../../components/Navbar";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
@@ -11,7 +11,6 @@ function TeacherStudents() {
   const { t } = useTranslation();
   const { teacher, token } = useSelector((state) => state.teacher);
   const students = useMyStudents(teacher.id, token);
-  console.log(students);
   return (
     <Navbar>
       <TeacherLayout>

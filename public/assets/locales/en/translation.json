@@ -713,5 +713,9 @@
   "test_booking": "Test booked",
   "dicount_booking": "Discount coupon used",
   "resource_booking": "Educational resource booked",
-  "charge_success": "Balance recharged successfully"
+  "charge_success": "Balance recharged successfully",
+    "welcome_title": "Welcome to Muscat Driving School Platform!",
+  "welcome_message": "We're happy to have you as an instructor. Our goal is to help you teach safe and confident driving.",
+  "welcome_cta": "Start setting up your profile or head to the dashboard.",
+  "start_now": "Start Now"
 }

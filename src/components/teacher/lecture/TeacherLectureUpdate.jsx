@@ -137,10 +137,10 @@ export default function TeacherLectureUpdate() {
             locationEn: lecture?.locationEn,
             price:lecture?.price,
             currency:lecture?.currency,
-            curriculums:lecture?.curriculums,
+            curriculums:lecture?.curriculums?.id,
             semester: lecture?.semester,
-            class:  lecture?.class,
-            subject:lecture?.subject,
+            class:  lecture?.class?.id,
+            subject:lecture?.subject?.id,
             linkLecture:lecture?.linkLecture,
       });
       setFileImageName(lecture.image);

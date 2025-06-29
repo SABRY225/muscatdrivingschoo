@@ -46,7 +46,7 @@ function StudentCard({ student }) {
 
   return (
     <Paper sx={{ paddingX: "24px", marginY: "20px" }}>
-      <Grid container spacing={2}>
+      <Grid container spacing={2} padding={2} alignItems={"center"}>
         <Grid item xs={12} md={6} lg={2}>
           <Avatar
             src={`${process.env.REACT_APP_API_KEY}images/${student?.image}`}
@@ -109,6 +109,14 @@ function StudentCard({ student }) {
             sx={{ marginTop: "16px", textTransform: "capitalize" }}
           >
             {t("contactStudent")}
+          </Button>
+            <Button
+            variant="outlined"
+            fullWidth
+            onClick={()=>navigate(`/teacher/${student?.name}/${student?.id}/student-evaluation`)}
+            sx={{ marginTop: "16px", textTransform: "capitalize" }}
+          >
+            {t("Student Evaluation")}
           </Button>
         </Grid>
       </Grid>

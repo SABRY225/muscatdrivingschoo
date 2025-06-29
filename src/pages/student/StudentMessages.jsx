@@ -1,63 +1,45 @@
 import {Box,Divider,  Alert,Paper, Stack,Typography,styled, useTheme,} from "@mui/material";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import ContactPerson from "../../components/reusableUi/ContactPerson";
 import Conversaition from "../../components/student/Conversaition";
 import StudentLayout from "../../components/student/StudentLayout";
-import {collection,query,onSnapshot, where, doc,orderBy,} from "firebase/firestore";
-import { db } from "../../firebase";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import lgo from "../../images/messge.jpg";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const Image = styled("img")({
-  width: "160px",
+  width: "60%",
+  maxWidth: 160,
+  height: "auto",
 });
 
 export default function StudentMessages() {
-  const [conversaition, setConversaition] = useState([]);
-  const scroll = useRef();
-  const { t } = useTranslation();
   const theme = useTheme();
-
+  const [conversation, setConversation] = useState([]);
+  const [chat, setChatId] = useState(null);
+  const { t } = useTranslation();
   const { student } = useSelector((state) => state.student);
 
   useEffect(() => {
-    const q = query(
-      collection(db, "chats"),
-      where("studentId", "==", `31`) // ${student.id}
-    );
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      let conv = [];
-      querySnapshot.forEach((doc) => {
-        conv.push({ ...doc.data(), id: doc.id });
-      });
+    const fetchFriends = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_KEY}api/v1/chat/friends/${student.id}`
+        );
+        setConversation(res?.data?.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchFriends();
+    const interval = setInterval(fetchFriends, 3000); // تحديث البيانات كل 3 ثوانٍ
 
-      console.log("All Data");
-      console.log(conv);
-
-      setConversaition(conv.sort((a, b) => b.lastmessage - a.lastmessage));
-    });
-    return () => unsubscribe();
-  }, [student.id]);
-
-  const [chatId, setChatId]     = useState(null);
-  const [messages, setMessages] = useState(null);
-
-  console.log(conversaition);
-  useEffect(() => {
-    if (chatId) {
-      const unSub = onSnapshot(doc(db, "chats", chatId), (doc) => {
-        doc.exists() && setMessages({ ...doc.data(), id: doc.id });
-      });
-      return () => {
-        unSub();
-      };
-    }
-  }, [chatId]);
-
-  console.log(messages);
+    return () => clearInterval(interval); // تنظيف التايمر عند تفكيك المكون
+  
+  },[student.id,t]);
 
   return (
     <StudentLayout>
@@ -77,54 +59,84 @@ export default function StudentMessages() {
             </Link>
           </Alert>
         </Stack>
-      <Stack direction={{ md: "row", xs: "column" }} gap="10px">
-        <Box sx={{ width: { xs: "100%", md: "70%" } }}>
-          {chatId ? (
-            <>
-              <Conversaition messages={messages} scroll={scroll} />
-            </>
-          ) : (
-            <Paper
-              sx={{
-                height: "400px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexDirection: "column",
-              }}
-            >
-              <Image src={lgo} alt="" />
-              <Typography
-                sx={{ fontWeight: 600, marginTop: "12px", fontSize: "22px" }}
-              >
-                {t("start_message")}
-              </Typography>
-            </Paper>
-          )}
-        </Box>
-        <Box sx={{ width: { xs: "100%", md: "30%" } }}>
-          <Paper sx={{ paddingY: "20px" }}>
-            <Typography sx={{ paddingX: "20px" }}>{t("messages")}</Typography>
-            <Divider sx={{ marginY: "10px" }} />
-            <Box sx={{ paddingX: "20px" }}>
-              {conversaition.length > 0 ?
-                conversaition.map((item, index) => {
-                  return (
-                    <ContactPerson
-                      item={item}
-                      key={item.id + "k1"}
-                      selectChat={() => setChatId(item.id)}
-                      lastMessage={item.messages[item.messages.length - 1]}
-                      active={item.id == chatId}
-                    />
-                  );
-                })
-              :<p class='notfound'> { t("notfound_person_message")}</p>
-              }
+      <Stack 
+          direction={{ xs: 'column', md: 'row' }} 
+          spacing={2}
+          sx={{
+            height: { md: 'calc(100vh - 240px)' },
+            minHeight: 500
+          }}
+        >
+          {/* Contacts List */}
+          <Paper sx={{ 
+            width: { xs: '100%', md: 320 },
+            flexShrink: 0,
+            display: 'flex',
+            flexDirection: 'column'
+          }}>
+            <Box sx={{ p: 2 }}>
+              <Typography variant="h6">{t("Messages")}</Typography>
+            </Box>
+            <Divider />
+            <Box sx={{ 
+              flex: 1,
+              overflowY: 'auto',
+              p: 1
+            }}>
+              {conversation.map((item) => (
+                <ContactPerson
+                  key={item.id}
+                  item={item}
+                  selectChat={() => setChatId(item)}
+                  active={item.id === chat?.id}
+                />
+              ))}
             </Box>
           </Paper>
-        </Box>
-      </Stack>
+
+          {/* Chat Container */}
+          <Paper sx={{ 
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            minWidth: 0, // Fix flexbox overflow issue
+          }}>
+            {chat ? (
+              <Conversaition chat={chat} />
+            ) : (
+              <Box
+                sx={{
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  p: 3,
+                  textAlign: 'center'
+                }}
+              >
+                <Image 
+                  src={lgo} 
+                  alt={t("Start conversation")}
+                  sx={{
+                    width: { xs: '80%', sm: '60%', md: '40%' },
+                    mb: 3
+                  }}
+                />
+                <Typography 
+                  variant="h5"
+                  sx={{
+                    fontSize: { xs: '1.2rem', sm: '1.5rem' },
+                    fontWeight: 600,
+                    color: 'text.secondary'
+                  }}
+                >
+                  {t("start_message")}
+                </Typography>
+              </Box>
+            )}
+          </Paper>
+        </Stack>
     </StudentLayout>
   );
 }

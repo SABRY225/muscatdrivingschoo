@@ -49,13 +49,25 @@ export default function SingleTest() {
         fetchTeacher();
     }, [id, testId]);
 
-    const handleCreateMessage = () => {
-        if (!student) {
-            swal({ text: t("login_as_student"), icon: "error", button: t("ok") });
-            return;
-        }
-        navigate(`/student/messages`);
-    };
+  const handleCreateMessage = async () => {
+    if (!student) {
+      swal({ text: t("login_as_student"), icon: "error", button: t("ok") });
+      return;
+    }
+    const addFrind=(async () => {
+      await fetch(`${process.env.REACT_APP_API_KEY}api/v1/chat/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user1Id: student?.id, user1Type:"student", user2Id:id, user2Type:"teacher"
+        })
+      });
+    })
+    addFrind();
+    navigate(`/student/messages`);
+  };
 
     const handleRequestTest = () => {
         if (!student) {

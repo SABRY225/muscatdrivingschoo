@@ -13,7 +13,7 @@ export default function CheckBoxCurriculum({ checked, setChecked }) {
   const { t } = useTranslation();
   const { data } = useCurriculums();
   const lang = Cookies.get("i18next") || "en";
-  const { teacher } = useSelector((state) => state.teacher);
+  const teacher  = JSON.parse(localStorage.getItem("teacher"))
 
   const handleToggle = (value) => () => {
     const currentIndex = checked.findIndex((l) => l.CurriculumId === value);
@@ -35,7 +35,7 @@ export default function CheckBoxCurriculum({ checked, setChecked }) {
       </InputLabel>
       <List
         dense
-        sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
+        sx={{ width: "100%", maxWidth: 360 }}
       >
         {data?.data.map((value) => {
           const labelId = `checkbox-list-secondary-label-${value.id + "knejd"}`;

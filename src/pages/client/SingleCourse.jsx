@@ -1,185 +1,204 @@
-import { Button, Container, Grid, Paper , styled , Typography} from "@mui/material";
-import React    , { useState , useEffect }    from "react";
-import Navbar                         from "../../components/Navbar";
-import LinksFooter                    from '../../components/client/home/LinksFooter';
-import Footer                         from '../../components/client/home/Footer';
-import { useTeacherLecture }          from "../../hooks/useTeacherLecture";
-import { useNavigate, useParams }     from "react-router-dom";
-import Loading                        from "../../components/Loading";
-import Cookies                        from 'js-cookie';
-import { useSelector }                from "react-redux";
-import {useSnackbar}                  from 'notistack'
-import { useTranslation }             from "react-i18next";
-import swal                           from "sweetalert";
-import TeacherInfoBox           from "../../components/client/TeacherInfoBox";
-
-const Label = styled("label")({
-  width: "100%",
-  display: "block",
-  padding: "6px 16px",
-  cursor: "pointer",
-});
-
-const Image = styled("img")({
-  width: "300px",
-});
+import { Avatar, Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import Navbar from "../../components/Navbar";
+import { useNavigate, useParams } from "react-router-dom";
+import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
+import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
+import swal from "sweetalert";
+import axios from "axios";
+import Cookies from "js-cookie";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import SchoolIcon from "@mui/icons-material/School";
+import AboutLecture from "../../components/client/singleTeacher/AboutLecture";
+import Loading from "../../components/Loading";
 
 export default function SingleCourse() {
-  const { id }                        = useParams();
-  const { student  , token}           = useSelector((state) => state.student);
-  const [image, setImage]             = useState(null);
-  const {data,    isLoading }         = useTeacherLecture(id);
-  const [teacher , setTeacher]        = useState("");
-  const lecture = data?.data;
-  const url_image = lecture?.image;
-  const [imageUrl, setImageUrl] = useState(lecture?.image);
+    const lang = Cookies.get("i18next") || "en";
+    const { id, lectureId } = useParams();
+    const { student } = useSelector((state) => state.student);
+    const [teacherData, setTeacherData] = useState(null);
+    const [lectureData, setLecturData] = useState([]);
+    const { t } = useTranslation();
+    const navigate = useNavigate();
+   
+    
+    useEffect(() => {
+        const fetchTeacher = async () => {
+            try {
+                const res = await axios.get(
+                    `${process.env.REACT_APP_API_KEY}api/v1/teacher/getSingleTeacher/${id}`,
+                    {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                    }
+                );
+                const res2 = await axios.get(
+                    `${process.env.REACT_APP_API_KEY}api/v1/teacher/lecture/${lectureId}`
+                );
+                console.log(res2.data);
+                
+                setTeacherData(res.data);
+                setLecturData(res2.data.data);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+        fetchTeacher();
+    }, [id, lectureId]);
 
-  const lang                  = Cookies.get("i18next") || "en";
-  const {closeSnackbar,enqueueSnackbar} = useSnackbar()
-  const { t }               = useTranslation();
-  const navigate            = useNavigate();
-
-  const handleGoTeacher = async () => {
-    navigate(`/teacher/${data?.data.TeacherId}`);
-  };
-
-  const handleRequestBook = async () => {
-    if (!student) {
-      swal({ text: t("login_as_student"), icon: "error", button: t("ok") });
-      return;
-    }
-    navigate(`/book/${data?.data.id}`);
-  };
-
-  const handleRequestBookCourse = async () => {
-    if (!student) {
-      swal({ text: t("login_as_student"), icon: "error", button: t("ok") });
-      return;
-    }
-    navigate(`/book-lecture/${data?.data.id}`);
-
-    // Codeing to book lecture
-    /*
-    closeSnackbar();
-    try {
-      const formData = new FormData();
-      formData.append("StudentId"       , student.id);
-      formData.append("TeacherLectureId", lecture?.id);
-
-      const res = await fetch(
-        `${process.env.REACT_APP_API_KEY}api/v1/student/registerLecture`,
-        {
-          method: "POST",
-          headers: { Authorization: `${token}`},
-          body:formData,
+    const handleCreateMessage = () => {
+        if (!student) {
+            swal({ text: t("login_as_student"), icon: "error", button: t("ok") });
+            return;
         }
-      );
-      if (res.ok) {
-        const json = await res.json();
-        if (lang === "en") {
-          enqueueSnackbar(json.msg.english, { variant: "success" });
-        } else {
-          enqueueSnackbar(json.msg.arabic, { variant: "success" });
+        navigate(`/student/messages`);
+    };
+
+    const handleRequestPackage = () => {
+        if (!student) {
+            swal({ text: t("login_as_student"), icon: "error", button: t("ok") });
+            return;
         }
-      } else {
-        const json = await res.json();
-        if (lang === "en") {
-          enqueueSnackbar(json.message.english, { variant: "error" });
-        } else {
-          enqueueSnackbar(json.message.arabic, { variant: "error" });
-        }
-        
-      }
-    } catch (err) {
-      enqueueSnackbar(t("somethingWentWrong"), { variant: "error" });
-    }
-    */
-    //navigate(`/coursebook/${data?.data.id}`);
-  };
+        navigate(`/book-lecture/${lectureId}`);
+    };
 
-  useEffect(() => {
-    if (!data) return;
-    const lecture = data?.data;
-    setTeacher(lecture?.Teacher);
-  }, [data]);
-
-  return (
-    <Navbar>
-      <div className="breadcrumb">
-        <ul>
-          <li><a href="/home">{t("lnk_home")}</a></li>
-          <li><a href="/lectures">{t("lnk_course")}</a></li>
-          <li><a href="javascript:void(0);">{lang==="ar"?lecture?.titleAR:lecture?.titleEN}</a></li>
-        </ul>
-      </div>
-
-      {!isLoading ? (
-        <Container sx={{ marginBottom: "40px", marginTop: "40px" }}>
-          <Grid container spacing={3}>
-            <Grid data md={12} lg={8}>
-            <Paper
-              sx={{ padding: "8px 20px", display: "flex",flexDirection: "column",
-                    alignItems: "center",margin: "10px" }}
-            >
-             
-                <Image
-                  alt={lang==="ar"?lecture?.titleAR:lecture?.titleEN}
-                  src={`${process.env.REACT_APP_API_KEY}images/${lecture?.image}`}
-                  sx={{ width: "100%", height: "100%", fontSize: "42px" }}
-                />
-
-              <Typography sx={{
-                        fontWeight: "500", marginTop:    "20px",fontSize:   "16px",
-                        minHeight:  "auto",color:"#212121", width :"100%" 
-                      }}
-                >
-                  {lang==="ar"?lecture?.titleAR:lecture?.titleEN}
-              </Typography>
-
-              
-              <Typography
-                      sx={{
-                        fontWeight: "500",  marginTop:    "10px",    fontSize:   "13px",
-                        minHeight:  "50px", color:"#888" , width :"100%"
-                      }}
-                    >
-                 {lang==="ar"?lecture?.descriptionAr:lecture?.descriptionEn}
-              </Typography>
-
-            </Paper>
-            </Grid>
-            <Grid data md={12} lg={4}>
-              <TeacherInfoBox teacher={teacher} />
-              <Paper sx={{ padding: "24px 12px", margin: "10px" }}>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  fullWidth
-                  sx={{ textTransform: "capitalize", marginBottom: "16px" }}
-                  onClick={handleRequestBookCourse}
-                >
-                  {t("requestCourseBook")}
-                </Button>
-                <Button
-                  variant="outlined"
-                  fullWidth
-                  sx={{ textTransform: "capitalize" }}
-                  onClick={handleGoTeacher}
-                >
-                  {t("contactTeacher")}
-                </Button>
-              </Paper>
-            </Grid>
-          </Grid>
-        </Container>
-      )
-    :
-    (
-      <Loading />
-    )
-    }
-      <LinksFooter/>
-      <Footer/>
-    </Navbar>
-  );
+    return (
+        <Navbar>
+            <Container sx={{ marginBottom: "40px", marginTop: "80px" }}>
+                {lectureData?<Grid container spacing={3}>
+                    <Grid item sm={12} md={12} lg={7}>
+                        {lectureData && <AboutLecture lectureData={lectureData} />}
+                    </Grid>
+                    <Grid item sm={12} md={12} lg={5}>
+                        <Grid item md={12}>
+                            <Paper sx={{ padding: "24px 12px", marginY: "30px" }}>
+                                <Box sx={{ display: "flex", columnGap: "20px" }}>
+                                    <Avatar
+                                        src={`${process.env.REACT_APP_API_KEY}images/${teacherData?.data?.image}`}
+                                        sx={{ width: "141px", height: "141px" }}
+                                    />
+                                    <Box>
+                                        <Typography
+                                            sx={{ fontSize: "20px", marginBottom: "8px", fontWeight: "700" }}
+                                        >
+                                            {teacherData?.data?.firstName} {teacherData?.data?.lastName}
+                                        </Typography>
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                columnGap: "4px",
+                                                alignItems: "center",
+                                                marginBottom: "8px",
+                                            }}
+                                        >
+                                            <SpeakerNotesIcon sx={{ fontSize: "16px", color: "#d5d5d5" }} />
+                                            <Typography
+                                                sx={{ color: "#4f4f51", fontSize: "14px", fontWeight: "bold" }}
+                                            >
+                                                {t("speaks")}: {t("English Arabic")}
+                                            </Typography>
+                                            <Typography sx={{ color: "#616161", fontSize: "14px" }}>
+                                                {lang === "ar"
+                                                    ? teacherData?.data?.LangTeachStds?.map(
+                                                          (item) => item?.Language?.titleAR + " "
+                                                      )
+                                                    : teacherData?.data?.LangTeachStds?.map(
+                                                          (item) => item?.Language?.titleEN + " "
+                                                      )}
+                                            </Typography>
+                                        </Box>
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                columnGap: "4px",
+                                                alignItems: "center",
+                                                marginBottom: "8px",
+                                            }}
+                                        >
+                                            <SpeakerNotesIcon sx={{ fontSize: "16px", color: "#d5d5d5" }} />
+                                            <Typography
+                                                sx={{ color: "#4f4f51", fontSize: "14px", fontWeight: "bold" }}
+                                            >
+                                                {t("certifiedTeacher")}:{" "}
+                                            </Typography>
+                                            <Typography sx={{ color: "#616161", fontSize: "14px" }}>
+                                                {teacherData?.data?.experienceYears} {t("yearsofexperience")}
+                                            </Typography>
+                                        </Box>
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                columnGap: "4px",
+                                                alignItems: "center",
+                                                marginBottom: "8px",
+                                            }}
+                                        >
+                                            <LocationOnIcon sx={{ fontSize: "16px", color: "#d5d5d5" }} />
+                                            <Typography
+                                                sx={{ color: "#4f4f51", fontSize: "14px", fontWeight: "bold" }}
+                                            >
+                                                {t("location")}:{" "}
+                                            </Typography>
+                                            <Typography sx={{ color: "#616161", fontSize: "14px" }}>
+                                                {teacherData?.data?.city}, {teacherData?.data?.country}
+                                            </Typography>
+                                        </Box>
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                columnGap: "4px",
+                                                alignItems: "center",
+                                                marginBottom: "8px",
+                                            }}
+                                        >
+                                            <SchoolIcon sx={{ fontSize: "16px", color: "#d5d5d5" }} />
+                                            <Typography
+                                                sx={{ color: "#4f4f51", fontSize: "14px", fontWeight: "bold" }}
+                                            >
+                                                {t("subjects")}:{" "}
+                                            </Typography>
+                                            <Typography sx={{ color: "#616161", fontSize: "14px" }}>
+                                                {lang === "ar"
+                                                    ? teacherData?.data?.TeacherSubjects?.map(
+                                                          (item) => item?.Subject?.titleAR + " "
+                                                      )
+                                                    : teacherData?.data?.TeacherSubjects?.map(
+                                                          (item) => item?.Subject?.titleEN + " "
+                                                      )}
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+                                </Box>
+                            </Paper>
+                        </Grid>
+                        <Grid item md={12}>
+                            <Paper sx={{ padding: "24px 12px", marginY: "30px" }}>
+                                {lectureId && (
+                                    <Button
+                                        variant="contained"
+                                        fullWidth
+                                        sx={{ textTransform: "capitalize", marginBottom: "16px" }}
+                                        onClick={handleRequestPackage}
+                                    >
+                                        {t("Request Lecture")}
+                                    </Button>
+                                )}
+                                <Button
+                                    variant="outlined"
+                                    fullWidth
+                                    sx={{ textTransform: "capitalize" }}
+                                    onClick={handleCreateMessage}
+                                >
+                                    {t("contactTeacher")}
+                                </Button>
+                            </Paper>
+                        </Grid>
+                    </Grid>
+                </Grid>:<Loading />}
+                
+            </Container>
+        </Navbar>
+    );
 }

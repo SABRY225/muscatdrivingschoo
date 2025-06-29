@@ -1,117 +1,123 @@
 import React, { useEffect, useState } from "react";
 import AdminLayout from "../../components/admin/AdminLayout";
 import { useTranslation } from "react-i18next";
-import {Box,Container,Divider,Grid,Paper,styled,Typography,} from "@mui/material";
-import Conversaition from "../../components/student/Conversaition";
-import { collection, query, onSnapshot, where, doc } from "firebase/firestore";
-import { db }         from "../../firebase";
-import ContactPersonTeacher from "../../components/reusableUi/ContactPersonTeacher";
+import {Box,Divider,Paper,Stack,styled,Typography,} from "@mui/material";
 import lgo                from "../../images/messge.jpg";
 import ContactPerson      from "../../components/reusableUi/ContactPerson";
-import ContactTwoPersons  from "../../components/reusableUi/ContactTwoPersons";
+import axios from "axios";
+import ConversaitionAdmin from "../../components/admin/ConversaitionAdmin";
 
 const Image = styled("img")({
-  width: "160px",
+  width: "60%",
+  maxWidth: 160,
+  height: "auto",
 });
 
 export default function AdminMessages() {
   const { t } = useTranslation();
-  const [conversations, setConversations] = useState([]);
-  const [chatId, setChatId] = useState(null);
-  const [messages, setMessages] = useState(null);
+  const [conversation, setConversaition] = useState([]);
+  const [chat, setChatId] = useState(null);
 
-  // Query List of Conversations
   useEffect(() => {
-    const q = query(collection(db, "chats"));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      let temp = [];
-      querySnapshot.forEach((doc) => {
-        temp.push({ ...doc.data(), id: doc.id });
-      });
-      setConversations(temp.sort((a, b) => b.lastmessage - a.lastmessage));
-    });
-    return () => unsubscribe();
+    const fetchFriends = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_KEY}api/v1/chat/friends/1`
+        );
+        setConversaition(res?.data?.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchFriends();
+    const interval = setInterval(fetchFriends, 3000); // تحديث البيانات كل 3 ثوانٍ
+    
+    return () => clearInterval(interval); // تنظيف التايمر عند تفكيك المكون
+      
   }, []);
 
-  // Query List of Messages
-  useEffect(() => {
-    if (chatId) {
-      const unSub = onSnapshot(doc(db, "chats", chatId), (doc) => {
-        doc.exists() && setMessages({ ...doc.data(), id: doc.id });
-      });
-      return () => {
-        unSub();
-      };
-    }
-  }, [chatId]);
-
-  console.log(messages);
-
   return (
-    <AdminLayout>
-      <Container
-        sx={{ marginBottom: "50px", marginTop: "30px", overflow: "hidden" }}
-      >
-        <Grid container spacing={3}>
-          <Grid item xs={12} lg={4}>
-            <Box>
-              <Paper sx={{ paddingY: "20px" }}>
-                <Typography sx={{ paddingX: "20px" }}>
-                  {t("messages")}
-                </Typography>
-                <Divider sx={{ marginY: "10px" }} />
-                <Box
-                  sx={{
-                    paddingX: "20px",
-                    height: "500px",
-                    overflowY: "scroll",
-                  }}
-                >
-                  {conversations.length > 0 ? (
-                    conversations.map((item, index) => {
-                      return (
-                        <ContactTwoPersons
-                          item={item}
-                          key={index + "k1"}
-                          selectChat={() => setChatId(item.id)}
-                          lastMessage={item.messages[item.messages.length - 1]}
-                          active={item.id == chatId}
-                        />
-                      );
-                    })
-                  ) : (
-                    <Typography>{t("loading_conversations")} .....</Typography>
-                  )}
-                </Box>
-              </Paper>
+       <AdminLayout>
+<Box sx={{ px: { xs: 1, sm: 2 }, py: 10 }}>
+        <Stack 
+          direction={{ xs: 'column', md: 'row' }} 
+          spacing={2}
+          sx={{
+            height: { md: 'calc(100vh - 240px)' },
+            minHeight: 500
+          }}
+        >
+          {/* Contacts List */}
+          <Paper sx={{ 
+            width: { xs: '100%', md: 320 },
+            flexShrink: 0,
+            display: 'flex',
+            flexDirection: 'column'
+          }}>
+            <Box sx={{ p: 2 }}>
+              <Typography variant="h6">{t("Messages")}</Typography>
             </Box>
-          </Grid>
-          <Grid item xs={12} lg={8}>
-            {chatId ? (
-              <>
-                <Conversaition messages={messages} />
-              </>
+            <Divider />
+            <Box sx={{ 
+              flex: 1,
+              overflowY: 'auto',
+              p: 1
+            }}>
+              {conversation.map((item) => (
+                <ContactPerson
+                  key={item.id}
+                  item={item}
+                  selectChat={() => setChatId(item)}
+                  active={item.id === chat?.id}
+                />
+              ))}
+            </Box>
+          </Paper>
+
+          {/* Chat Container */}
+          <Paper sx={{ 
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            minWidth: 0, // Fix flexbox overflow issue
+          }}>
+            {chat ? (
+              <ConversaitionAdmin chat={chat} />
             ) : (
-              <Paper
+              <Box
                 sx={{
-                  height: "400px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexDirection: "column",
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  p: 3,
+                  textAlign: 'center'
                 }}
               >
-                <Image src={lgo} alt="" />
-                <Typography
-                  sx={{ fontWeight: 600, marginTop: "12px", fontSize: "22px" }}
+                <Image 
+                  src={lgo} 
+                  alt={t("Start conversation")}
+                  sx={{
+                    width: { xs: '80%', sm: '60%', md: '40%' },
+                    mb: 3
+                  }}
+                />
+                <Typography 
+                  variant="h5"
+                  sx={{
+                    fontSize: { xs: '1.2rem', sm: '1.5rem' },
+                    fontWeight: 600,
+                    color: 'text.secondary'
+                  }}
                 >
                   {t("start_message")}
                 </Typography>
-              </Paper>
+              </Box>
             )}
-          </Grid>
-        </Grid>
-      </Container>
+          </Paper>
+        </Stack>
+      </Box>
     </AdminLayout>
   );
 }

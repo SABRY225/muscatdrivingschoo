@@ -14,7 +14,6 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useTeacher } from "../../hooks/useTeacher";
 import { useSnackbar } from "notistack";
-import { DisplaySettings } from "@mui/icons-material";
 
 export default function AdditionalInformation() {
   const { t }                     = useTranslation();
@@ -159,7 +158,6 @@ export default function AdditionalInformation() {
     }
   };
   return (
-    <Navbar>
       <TeacherLayout title={t("additionalInformation")} active={2}>
         <Paper sx={{padding:"40px 20px"}}>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -451,7 +449,7 @@ export default function AdditionalInformation() {
             </Box>
             </div>
             
-            <Box sx={{ marginBottom: "26px" }}>
+            <Box className="hide" sx={{ marginBottom: "26px" }}>
               <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
                 {t("hoursPerWeek")}
               </InputLabel>
@@ -509,6 +507,5 @@ export default function AdditionalInformation() {
           </form>
         </Paper>
       </TeacherLayout>
-    </Navbar>
   );
 }

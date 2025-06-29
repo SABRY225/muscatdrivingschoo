@@ -25,81 +25,58 @@ export default function TeacherThirdStep() {
     }
   }, []);
 
-  async function savePassword() {
-    closeSnackbar();
-    try {
-      if (input1.current.state.value.length !== 4) {
-        enqueueSnackbar("length should be 4", {
-          variant: "error",
-          autoHideDuration: "8000",
-        });
-        throw new Error("failed occured");
-      }
-      const response = await fetch(
-        `${process.env.REACT_APP_API_KEY}api/v1/teacher/signup/pass`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            password: input1.current.state.value,
-            email: localStorage.getItem("teacherEmail"),
-            language: lang,
-          }),
-        }
-      );
-      const resData = await response.json();
-      if (response.status !== 200 && response.status !== 201) {
-        enqueueSnackbar(
-          lang === "ar" ? resData.message.arabic : resData.message.english,
-          { variant: "error", autoHideDuration: "8000" }
-        );
-        throw new Error("failed occured");
-      }
-      if (!resData.data.isRegistered) {
-        throw new Error("failed occured");
-      }
-      enqueueSnackbar(
-        lang === "ar" ? resData.msg.arabic : resData.msg.english,
-        { variant: "success", autoHideDuration: "8000" }
-      );
-      // ----------------------------
-      try {
-        const response = await fetch(
-          `${process.env.REACT_APP_API_KEY}api/v1/login`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              password: input1.current.state.value,
-              email: localStorage.getItem("teacherEmail"),
-              long: localStorage.getItem("longitude"),
-              lat: localStorage.getItem("latitude"),
-            }),
-          }
-        );
-        const resData = await response.json();
-        if (response.status !== 200 && response.status !== 201) {
-          enqueueSnackbar(resData.message, {
-            variant: "error",
-            autoHideDuration: "8000",
-          });
-          throw new Error("failed occured");
-        }
-        localStorage.clear();
-        dispatch(loginTeacher({ token: resData.token, teacher: resData.data }));
-        navigate("/teacher/about");
-      } catch (error) {
-        console.log(error);
-      }
-      // ----------------------------
-    } catch (err) {
-      console.log(err);
-    }
+async function savePassword() {
+  closeSnackbar();
+  const password = input1.current.state.value;
+
+  if (!password || password.length !== 4) {
+    enqueueSnackbar("Password length should be 4", {
+      variant: "error",
+      autoHideDuration: 8000,
+    });
+    return;
   }
+
+  try {
+    const email = localStorage.getItem("teacherEmail");
+    const response = await fetch(
+      `${process.env.REACT_APP_API_KEY}api/v1/teacher/signup/pass`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password, email, language: lang }),
+      }
+    );
+
+    const resData = await response.json();
+
+    if (![200, 201].includes(response.status)) {
+      enqueueSnackbar(
+        lang === "ar" ? resData.message.arabic : resData.message.english,
+        { variant: "error", autoHideDuration: 8000 }
+      );
+      return;
+    }
+
+
+    enqueueSnackbar(
+      lang === "ar" ? resData.msg.arabic : resData.msg.english,
+      { variant: "success", autoHideDuration: 8000 }
+    );
+
+    localStorage.setItem("token", resData.token);
+    localStorage.setItem("teacher", JSON.stringify(resData.data));
+    navigate("/teacherRegister/step4");
+
+  } catch (err) {
+    console.error("Error during savePassword:", err);
+    enqueueSnackbar("Something went wrong", {
+      variant: "error",
+      autoHideDuration: 8000,
+    });
+  }
+}
+
 
   return (
     <Navbar>
@@ -111,7 +88,7 @@ export default function TeacherThirdStep() {
             margin: "60px auto 60px",
           }}
         >
-          <HeaderSteps step={3} title={t("enterpassword")} steps={3} />
+          <HeaderSteps step={3} title={t("enterpassword")} steps={9} />
           <Box
             sx={{ marginTop: "40px", marginBottom: "80px", direction: "rtl" }}
           >

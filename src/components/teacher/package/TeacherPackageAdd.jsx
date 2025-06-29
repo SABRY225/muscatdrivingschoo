@@ -164,9 +164,6 @@ function TeacherPackageAdd() {
       throw new Error("Something went wrong: " + err);
     }
   }
-console.log(TrainingCategoryTypes);
-console.log(subjects);
-
 
   return (
     <Navbar>
@@ -516,7 +513,7 @@ console.log(subjects);
                     message: t("share1")
                   }
                 })} />
-              <p className='text-red-500'>{errors.numberOfShares?.message}</p>
+              <p className='text-red-500'>{errors.numTotalLesson?.message}</p>
             </FormControl>
             <FormControl fullWidth margin="dense">
               <TextField label={t("sharesCountInWeek")} type="number" variant="outlined" {...register("numWeekLesson", {
@@ -531,7 +528,7 @@ console.log(subjects);
                   message: t("share1")
                 },
               })} />
-              <p className='text-red-500'>{errors.sharesInWeek?.message}</p>
+              <p className='text-red-500'>{errors.numWeekLesson?.message}</p>
             </FormControl>
 
 

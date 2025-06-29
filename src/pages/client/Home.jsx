@@ -42,9 +42,6 @@ export default function Home() {
       {discounts.length > 0 && <Discounts discounts={discounts} />}
       {advertisements.length > 0 && <HomeAds ads={advertisements} />}
       {news.length > 0 && <HomeNews news={news} />}
-
-
-      {/* باقي الأقسام */}
       <HomeWorks />
       <HomeQuestions />
       <DownloadApp />

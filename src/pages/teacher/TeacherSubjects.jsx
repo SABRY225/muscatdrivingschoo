@@ -157,7 +157,7 @@ export default function TeacherSubjects() {
           variant: "success",
           autoHideDuration: 1000,
         });
-        navigate("/teacher/resume");
+        navigate("/teacher/availability");
       }
     } catch (err) {
       console.log(err);

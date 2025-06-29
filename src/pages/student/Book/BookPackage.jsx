@@ -167,7 +167,7 @@ export default function BookPackage() {
                   </Typography>
                 </Box>
                 <Typography>
-                  {parseFloat(objPackage?.price * conversionRate).toFixed(2)} {currency}
+                  {parseFloat(objPackage?.price * conversionRate).toFixed(2)} {t(currency)}
                 </Typography>
               </Box>
               <Box
@@ -207,7 +207,7 @@ export default function BookPackage() {
                   {parseFloat(objPackage?.price * conversionRate).toFixed(
                     2
                   )}{" "}
-                  {currency}
+                  {t(currency)}
                 </Typography>
               </Box>
             </Box>

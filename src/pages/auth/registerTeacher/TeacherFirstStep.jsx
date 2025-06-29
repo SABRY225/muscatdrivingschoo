@@ -103,7 +103,7 @@ export default function TeacherFirstStep() {
             margin: "60px auto 60px",
           }}
         >
-          <HeaderSteps step={1} title={t("newAccount")} steps={3} />
+          <HeaderSteps step={1} title={t("newAccount")} steps={9} />
           <form onSubmit={handleSubmit(onSubmit)}>
             {/* 📧 حقل البريد الإلكتروني */}
             <Box sx={{ marginBottom: "30px" }}>

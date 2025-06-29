@@ -169,7 +169,7 @@ export default function BookDiscount() {
                   </Typography>
                 </Box>
                 <Typography>
-                  {parseFloat(objDiscount?.amountAfterDiscount * conversionRate).toFixed(2)} {currency}
+                  {parseFloat(objDiscount?.amountAfterDiscount * conversionRate).toFixed(2)} {t(currency)}
                 </Typography>
               </Box>
               <Box
@@ -209,7 +209,7 @@ export default function BookDiscount() {
                   {parseFloat(objDiscount?.amountAfterDiscount * conversionRate).toFixed(
                     2
                   )}{" "}
-                  {currency}
+                  {t(currency)}
                 </Typography>
               </Box>
             </Box>

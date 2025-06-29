@@ -5,6 +5,10 @@ import Cookies from "js-cookie";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { useEffect } from 'react';
+import { convertCurrency } from '../../utils/convertCurrency';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 const Image = styled("img")({
   width: "100px",
@@ -20,6 +24,8 @@ export default function Discounts({ discounts }) {
   const navigate = useNavigate();
   const lang = Cookies.get("i18next") || "en";
   const { t } = useTranslation();
+    const { currency } = useSelector(state => state.currency);
+  
 
 
   
@@ -60,6 +66,24 @@ const settings = {
     }
   ]
 };
+ const [convertedDiscounts, setConvertedDiscounts] = useState([]);
+
+  useEffect(() => {
+    async function convertAll() {
+      const converted = await Promise.all(
+        discounts.map(async (item) => {
+          const before = await convertCurrency(item.amountBeforeDiscount, item.currency, currency);
+          const after = await convertCurrency(item.amountAfterDiscount, item.currency, currency);
+          return { ...item, amountBeforeDiscount: before, amountAfterDiscount: after };
+        })
+      );
+      setConvertedDiscounts(converted);
+    }
+
+    if (discounts?.length > 0) {
+      convertAll();
+    }
+  }, [discounts, currency]);
   return (
     <Box sx={{ padding: "32px 24px", marginY: "30px" }}>
       <Typography sx={{
@@ -73,8 +97,8 @@ const settings = {
       </Typography>
 
       <Slider {...settings}>
-        {discounts?.length > 0 &&
-          discounts.map((item) => (
+        {convertedDiscounts?.length > 0 &&
+          convertedDiscounts.map((item) => (
             <Box key={item.id} px={2}>
               <Paper
                 elevation={3}
@@ -108,12 +132,22 @@ const settings = {
                 >
                   {item?.percentage}%
                 </Box>
-
-                <Image
+                <Box
+                  sx={{
+                    display:"flex",
+                    justifyContent:"center",
+                    color: "white",
+                    padding: "5px 10px",
+                    borderRadius: "20px",
+                    fontWeight: "bold",
+                    fontSize: "14px",
+                  }}
+                >
+                                 <Image
                   alt={lang === "ar" ? item?.titleAR : item?.titleEN}
                   src={`${process.env.REACT_APP_API_KEY}images/${item?.image}`}
                 />
-
+                </Box>
                 <Typography variant="subtitle1" sx={{ fontWeight: 600, mt: 2, color: "#212121" }}>
                   {lang === "ar" ? item?.titleAR : item?.titleEN}
                 </Typography>
@@ -124,13 +158,13 @@ const settings = {
 
                 <Box sx={{ my: 2 }}>
                   <Typography variant="body2" color="text.secondary">
-                    <del>{item.amountBeforeDiscount}</del> &nbsp;
+                    <del>{item.amountBeforeDiscount}</del> &nbsp; <del>{t(currency)}</del> &nbsp;
                     <Typography variant="caption" component="span">
                       {t("txt_amountBeforeDiscount")}
                     </Typography>
                   </Typography>
-                  <Typography variant="h6" color="primary">
-                    {item.amountAfterDiscount} &nbsp;
+                  <Typography variant="body1" color="primary">
+                    {item.amountAfterDiscount} &nbsp; {t(currency)} &nbsp;
                     <Typography variant="caption" component="span">
                       {t("txt_amountAfterDiscount")}
                     </Typography>
@@ -141,7 +175,7 @@ const settings = {
                   variant="contained"
                   color="primary"
                   fullWidth
-                  onClick={() => navigate(`/discount-details/${item.id}`)}
+                  onClick={() => navigate(`/discount-details/${item.TeacherId}/${item.id}`)}
                 >
                   {t("discount_view")}
                 </Button>

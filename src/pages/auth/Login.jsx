@@ -85,8 +85,12 @@ export default function Login() {
       }
       localStorage.clear();
       if (resData.role === "teacher") {
+        if(resData.data.isVerified===false){
+           navigate("/teacherpendingapproval");
+        }else{
         dispatch(loginTeacher({ token: resData.token, teacher: resData.data }));
         navigate("/teacher/dashboard");
+        }
       } else if (resData.role === "student") {
         dispatch(loginStudent({ token: resData.token, student: resData.data }));
         navigate("/student/dashboard");

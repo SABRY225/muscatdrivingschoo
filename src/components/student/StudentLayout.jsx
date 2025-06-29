@@ -25,6 +25,7 @@ import QuizIcon from '@mui/icons-material/Quiz'; // ✅ للأسئلة
 import AssignmentIcon from '@mui/icons-material/Assignment'; // ✅ للامتحانات
 import DiscountIcon from '@mui/icons-material/Percent'; // ✅ للخصومات
 import SupportAgentIcon from '@mui/icons-material/SupportAgent'; // ✅ للدعم الفني
+import { AccountTree, WorkspacePremium } from "@mui/icons-material";
 
 export default function StudentLayout({ children }) {
   const { t } = useTranslation();
@@ -33,6 +34,8 @@ export default function StudentLayout({ children }) {
 
  const topics = [
   { icon: <SpaceDashboardIcon />, title: t("controlBoard"), link: "/dashboard" },
+      { icon: <AccountTree />, title: t("Statistics"), link: "/statistics" },
+  { icon: <WorkspacePremium />, title: t("certification"), link: "/certificates" },
   { icon: <MenuBookIcon />, title: t("alllessons"), link: "/lessons" },
   { icon: <LocalOfferIcon />, title: t("packages"), link: "/package" },
   { icon: <SchoolIcon />, title: t("Lectures"), link: "/lecture" },
@@ -49,7 +52,18 @@ export default function StudentLayout({ children }) {
   };
 
   const drawer = (
-    <Paper sx={{ padding: "0px 20px 10px", width: 230, backgroundColor: "#800020", borderRadius: "0 0 3rem", margin: "0rem" }}>
+    <Paper sx={{
+  padding: "0px 20px 0px",
+  backgroundColor: "#800020",
+  borderRadius: 0,
+  margin: "6.5rem 0 0",
+  position: "fixed",
+  top: 0,
+  left: 0,
+  right: 0,
+  width: "230px",
+  zIndex: 7,
+}}>
 
       <List>
         {topics.map((topic, index) => {
@@ -116,12 +130,7 @@ export default function StudentLayout({ children }) {
             {drawer}
           </Drawer>
 
-          <Grid item xs={12} lg={8} sx={{
-            overflow: "auto", padding:"0 1rem",height: "80vh", scrollbarWidth: "none",        // Firefox
-            "&::-webkit-scrollbar": {
-              display: "none",             // Chrome, Safari, Edge
-            },
-          }}>
+          <Grid item xs={12} lg={8} sx={{ marginTop: "2rem" ,height: "80vh"}}>
             {children}
           </Grid>
         </Grid>

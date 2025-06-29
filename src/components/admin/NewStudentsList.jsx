@@ -42,7 +42,7 @@ export default function NewStudentsList() {
   return (
     <>
       {!isLoading ? (
-        <Paper sx={{ marginY: "40px", padding: "20px" }}>
+        <Paper sx={{  padding: "20px" }}>
           <Typography sx={{ marginBottom: "30px" }}>
             {t("studentlist")}
           </Typography>

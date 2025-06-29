@@ -12,7 +12,7 @@ import Cookies from "js-cookie";
 
 export default function CheckBoxTrainingCategoryTypes({ checked, setChecked }) {
   const { t }       = useTranslation();
-  const { teacher } = useSelector((state) => state.teacher);
+  const teacher  = JSON.parse(localStorage.getItem("teacher"))
   const { data }    = useTrainingCategoryTypes();
   const lang        = Cookies.get("i18next") || "en";
 
@@ -36,7 +36,7 @@ export default function CheckBoxTrainingCategoryTypes({ checked, setChecked }) {
       </InputLabel>
       <List
         dense
-        sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
+        sx={{ width: "100%", maxWidth: 360 }}
       >
         {data?.data.map((value) => {
           const labelId = `checkbox-list-secondary-label-${value.id}`;

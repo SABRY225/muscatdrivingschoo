@@ -10,7 +10,6 @@ import ListAltIcon from '@mui/icons-material/ListAlt';
 import Navbar from '../Navbar';
 import TeacherLayout from './TeacherLayout';
 import { t } from 'i18next';
-import FilePresentIcon from '@mui/icons-material/FilePresent';
 import { AccessTime, Lock, MenuBook, ReceiptLong, Replay, Star, Videocam, WorkspacePremium } from '@mui/icons-material';
 import Groups2Icon from "@mui/icons-material/Groups2";
 import { useEffect, useState } from 'react';
@@ -41,7 +40,6 @@ const requestCardColor = lessonRequestCount > 0 ? '#ffcdd2' : '#fff'; // أحم�
     { title: t("profile_photo"), icon: <ImageIcon />, path: '/teacher/photo' },
     { title: t("additionalInformation"), icon: <InfoIcon />, path: '/teacher/additionalInformation' },
     { title: t("description"), icon: <DescriptionIcon />, path: '/teacher/description' },
-    { title: t("resume"), icon: <FilePresentIcon />, path: '/teacher/resume' },
     { title: t("subjects"), icon: <MenuBook />, path: '/teacher/subjects' },
     { title: t("availability"), icon: <AccessTime />, path: '/teacher/availability' },
     { title: t("certification"), icon: <WorkspacePremium />, path: '/teacher/certificates' },
@@ -121,7 +119,6 @@ const requestItems = [
   );
 
   return (
-    <Navbar>
         <TeacherLayout>
     <Box sx={{ p: 1}}>
       <motion.div
@@ -129,18 +126,12 @@ const requestItems = [
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <Typography sx={{ mb: 4, fontWeight: 'bold',fontSize:"25px" }}>
-          {t("controlBoard")}
-        </Typography>
       </motion.div>
       {renderSection(t("Orders"), requestItems)}
       {renderSection(t("Finance"), financeItems)}
       {renderSection(t("profile"), profileItems)}
     </Box>
         </TeacherLayout>
-
-    </Navbar>
-
   );
 }
 

@@ -29,6 +29,9 @@ export default function PayLesson() {
   const navigate = useNavigate();
   const { data, isLoading } = useRequestLessonById(id);
   const [lession, setlession] = useState([]);
+  const { conversionRate } = useSelector((state) => state.conversionRate);
+  const { currency }                  = useSelector((state) => state.currency);
+  
 
   useEffect(() => {
     if (data) {
@@ -138,7 +141,11 @@ export default function PayLesson() {
                 <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2, pt: 2, borderTop: "1px dashed #ccc" }}>
                   <Typography variant="h6">{t("price")}:</Typography>
                   <Typography variant="h6" sx={{ color: "#1976d2" }}>
-                    {lession?.price} {t(lession?.currency)}
+                    {parseFloat(lession?.price * conversionRate).toFixed(
+                    2
+                  )}
+                  {" "}
+                  {t(currency)}
                   </Typography>
                 </Box>
               </Box>

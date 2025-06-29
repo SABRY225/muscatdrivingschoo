@@ -6,7 +6,6 @@ import {
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import Navbar from '../../components/Navbar';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import Cookies from "js-cookie";
@@ -121,7 +120,6 @@ const ReferralSystem = () => {
   }, [data, currency]);
 
   return (
-    <Navbar>
       <TeacherLayout>
         <Box  mt={3}>
         <Box sx={{  width: {md:"60vw",xs:"80vw"}, p: 3, boxShadow: 5 ,m:2}}>
@@ -207,7 +205,6 @@ const ReferralSystem = () => {
         message={t("Invitation link copied")}
       />
       </TeacherLayout>
-    </Navbar>
   );
 };
 

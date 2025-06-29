@@ -72,7 +72,7 @@ export default function HomePackage({ packages }) {
                 return (
                   <>
                     <div key={index}>
-                      <a href={`/package/${item.id}`}>
+                      <a href={`/package/${item.TeacherId}/${item.id}`}>
                         <Paper sx={{
                           padding: "0px", display: "flex", flexDirection: "column", alignItems: "center",
                           backgroundColor: "#FFF", borderRadius: "20px", margin: "20px", textAlign: "right"
@@ -92,7 +92,7 @@ export default function HomePackage({ packages }) {
                           </p>
 
                           <a className='btndetails'
-                            onClick={() => navigate(`/package/${item.id}`)}
+                            onClick={() => navigate(`/package/${item.TeacherId}/${item.id}`)}
                           >
                             {t("view")}
                           </a>

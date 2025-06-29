@@ -183,7 +183,6 @@ import GuestCareerStepTwo from "./pages/guest/career/StepTwo.jsx";
 import GuestCareerDetails from "./pages/guest/career/Details.jsx";
 import AdminTeachersAccount from "./pages/admin/AdminTeachersAccount.jsx";
 import TermsTeacher from "./pages/client/TermsTeacher.jsx";
-import UnderDevelopmentStudent from "./components/UnderDevelopmentStudent.jsx";
 import UnderDevelopment from "./components/UnderDevelopment.jsx";
 import NotFound from "./components/NotFound.jsx";
 import InteractiveSystemInfo from "./pages/client/InteractiveSystemInfo";
@@ -215,6 +214,26 @@ import AdminBalance from "./pages/admin/AdminBalance.jsx";
 import AdminNotification from "./pages/admin/AdminNotification.jsx";
 import SendGroupMessage from "./pages/admin/SendGroupMessage.jsx";
 import StudentReferralSystem from "./pages/student/StudentReferralSystem.jsx";
+import TestNow from "./statistics.jsx";
+import TeacherFourStep from "./pages/auth/registerTeacher/TeacherFourStep.jsx";
+import TeacherFiveStep from "./pages/auth/registerTeacher/TeacherFiveStep.jsx";
+import TeacherSixStep from "./pages/auth/registerTeacher/TeacherSixStep.jsx";
+import TeacherSevenStep from "./pages/auth/registerTeacher/TeacherSevenStep.jsx";
+import TeacherEightStep from "./pages/auth/registerTeacher/TeacherEightStep.jsx";
+import TeacherNineStep from "./pages/auth/registerTeacher/TeacherNineStep.jsx";
+import TeacherWelcome from "./pages/auth/registerTeacher/TeacherWelcome.jsx";
+import TeacherPendingApproval from "./pages/auth/TeacherPendingApproval.jsx";
+import Certificate from "./PDF/Certificate.jsx";
+import InvoicePDF from "./PDF/InvoicePage.jsx";
+import StudentEvaluationForm from "./components/teacher/StudentEvaluationForm.jsx";
+import StudentCertificatesTable from "./components/student/StudentCertificatesTable.jsx";
+import MyBills from "./pages/student/MyBills.jsx";
+import AdminStats from "./pages/admin/AdminStats.jsx";
+import TeacherStats from "./pages/teacher/TeacherStats.jsx";
+import StudentStats from "./pages/student/StudentStats.jsx";
+import InvoiceTeacher from "./PDF/InvoiceTeacher.jsx";
+import InvoiceAdmin from "./PDF/InvoiceAdmin.jsx";
+import CareerTeacher from "./components/teacher/careers/Career.jsx";
 
 const theme = createTheme({
   direction: "rtl",
@@ -270,6 +289,7 @@ function App() {
     }
   }, []);
 
+
   return (
     <div className="App">
       <Helmet>
@@ -281,12 +301,18 @@ function App() {
           <Routes>
             {/** client pages */}
             <Route path="/" element={<Home />} />
+            <Route path="/teacherpendingapproval" element={<TeacherPendingApproval />} />
+            <Route path="/statistics" element={<TestNow />} />
+            <Route path="/invoicePDF/:sessionType/:sessionId/:sessionCreatedAt/:studentName/:TeacherFirstName/:TeacherLastName/:TeacherEmail/:TeacherPhone/:sessionPrice/:sessionCurrency" element={<InvoicePDF />} />
+            <Route path="/invoice-teacher/:SessionId/:CreatedAt/:StudentName/:TeacherFirstName/:TeacherLastName/:studentEmail/:StudentPhoneNumber/:Price/:Currency" element={<InvoiceTeacher />} />
+            <Route path="/invoice-admin/:sessionId/:CreatedAt/:StudentName/:StudentEmail/:StudentPhoneNumber/:TeacherFirstName/:TeacherLastName/:TeacherPhone/:TeacherEmail/:Price/:Currency" element={<InvoiceAdmin />} />
+            <Route path="/certificate/:StudentName/:teacherSignature/:trainingStage/:certificateDate" element={<Certificate />} />
             {/* <Route path="/searchtest" element={<SearchTest />} /> */}
             <Route path="/landing" element={<SearchTest />} />
             <Route path="teachers/search" element={<SearchTeachers />} />
             <Route path="teacher/:id" element={<SingleTeacher />} />
-            <Route path="course/:id" element={<SingleCourse />} />
-            <Route path="package/:id" element={<SinglePackage />} />
+            <Route path="course/:id/:lectureId" element={<SingleCourse />} />
+            <Route path="package/:id/:packageId" element={<SinglePackage />} />
             <Route path="driving-details/:id" element={<SingleDrivingLicensePage />} />
             <Route path="/filter/:subjectId" element={<SearchFilterTeacher />} />
             <Route path="about-us" element={<AboutUs />} />
@@ -294,7 +320,7 @@ function App() {
             <Route path="TermsAndConditions" element={<Terms />} />
             <Route path="driving-licenses" element={<DrivingLicenses />} />
             <Route path="discounts" element={<Discounts />} />
-            <Route path="discount-details/:id" element={<SingleDiscount />} />
+            <Route path="discount-details/:id/:discountId" element={<SingleDiscount />} />
             <Route path="ads-details/:AdsId" element={<SingleAds />} />
 
             <Route path="careers" element={<SearchCareers />} />
@@ -344,6 +370,13 @@ function App() {
             <Route path="teacherRegister/step1" element={<TeacherFirstStep />} />
             <Route path="teacherRegister/step2" element={<TeacherSecondStep />} />
             <Route path="teacherRegister/step3" element={<TeacherThirdStep />} />
+            <Route path="teacherRegister/step4" element={<TeacherFourStep />} />
+            <Route path="teacherRegister/step5" element={<TeacherFiveStep />} />
+            <Route path="teacherRegister/step6" element={<TeacherSixStep />} />
+            <Route path="teacherRegister/step7" element={<TeacherSevenStep />} />
+            <Route path="teacherRegister/step8" element={<TeacherEightStep />} />
+            <Route path="teacherRegister/step9" element={<TeacherNineStep />} />
+            <Route path="teacherwelcome" element={<TeacherWelcome />} />
             <Route path="forgetPassword/step1" element={<ForgetPasswordFirstStep />} />
             <Route path="forgetPassword/step2" element={<ForgetPassSecondStep />} />
             <Route path="forgetPassword/step3" element={<ForgetPassThirdStep />} />
@@ -356,7 +389,7 @@ function App() {
             <Route path="student/exam" element={student ? <StudentExam /> : <Navigate to="/login" />} />
             <Route path="student/discount" element={student ? <StudentDiscount /> : <Navigate to="/login" />} />
             <Route path="student/technical-support" element={student ? <TechnicalSupport /> : <Navigate to="/login" />} />
-            <Route path="student/mybills" element={student ? <UnderDevelopmentStudent /> : <Navigate to="/login" />} />
+            <Route path="student/mybills" element={student ? <MyBills /> : <Navigate to="/login" />} />
              <Route
               path="student/payLesson/:id"
               element={student ? <PayLesson /> : <Navigate to="/login" />}
@@ -364,6 +397,10 @@ function App() {
             <Route
               path="student/dashboard"
               element={student ? <StudentDashboard /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="student/statistics"
+              element={student ? <StudentStats/> : <Navigate to="/login" />}
             />
             <Route path="student/settings" element={student ? <StudentSettings /> : <Navigate to="/login" />} />
             <Route path="student/parents" element={student ? <StudentParent /> : <Navigate to="/login" />} />
@@ -416,6 +453,10 @@ function App() {
               path="/student/tests"
               element={student ? <StudentTests /> : <Navigate to="/login" />}
             />
+            <Route
+              path="/student/certificates"
+              element={student ? <StudentCertificatesTable /> : <Navigate to="/login" />}
+            />
 
             <Route path="/student/lectures" element={student ? <StudentLectures /> : <Navigate to="/login" />} />
             <Route path="/student/packages" element={student ? <StudentPackages /> : <Navigate to="/login" />} />
@@ -441,6 +482,10 @@ function App() {
             <Route
               path="teacher/dashboard"
               element={teacher ? <TeacherDashboard /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="teacher/statistics"
+              element={teacher ? <TeacherStats /> : <Navigate to="/login" />}
             />
             <Route
               path="teacher/mybills"
@@ -539,6 +584,10 @@ function App() {
               path="teacher/students"
               element={teacher ? <TeacherStudents /> : <Navigate to="/login" />}
             />
+            <Route
+              path="teacher/:studentName/:StudentId/student-evaluation"
+              element={teacher ? <StudentEvaluationForm /> : <Navigate to="/login" />}
+            />
 
             <Route
               path="teacher/certificates"
@@ -563,7 +612,18 @@ function App() {
               path="teacher/question-choose"
               element={teacher ? <TeacherQuestionChoose /> : <Navigate to="/login" />}
             />
-
+            {/* <Route path="teacher/careers" element={<CareerTeacher />} /> */}
+            <Route path="teacher/careers" element={<UnderDevelopment />} />
+            <Route path="teacher/ads" element={<UnderDevelopment />} />
+            <Route path="teacher/create-career" element={<GuestCareerADD />} />
+            <Route path="teacher/create-career/step1" element={<GuestCareerStepOne />} />
+            <Route path="teacher/create-career/step2/:CareerId" element={<GuestCareerStepTwo />} />
+            <Route path="teacher/career/details/:CareerId" element={<GuestCareerDetails />} />
+            <Route path="teacher/create-ads/step1" element={<UnderDevelopment />} />
+            <Route path="teacher/create-ads/step2/:AdsId" element={<GuestAdsStepTwo />} />
+            <Route path="teacher/create-ads/step3/:AdsId" element={<GuestAdsStepThree />} />
+            <Route path="teacher/create-ads/step4/:AdsId" element={<GuestAdsStepFour />} />
+            <Route path="teacher/ads/details/:AdsId" element={<GuestAdsStepDetails />} />
 
             {/** admin pages */}
             <Route
@@ -572,6 +632,10 @@ function App() {
             />
             <Route
               path="admin"
+              element={admin ? <AdminStats /> : <Navigate to="/admin/login" />}
+            />
+            <Route
+              path="admin/student-new"
               element={admin ? <AdminHome /> : <Navigate to="/admin/login" />}
             />
             <Route

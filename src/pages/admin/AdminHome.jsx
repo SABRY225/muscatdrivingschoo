@@ -7,8 +7,8 @@ import NewStudentsList from '../../components/admin/NewStudentsList'
 export default function AdminHome() {
     return (
         <AdminLayout>
-            <Box sx={{marginY:"40px"}}>
-                <MainBoxes/>
+            <Box >
+                {/* <MainBoxes/> */}
                 <NewStudentsList/>
             </Box>
         </AdminLayout>

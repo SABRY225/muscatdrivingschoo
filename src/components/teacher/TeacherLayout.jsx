@@ -7,17 +7,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { useTeacher } from "../../hooks/useTeacher";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
-import {  CardGiftcard, Help, HelpOutline, LibraryBooks, MessageOutlined,  Percent, PlayLesson, Quiz,  School} from "@mui/icons-material";
-import LogoutIcon from "@mui/icons-material/Logout";
-import { logoutTeacher } from "../../redux/teacherSlice";
+import {  AccountTree, CardGiftcard, Help, HelpOutline, LibraryBooks, MessageOutlined,  Percent, PlayLesson, Quiz,  School} from "@mui/icons-material";
+import cookies from "js-cookie";
+
 
 export default function TeacherLayout({ active, title, children }) {
   const { t } = useTranslation();
   const location = useLocation();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
   const topics = [
     { icon: <SpaceDashboardIcon />, title: t("controlBoard"), link: "/dashboard" },
+    { icon: <AccountTree />, title: t("Statistics"), link: "/statistics" },
     { icon: <School />, title: t("lessons"), link: "/sessions" },
     { icon: <MessageOutlined />, title: t("messages"), link: "/messages" },
     { icon: <PlayLesson />, title: t("lectures"), link: "/lectures" },
@@ -28,39 +27,7 @@ export default function TeacherLayout({ active, title, children }) {
     { icon: <Help />, title: t("quesiton"), link: "/question" },
     { icon: <HelpOutline />, title: t("quesiton_choose"), link: "/question-choose" },
   ];
-  async function handleTeacherLogout() {
-    try {
-      console.log("Start To Logout Teacher");
-      const response = await fetch(
-        `${process.env.REACT_APP_API_KEY}api/v1/teacher/updatelogout/${teacher.id}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: teacher.id,
-            email: teacher.email
-          }),
-        }
-      );
-
-      const resData = await response.json();
-      // console.log("response: ", resData);
-      if (resData.status !== 200 && resData.status !== 201) {
-        console.log("some error Occurred, response is: ", resData);
-        throw new Error("");
-      } else {
-        console.log("Sucesss");
-      }
-
-    } catch (err) {
-      console.log("error: ", err);
-    }
-
-    dispatch(logoutTeacher());
-    navigate("/login");
-  }
+  const lang = cookies.get("i18next") || "en";
 
   const { teacher } = useSelector((state) => state.teacher);
   const { data, isLoading } = useTeacher(teacher?.id);
@@ -128,7 +95,19 @@ export default function TeacherLayout({ active, title, children }) {
 
             <Grid container spacing={2} style={{ marginTop: "78px", }}>
               <Grid item xs={12} lg={3} sx={{ display: { md: "block", xs: "none" }, }}>
-                <Paper sx={{ padding: "0px 20px 10px", width: 230, backgroundColor: "#800020", borderRadius: "0 0 3rem", margin: "0.5rem 0 0" }}>
+               <Paper sx={{
+  padding: "0px 20px 0px",
+  backgroundColor: "#800020",
+  borderRadius: 0,
+  margin: "6.5rem 0 0",
+  position: "fixed",
+  top: 0,
+  left: 0,
+  right: 0,
+  width: "230px",
+  zIndex: 7,
+}}>
+
                   {/* <Box sx={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
                 <Avatar
                   src={`${process.env.REACT_APP_API_KEY}images/${teacher?.image}`}
@@ -177,21 +156,12 @@ export default function TeacherLayout({ active, title, children }) {
                         );
                       })}
                       <Divider sx={{ marginY: "15px", backgroundColor: "#fff" }} />
-                      <MenuItem sx={{ minWidth: 40, color: "#fff" }} onClick={handleTeacherLogout}>
-                        <ListItemIcon  sx={{ minWidth: 40, color: "#fff" }}>
-                          <LogoutIcon fontSize="small" />
-                        </ListItemIcon>
-                        {t("logout")}
-                      </MenuItem>
                     </>
 
                   </List>
                 </Paper>
               </Grid>
-              <Grid item xs={12} lg={8} sx={{ overflow: "auto", marginTop: "2rem" ,height: "80vh", scrollbarWidth: "none",        // Firefox
-    "&::-webkit-scrollbar": {
-      display: "none",             // Chrome, Safari, Edge
-    },}}>
+              <Grid item xs={12} lg={8} sx={{ marginTop: "2rem" ,height: "80vh"}}>
                 {children}
               </Grid>
             </Grid>

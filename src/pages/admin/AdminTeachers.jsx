@@ -106,18 +106,20 @@ export default function AdminTeachers() {
   };
 
   // Added by Abdelwahab
-  const handleCreateMessage = async (teacher) => {
-    const time = Timestamp.now();
-    await addDoc(collection(db, "chats"), {
-      messages: [],
-      teacherId: `${teacher?.id}`,
-      studentId: `0`,
-      studentName: "",
-      studentImage: "",
-      teacherName: `${teacher?.firstName} ${teacher?.lastName}`,
-      teacherImage: teacher?.image,
-      lastmessage: time,
-    });
+ const handleCreateMessage = async (teacher) => {
+    const addFrind=(async () => {
+      await fetch(`${process.env.REACT_APP_API_KEY}api/v1/chat/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `${token}`
+        },
+        body: JSON.stringify({
+          user1Id: teacher?.id, user1Type:"teacher", user2Id:1, user2Type:"admin"
+        })
+      });
+    })
+    addFrind();
     navigate(`/admin/messages`);
   };
   const handleSuspend = async (id) => {

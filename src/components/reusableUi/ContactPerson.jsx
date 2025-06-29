@@ -1,65 +1,92 @@
-import { Avatar, Box, Button, Typography} from "@mui/material";
-import React            from "react";
-import DeleteIcon       from "@mui/icons-material/Delete";
-import { useTranslation } from "react-i18next";
-import { db } from "../../firebase";
-import { collection, query, onSnapshot, where, doc , deleteDoc } from "firebase/firestore";
-import { useSnackbar }  from "notistack";
-import { useTeacher }   from "../../hooks/useTeacher";
+import { Avatar, Box, Typography, useTheme } from "@mui/material";
 
-export default function ContactPerson({item,selectChat, lastMessage,active,}) {
-  const { t } = useTranslation();
-  const { closeSnackbar, enqueueSnackbar }  = useSnackbar();
-  const { data } = useTeacher(item.teacherId);
-  // Added by eng.reem.shwky@gmail.com
-  const handleDelete = async (itemToDelete) => {
-    
-    closeSnackbar();
-    const isConfirmed = window.confirm(t("confirm_dangerous_action"));
-    if (!isConfirmed) return;
-
-    
-    try {
-      await deleteDoc(doc(db, "chats", itemToDelete?.id))
-      enqueueSnackbar( t("success_chat_message") , { variant: "success" });
-    } catch (error) {
-      enqueueSnackbar(error, { variant: "error" });
-    }
-    
-  };
-
+export default function ContactPerson({
+  item,
+  selectChat,
+  active,
+}) {
+  const theme = useTheme();
+  console.log(item);
+  
   return (
     <Box
       sx={{
         display: "flex",
-        alignItems: "center",
-        columnGap: "12px",
-        marginBottom: "20px",
+        alignItems: "space-around",
+        gap: { xs: 5, sm: 10 },
         cursor: "pointer",
-        backgroundColor: active ? "#eee" : "",
-        padding: "12px 8px",
-        borderRadius: "6px",
+        backgroundColor: active ? theme.palette.action.selected : "transparent",
+        p: 1,
+        borderRadius: 1,
+        transition: "background-color 0.2s ease",
+        '&:hover': {
+          backgroundColor: theme.palette.action.hover,
+        },
+        // width: "100%",
+        // maxWidth: "100%",
       }}
       onClick={selectChat}
     >
+      <Box sx={{
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+        color: "text.primary",
+        fontSize: { xs: "0.75rem", sm: "0.8125rem" },
+        fontWeight: 600,
+      }}>
       <Avatar
-        alt={data?.data?.firstName}
-        src={`${process.env.REACT_APP_API_KEY}images/${data?.data?.image}`}
-        sx={{ width: "45px", height: "45px" }}
+        alt={item?.name}
+        src={`${process.env.REACT_APP_API_KEY}images/${item?.image}`}
+        sx={{ 
+          width: { xs: 40, sm: 45 }, 
+          height: { xs: 40, sm: 45 },
+          bgcolor: theme.palette.primary.main
+        }}
       />
-      <Box>
-        <Typography sx={{ margin: 0 }}>
-          {item.teacherId === "0"
-            ? "Admin"
-            : `${data?.data?.firstName} ${data?.data?.lastName}`}
+      <Box sx={{ 
+        minWidth: 0, // Prevent text overflow
+        flex: 1 
+      }}>
+        <Typography 
+          variant="subtitle2"
+          sx={{
+            fontWeight: 600,
+            color: active ? theme.palette.primary.main : "text.primary",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {item.name}
         </Typography>
-        <Typography sx={{ fontSize: "12px" }}>
-          {lastMessage?.text?.slice(0.3)}
+        <Typography
+          variant="body2"
+          sx={{
+            fontSize: { xs: "0.75rem", sm: "0.8125rem" },
+            color: "text.secondary",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {item.lastMessage?.text || " "}
         </Typography>
-
-        <Button color="error" onClick={() => handleDelete(item)}>
-            <DeleteIcon /> {t("delete")}
-        </Button>
+      </Box>
+      </Box>
+      <Box >
+          {item.unreadCount === 0?" ":<Typography
+          variant="body2"
+          style={{
+            backgroundColor:"red",
+            width:"30px",
+            height:"30px",
+            borderRadius:"50%",
+            color:"white",
+            textAlign:"center",
+            lineHeight:"30px",
+          }}
+        >{item.unreadCount}</Typography> }
       </Box>
     </Box>
   );

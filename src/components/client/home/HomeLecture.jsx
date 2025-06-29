@@ -1,11 +1,8 @@
-import { Box, TextField, Grid, Paper, Typography , styled , Button } from '@mui/material'
+import { Box, Paper, Typography , styled  } from '@mui/material'
 import React from 'react'
 import Cookies from 'js-cookie';
 import { useNavigate } from "react-router-dom";
 import { useTranslation }       from 'react-i18next';
-import { useState, useEffect }  from "react";
-import Loading                  from "../../Loading";
-import { useLectures }          from '../../../hooks/useLectures';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -17,7 +14,6 @@ const Image = styled("img")({
 export default function HomeLecture({lectures}) {
     const navigate                  = useNavigate();
     const lang                      = Cookies.get("i18next") || "en";
-    const [searchInput, setSearchInput] = React.useState("");
     const {t}                       = useTranslation();
 
 
@@ -79,7 +75,7 @@ export default function HomeLecture({lectures}) {
                         margin:"20px",
                         }}
                     >
-          <a href={`/course/${item.id}`} sx={{ display: "block" }}>
+          <a href={`/course/${item.TeacherId}/${item.id}`} sx={{ display: "block" }}>
                         <Image
                         alt={lang==="ar"?item?.titleAR:item?.titleEN}
                         src={`${process.env.REACT_APP_API_KEY}images/${item?.image}`}
@@ -99,7 +95,7 @@ export default function HomeLecture({lectures}) {
                           </p>
                         </a>
                         <a className='btndetails'
-                        onClick={() => navigate(`/course/${item.id}`)}
+                        onClick={() => navigate(`/course/${item.TeacherId}/${item.id}`)}
                         >
                         {t("view")}
                         </a>

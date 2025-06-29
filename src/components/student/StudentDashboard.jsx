@@ -7,7 +7,6 @@ import InfoIcon from '@mui/icons-material/Info';
 import DescriptionIcon from '@mui/icons-material/Description';
 import WalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import ListAltIcon from '@mui/icons-material/ListAlt';
-import Navbar from '../Navbar';
 import StudentLayout from './StudentLayout';
 import { t } from 'i18next';
 import PaymentIcon from "@mui/icons-material/Payment";
@@ -89,7 +88,6 @@ function StudentDashboard() {
   );
 
   return (
-    <Navbar>
         <StudentLayout>
     <Box >
       <motion.div
@@ -106,9 +104,6 @@ function StudentDashboard() {
       {renderSection(t("profile"), profileItems)}
     </Box>
         </StudentLayout>
-
-    </Navbar>
-
   );
 }
 

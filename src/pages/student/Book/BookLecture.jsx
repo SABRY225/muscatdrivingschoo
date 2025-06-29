@@ -12,6 +12,7 @@ import { useSnackbar } from "notistack";
 import Loading from "../../../components/Loading";
 import Cookies from "js-cookie";
 import { useLecture } from "../../../hooks/useLecture";
+import { convertCurrency } from "../../../utils/convertCurrency";
 
 export default function BookLecture() {
   const lang                        = Cookies.get("i18next") || "en";
@@ -91,6 +92,15 @@ export default function BookLecture() {
     }
   }, [data] );
 
+    const [convertedAmount, setConvertedAmount] = React.useState(null);
+
+    React.useEffect(() => {
+        async function fetchConvertedAmount() {
+            const result = await convertCurrency(price, data.data?.currency, currency);
+            setConvertedAmount(result);
+        }
+        fetchConvertedAmount();
+    }, [price, currency, data.data?.currency]);
   return ( 
     <Navbar>
       <Container sx={{ marginTop: "120px" }}>
@@ -168,7 +178,7 @@ export default function BookLecture() {
                   </Typography>
                 </Box>
                 <Typography>
-                  {parseFloat(ObjLecture?.price * conversionRate).toFixed(2)} {currency}
+                  {convertedAmount} {t(currency)}
                 </Typography>
               </Box>
               <Box
@@ -205,10 +215,8 @@ export default function BookLecture() {
                   </Typography>
                 </Box>
                 <Typography>
-                  {parseFloat(ObjLecture?.price * conversionRate).toFixed(
-                    2
-                  )}{" "}
-                  {currency}
+                  {convertedAmount}{" "}
+                  {t(currency)}
                 </Typography>
               </Box>
             </Box>

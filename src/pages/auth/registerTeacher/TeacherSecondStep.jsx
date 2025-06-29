@@ -72,7 +72,7 @@ export default function TeacherSecondStep() {
         <Navbar>
             <Container sx={{marginTop:"110px"}}>
                 <Paper sx={{width:{md:"450px"},padding:"30px 50px",margin:"60px auto 60px"}}>
-                    <HeaderSteps step={2} title={t('verifyEmail')} steps={3}/>
+                    <HeaderSteps step={2} title={t('verifyEmail')} steps={9}/>
                         <Box sx={{display:"flex",justifyContent:"center"}}>
                             <Image src={gmailImage}/>
                         </Box>

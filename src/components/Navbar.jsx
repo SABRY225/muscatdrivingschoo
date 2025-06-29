@@ -13,7 +13,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { Link, useNavigate } from "react-router-dom";
 import ChangeLanguage from "./reusableUi/ChangeLanguage";
-import {Badge,Button,Stack,styled,} from "@mui/material";
+import {Badge,Button,ListItemIcon,Menu,MenuItem,Stack,styled,} from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutTeacher }  from "../redux/teacherSlice";
@@ -27,10 +27,10 @@ import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from "@mui/icons-material/Email";
 import CastForEducationIcon from "@mui/icons-material/CastForEducation";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import { collection, onSnapshot, query, where } from "firebase/firestore";
-import { db } from "../firebase";
+import LogoutIcon from "@mui/icons-material/Logout";
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 import axios from "axios";
+import { AccountTree, AddCircleOutline, Campaign, School } from "@mui/icons-material";
 
 const drawerWidth = 240;
 
@@ -240,6 +240,15 @@ useUnreadNotification(teacher, setNotSeenTeacher);
   const container =
     window !== undefined ? () => window().document.body : undefined;
 
+const teacherProfile = [
+  { title: t("controlBoard"), link: "/dashboard", icon: <SpaceDashboardIcon fontSize="small" /> },
+  { icon: <AccountTree />, title: t("Statistics"), link: "/statistics" },
+  { icon: <School />, title: t("lessons"), link: "/sessions" },
+  { icon: <AddCircleOutline />, title: t("addAds"), link: "/create-ads/step1" },
+  { icon: <Campaign />, title: t("myAds"), link: "/ads" },
+  { icon: <Campaign />, title: t("careers"), link: "/careers" },
+];
+
 
   const teacherProfileMobile = [
     { title: t("controlBoard"),      link: "/dashboard",    icon: <SpaceDashboardIcon fontSize="small" />,  },
@@ -266,7 +275,9 @@ useUnreadNotification(teacher, setNotSeenTeacher);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
+ const handleClose = () => {
+    setAnchorEl(null);
+  };
 
 // Change Style by eng.reem.shwky
   const drawer = (
@@ -530,7 +541,7 @@ useUnreadNotification(teacher, setNotSeenTeacher);
                           alignItems: "center",
                           columnGap: "6px",
                         }}
-                        onClick={() => navigate("/teacher/dashboard")}
+                        onClick={handleClick}
                       >
                         <Box
                           sx={{
@@ -549,7 +560,62 @@ useUnreadNotification(teacher, setNotSeenTeacher);
                           ? teacher?.firstName + " " + teacher?.lastName
                           : t("username")}
                       </Box>
-                  
+                      <Menu
+                        id="account-menu"
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleClose}
+                        PaperProps={{
+                          elevation: 0,
+                          sx: {
+                            overflow: "visible",
+                            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                            mt: 1.5,
+                            "& .MuiAvatar-root": {
+                              width: 32,
+                              height: 32,
+                              ml: -0.5,
+                              mr: 1,
+                            },
+                            "&:before": {
+                              content: '""',
+                              display: "block",
+                              position: "absolute",
+                              top: 0,
+                              right: 14,
+                              width: 10,
+                              height: 10,
+                              bgcolor: "background.paper",
+                              transform: "translateY(-50%) rotate(45deg)",
+                              zIndex: 0,
+                            },
+                          },
+                        }}
+                      >
+                        {teacherProfile.map((item) => {
+                          return (
+                            <MenuItem
+                              sx={{ fontSize: "14px" }}
+                              onClick={() => {
+                                navigate(`/teacher${item.link}`);
+                                handleClose();
+                              }}
+                            >
+                              <ListItemIcon>{item.icon}</ListItemIcon>
+                              {item.title}
+                            </MenuItem>
+                          );
+                        })}
+                        <MenuItem
+                          sx={{ fontSize: "14px" }}
+                          onClick={handleTeacherLogout}
+                        >
+                          <ListItemIcon>
+                            <LogoutIcon fontSize="small" />
+                          </ListItemIcon>
+                          {t("logout")}
+                        </MenuItem>
+                      </Menu>
                     </Box>
                   </Stack>
                 )}

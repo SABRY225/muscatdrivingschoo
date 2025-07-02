@@ -43,7 +43,11 @@ export default function CareerUpdate({handleClose,career,setCareers}) {
             advertiserPhone     : career?.advertiserPhone,
         }
     });
-    const {token} = useSelector((state)=>state.admin)
+    const admin = useSelector((state) => state.admin);
+    const teacher = useSelector((state) => state.teacher);
+
+const token = admin?.token || teacher?.token;
+
 
     useEffect(() => {
         if (career && check == false) {
@@ -54,11 +58,10 @@ export default function CareerUpdate({handleClose,career,setCareers}) {
           setCheck(true);
         }
         if(careersdepartments?.data){
-
-          
             setCareerDepartmentValue(objCareerDepartment);
         }
     });
+    console.log("token = ", token);
 
     async function onSubmit(data)
     {
@@ -73,10 +76,10 @@ export default function CareerUpdate({handleClose,career,setCareers}) {
         formData.append("advertiserName",         data.advertiserName);
         formData.append("advertiserPhone",        data.advertiserPhone);
         try{
-            const response = await fetch(`${process.env.REACT_APP_API_KEY}api/v1/admin/career/${career.id}`,{
+            const response = await fetch(`${process.env.REACT_APP_API_KEY}api/v1/teacher/career/${career.id}`,{
                 method:"PUT",
                 headers:{
-                    "Authorization":token,
+                    "Authorization":token
                 },
                 body:formData
             })
@@ -90,7 +93,7 @@ export default function CareerUpdate({handleClose,career,setCareers}) {
             setCareers(back=>back.map(item=>
                 {
                   let objCareerDepartment;
-    objCareerDepartment = careersdepartments?.data.find((e) => e.id == value);
+    objCareerDepartment = careersdepartments?.data.find((e) => e.id === value);
                     return item.id===career.id?{...item,
                         titleAR:data.title_ar,
                         titleEN:data.title_en,

@@ -69,13 +69,26 @@ export default function BookDiscount() {
         });
         throw new Error("failed occured");
       }
-      if (data.typeofbook === "wallet") {
-        navigate("/student/discounts");
+      if (resData.status === 400) {
+        enqueueSnackbar(
+          lang === "ar" ? resData.msg.arabic : resData.msg.english,
+          { variant: "error", autoHideDuration: 8000 }
+        );
+      }
+      else if (data.typeofbook === "wallet") {
+        navigate("/student/discount");
         enqueueSnackbar(
           lang === "ar" ? resData.msg.arabic : resData.msg.english,
           { variant: "success", autoHideDuration: 8000 }
         );
-      } else {
+      } else if (data.typeofbook === "points") {
+        navigate("/student/discount");
+        enqueueSnackbar(
+          lang === "ar" ? resData.msg.arabic : resData.msg.english,
+          { variant: "success", autoHideDuration: 8000 }
+        );
+      }
+      else {
         window.location.replace(resData.data);
       }
     } catch (err) {
@@ -101,7 +114,7 @@ export default function BookDiscount() {
         <Loading />
         ) : (
         <Paper sx={{ padding: "30px 20px" }}>
-          <Typography sx={{ fontSize: "24px", fontWeight: "600", marginBottom: "24px" }}>
+          <Typography sx={{ fontSize: "21px", fontWeight: "600", marginBottom: "24px" }}>
             {t("bookDetails_Discount")} { (lang=="en") ? objDiscount?.titleEN : objDiscount?.titleAR}
           </Typography>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -110,6 +123,11 @@ export default function BookDiscount() {
               <Controller name="typeofbook" control={control}
                 render={({ field }) => (
                   <RadioGroup {...field}>
+                                          <FormControlLabel
+                                            value="points"
+                                            control={<Radio size="2px" />}
+                                            label={`${t("Buy with points")}`}
+                                          />
                     <FormControlLabel
                       value="wallet"
                       control={<Radio size="2px" />}

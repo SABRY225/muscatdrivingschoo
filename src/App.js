@@ -234,6 +234,13 @@ import StudentStats from "./pages/student/StudentStats.jsx";
 import InvoiceTeacher from "./PDF/InvoiceTeacher.jsx";
 import InvoiceAdmin from "./PDF/InvoiceAdmin.jsx";
 import CareerTeacher from "./components/teacher/careers/Career.jsx";
+import StepOne from "./components/teacher/ads/StepOne.jsx";
+import StepTwo from "./components/teacher/ads/StepTwo.jsx";
+import StepThree from "./components/teacher/ads/StepThree.jsx";
+import StepFour from "./components/teacher/ads/StepFour.jsx";
+import View from "./components/teacher/ads/View.jsx";
+import Details from "./components/teacher/ads/Details.jsx";
+import SingleAdsTeacher from "./pages/client/SingleAdsTeacher.jsx";
 
 const theme = createTheme({
   direction: "rtl",
@@ -307,12 +314,15 @@ function App() {
             <Route path="/invoice-teacher/:SessionId/:CreatedAt/:StudentName/:TeacherFirstName/:TeacherLastName/:studentEmail/:StudentPhoneNumber/:Price/:Currency" element={<InvoiceTeacher />} />
             <Route path="/invoice-admin/:sessionId/:CreatedAt/:StudentName/:StudentEmail/:StudentPhoneNumber/:TeacherFirstName/:TeacherLastName/:TeacherPhone/:TeacherEmail/:Price/:Currency" element={<InvoiceAdmin />} />
             <Route path="/certificate/:StudentName/:teacherSignature/:trainingStage/:certificateDate" element={<Certificate />} />
-            {/* <Route path="/searchtest" element={<SearchTest />} /> */}
             <Route path="/landing" element={<SearchTest />} />
             <Route path="teachers/search" element={<SearchTeachers />} />
             <Route path="teacher/:id" element={<SingleTeacher />} />
+
             <Route path="course/:id/:lectureId" element={<SingleCourse />} />
             <Route path="package/:id/:packageId" element={<SinglePackage />} />
+            <Route path="discount-details/:id/:discountId" element={<SingleDiscount />} />
+            <Route path="test/:id/:testId" element={<SingleTest />} />
+
             <Route path="driving-details/:id" element={<SingleDrivingLicensePage />} />
             <Route path="/filter/:subjectId" element={<SearchFilterTeacher />} />
             <Route path="about-us" element={<AboutUs />} />
@@ -320,8 +330,8 @@ function App() {
             <Route path="TermsAndConditions" element={<Terms />} />
             <Route path="driving-licenses" element={<DrivingLicenses />} />
             <Route path="discounts" element={<Discounts />} />
-            <Route path="discount-details/:id/:discountId" element={<SingleDiscount />} />
             <Route path="ads-details/:AdsId" element={<SingleAds />} />
+            <Route path="ads-teacher-details/:AdsId" element={<SingleAdsTeacher />} />
 
             <Route path="careers" element={<SearchCareers />} />
             <Route path="career-details/:id" element={<SingleCareer />} />
@@ -331,7 +341,6 @@ function App() {
             <Route path="ractiveSystemInfo" element={<InteractiveSystemInfo />} />
             <Route path="resource" element={<UnderDevelopment />} />
             <Route path="exames" element={<Test />} />
-            <Route path="test/:id/:testId" element={<SingleTest />} />
             <Route path="*" element={<NotFound />} />
 
             {/** login page */}
@@ -612,18 +621,13 @@ function App() {
               path="teacher/question-choose"
               element={teacher ? <TeacherQuestionChoose /> : <Navigate to="/login" />}
             />
-            {/* <Route path="teacher/careers" element={<CareerTeacher />} /> */}
-            <Route path="teacher/careers" element={<UnderDevelopment />} />
-            <Route path="teacher/ads" element={<UnderDevelopment />} />
-            <Route path="teacher/create-career" element={<GuestCareerADD />} />
-            <Route path="teacher/create-career/step1" element={<GuestCareerStepOne />} />
-            <Route path="teacher/create-career/step2/:CareerId" element={<GuestCareerStepTwo />} />
-            <Route path="teacher/career/details/:CareerId" element={<GuestCareerDetails />} />
-            <Route path="teacher/create-ads/step1" element={<UnderDevelopment />} />
-            <Route path="teacher/create-ads/step2/:AdsId" element={<GuestAdsStepTwo />} />
-            <Route path="teacher/create-ads/step3/:AdsId" element={<GuestAdsStepThree />} />
-            <Route path="teacher/create-ads/step4/:AdsId" element={<GuestAdsStepFour />} />
-            <Route path="teacher/ads/details/:AdsId" element={<GuestAdsStepDetails />} />
+            <Route path="teacher/careers" element={<CareerTeacher />} />
+            <Route path="teacher/ads" element={<View />} />
+            <Route path="teacher/create-ads/step1" element={<StepOne />} />
+            <Route path="teacher/create-ads/step2/:AdsId" element={<StepTwo />} />
+            <Route path="teacher/create-ads/step3/:AdsId" element={<StepThree />} />
+            <Route path="teacher/create-ads/step4/:AdsId" element={<StepFour />} />
+            <Route path="teacher/ads/details/:AdsId" element={<Details />} />
 
             {/** admin pages */}
             <Route

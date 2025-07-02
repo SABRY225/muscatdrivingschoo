@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
+import { Avatar, Box, Button, Container, Grid, Modal, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
 import { useNavigate, useParams } from "react-router-dom";
@@ -12,8 +12,11 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import SchoolIcon from "@mui/icons-material/School";
 import AboutDiscount from "../../components/client/singleTeacher/AboutDisount";
 import Loading from "../../components/Loading";
+import { checkStudentSubscription } from "../../utils/subscriptionService";
 
 export default function SingleDiscount() {
+    const [showModal, setShowModal] = useState(false);
+    const [message, setMessage] = useState("");
     const lang = Cookies.get("i18next") || "en";
     const { id, discountId } = useParams();
     const { student } = useSelector((state) => state.student);
@@ -52,12 +55,24 @@ export default function SingleDiscount() {
         navigate(`/student/messages`);
     };
 
-    const handleRequestDiscount = () => {
+    const handleRequestDiscount = async() => {
         if (!student) {
             swal({ text: t("login_as_student"), icon: "error", button: t("ok") });
             return;
-        }
-        navigate(`/book-discount/${discountId}`);
+        }else {
+                    const result = await checkStudentSubscription(student.id, "DiscountId",discountId);
+                    if (result.isSubscribed) {
+                        setMessage(lang === "ar" ? result.message.arabic : result.message.english);
+                        setShowModal(true);
+                        setTimeout(() => {
+                            setShowModal(false);
+                            navigate("/student/discount");
+                        }, 3000);
+        
+                    } else {
+                        navigate(`/book-discount/${discountId}`);
+                    }
+                }
     };
 
     return (
@@ -195,6 +210,23 @@ export default function SingleDiscount() {
                 </Grid>:<Loading />}
                 
             </Container>
+                        <Modal open={showModal} onClose={() => setShowModal(false)}>
+                            <Box
+                                sx={{
+                                    width: 300,
+                                    margin: "15% auto",
+                                    backgroundColor: "white",
+                                    p: 4,
+                                    borderRadius: 2,
+                                    textAlign: "center",
+                                }}
+                            >
+                                <Typography variant="h6">{message}</Typography>
+                                <Typography variant="body2" sx={{ mt: 2, color: "gray" }}>
+                                    {t("You will be converted within 3 seconds ...")}
+                                </Typography>
+                            </Box>
+                        </Modal>
         </Navbar>
     );
 }

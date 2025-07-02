@@ -60,6 +60,8 @@ export default function BookPackage() {
       );
       setLoad(false);
       const resData = await response.json();
+      console.log(resData);
+      
       if (response.status !== 200 && response.status !== 201) {
         enqueueSnackbar(resData.message, {
           variant: "error",
@@ -67,13 +69,26 @@ export default function BookPackage() {
         });
         throw new Error("failed occured");
       }
-      if (data.typeofbook === "wallet") {
-        navigate("/student/packages");
+      if(resData.status===400){
+        enqueueSnackbar(
+          lang === "ar" ? resData.msg.arabic : resData.msg.english,
+          { variant: "error", autoHideDuration: 8000 }
+        );
+      }
+      else if (data.typeofbook === "wallet") {
+        navigate("/student/package");
         enqueueSnackbar(
           lang === "ar" ? resData.msg.arabic : resData.msg.english,
           { variant: "success", autoHideDuration: 8000 }
         );
-      } else {
+      } else if (data.typeofbook === "points") {
+        navigate("/student/package");
+        enqueueSnackbar(
+          lang === "ar" ? resData.msg.arabic : resData.msg.english,
+          { variant: "success", autoHideDuration: 8000 }
+        );
+      }
+      else {
         window.location.replace(resData.data);
       }
     } catch (err) {
@@ -109,6 +124,11 @@ export default function BookPackage() {
                 render={({ field }) => (
                   <RadioGroup {...field}>
                     <FormControlLabel
+                      value="points"
+                      control={<Radio size="2px" />}
+                      label={`${t("Buy with points")}`}
+                    />
+                    <FormControlLabel
                       value="wallet"
                       control={<Radio size="2px" />}
                       label={`${t("credit")} (${t("wallet")})`}
@@ -134,6 +154,7 @@ export default function BookPackage() {
               )}
             </Box>
             <Box sx={{ padding: "20px" }}>
+              
               <Box
                 sx={{
                   display: "flex",
@@ -185,7 +206,7 @@ export default function BookPackage() {
                     columnGap: "6px",
                   }}
                 >
-                  <Box
+                <Box
                     sx={{
                       backgroundColor: "#005B8E",
                       color: "white",
@@ -210,6 +231,7 @@ export default function BookPackage() {
                   {t(currency)}
                 </Typography>
               </Box>
+
             </Box>
             {!load ? (
               <Button fullWidth type="submit" variant="contained">

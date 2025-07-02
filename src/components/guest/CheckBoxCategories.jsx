@@ -13,7 +13,7 @@ import Cookies from "js-cookie";
 export default function CheckBoxCategories({ checked, setChecked }) {
   
   const { t }     = useTranslation();
-  const { guest } = useSelector((state) => state.guest);
+  const { teacher } = useSelector((state) => state.teacher);
   const { data }  = useAdsDepartments();
   const lang      = Cookies.get("i18next") || "en";
 
@@ -22,14 +22,15 @@ export default function CheckBoxCategories({ checked, setChecked }) {
     const newChecked = [...checked];
 
     if (currentIndex === -1) {
-      newChecked.push({ AdsDepartmentId: value, GuestId: guest.id });
+      newChecked.push({ AdsDepartmentId: value, TeacherId: teacher.id });
     } else {
       newChecked.splice(currentIndex, 1);
     }
 
     setChecked(newChecked);
   };
-
+  console.log(data?.data);
+  
   return (
     <Box sx={{ marginBottom: "26px" }}>
       <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
@@ -37,12 +38,13 @@ export default function CheckBoxCategories({ checked, setChecked }) {
       </InputLabel>
       <List
         dense
-        sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
+        sx={{  width:"100%",bgcolor: "background.paper",display:"flex",flexDirection: 'row',flexWrap: 'wrap' }}
       >
         {data?.data.map((value) => {
           const labelId = `checkbox-list-secondary-label-${value.id}`;
           return (
             <ListItem
+            sx={{width:"300px",m:2,backgroundColor:"#d0d3d4"}}
               key={value.id}
               secondaryAction={
                 <Radio

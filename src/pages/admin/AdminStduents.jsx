@@ -37,7 +37,6 @@ export default function AdminStduents() {
     { id: "Gender", label: t("gender"), minWidth: 150 },
     { id: "Phone",  label: t("phone"), minWidth: 150 },
     { id: "financialRecord", label: t("financialRecord"), minWidth: 150 },
-    // Added by Abdelwahab
     { id: "message", label: t("instant_messaging"), minWidth: 150 },
     { id: "edit",    label: t("update"), minWidth: 150 },
     { id: "suspend", label: t("actions"), minWidth: 150 },

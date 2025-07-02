@@ -18,6 +18,7 @@ import { useRequestLessonById } from "../../hooks/useRequestLessionById";
 import Loading from "../../components/Loading";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import Cookies from "js-cookie";
 
 export default function PayLesson() {
   const { id } = useParams();
@@ -31,6 +32,7 @@ export default function PayLesson() {
   const [lession, setlession] = useState([]);
   const { conversionRate } = useSelector((state) => state.conversionRate);
   const { currency }                  = useSelector((state) => state.currency);
+    const lang                          = Cookies.get("i18next") || "en";
   
 
   useEffect(() => {
@@ -73,11 +75,33 @@ export default function PayLesson() {
       const response = await axios.post(`${process.env.REACT_APP_API_KEY}api/v1/payment/booking`, tmpData);
       const resData = await response.data;
       setLoad(false);
-
-      if (data.typeofbook === "wallet" || data.typeofbook === "points") {
-        navigate("/student/allLessons");
-        enqueueSnackbar(t(resData.msg), { variant: "success", autoHideDuration: 8000 });
-      } else {
+      if (response.status !== 200 && response.status !== 201) {
+        enqueueSnackbar(resData.message, {
+          variant: "error",
+          autoHideDuration: 8000,
+        });
+        throw new Error("failed occured");
+      }
+      if (resData.status === 400) {
+        enqueueSnackbar(
+          lang === "ar" ? resData.msg.arabic : resData.msg.english,
+          { variant: "error", autoHideDuration: 8000 }
+        );
+      }
+      else if (data.typeofbook === "wallet") {
+        navigate("/student/lessons");
+        enqueueSnackbar(
+          lang === "ar" ? resData.msg.arabic : resData.msg.english,
+          { variant: "success", autoHideDuration: 8000 }
+        );
+      } else if (data.typeofbook === "points") {
+        navigate("/student/lessons");
+        enqueueSnackbar(
+          lang === "ar" ? resData.msg.arabic : resData.msg.english,
+          { variant: "success", autoHideDuration: 8000 }
+        );
+      }
+      else {
         window.location.replace(resData.data);
       }
     } catch (err) {

@@ -7,14 +7,14 @@ export default function StepperButtonsGuest({ onSubmit, load, skipLink }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   return (
-    <Box sx={{ display: "flex", columnGap: "12px", marginTop: "120px" }}>
-      <Button
+    <Box sx={{ display: "flex", columnGap: "12px", marginTop: "10px" }}>
+      {/* <Button
         sx={{ textTransform: "capitalize" }}
         variant="outlined"
         onClick={() => navigate(-1)}
       >
         {t("back")}
-      </Button>
+      </Button> */}
       {load ? (
         <Button
           sx={{ textTransform: "capitalize", opacity: 0.7 }}
@@ -41,7 +41,7 @@ export default function StepperButtonsGuest({ onSubmit, load, skipLink }) {
           {t("next")}
         </Button>
       )}
-      {(skipLink === "step1" || skipLink === "step2") && (
+      {/* {(skipLink === "step1" || skipLink === "step2") && (
         <Button
           sx={{ textTransform: "capitalize" }}
           variant="outlined"
@@ -49,7 +49,7 @@ export default function StepperButtonsGuest({ onSubmit, load, skipLink }) {
         >
           {t("skip")}
         </Button>
-      )}
+      )} */}
     </Box>
   );
 }

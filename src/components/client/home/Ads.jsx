@@ -55,6 +55,15 @@ export default function Ads({ads}) {
       }
     ]
   };
+  const handleAds =(type,id)=>{
+    console.log(type);
+    if (type==="teacher") {
+     return navigate(`/ads-teacher-details/${id}`)
+    }
+    else{
+     return navigate(`/ads-details/${id}`)
+    }
+  }
   return (
     <Box sx={{ padding: "32px 24px", marginY: "30px" }}>
       <Typography sx={{ fontSize: { md: "26px", xs: "22px" }, fontWeight: "700", color: "#800020", textAlign: "center", marginBottom: "50px" }}>{t('home_ads')}</Typography>
@@ -67,7 +76,6 @@ export default function Ads({ads}) {
               return (
                 <>
                   <div key={index}>
-                    <a href={`/ads-details/${item?.id}`} >
                       <Paper sx={{ padding: "0px", display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#fff", borderRadius: "20px", margin: "20px", textAlign: "right" }}>
                         <Image alt={lang === "ar" ? item?.titleAR : item?.titleEN}
                           src={`${process.env.REACT_APP_API_KEY}images/${item?.image}`}
@@ -81,21 +89,12 @@ export default function Ads({ads}) {
                           {lang === "ar" ? item?.titleAR : item?.titleEN}<br />
                         </h3>
 
-                        {/* <p className='p_1' > { new_desc }  </p> */}
-
                         <ul className="ul_details">
-                          {/* <li style={{fontWeight:"400" , fontSize:"13px"}}><b style={{fontWeight:"400" , fontSize:"13px" , color:"#888" , textAlign:  "right !important" }}> {t('carModel')}</b> <p>{item.carModel == "" ? t("carModel_notfound") : item.carModel } </p></li> */}
-                          {/* <li style={{fontWeight:"400" , fontSize:"13px"}}><b style={{fontWeight:"400" , fontSize:"13px" , color:"#888" , textAlign:  "right !important" }}> {t('yearManufacture')}</b> <p>{item.yearManufacture == "" ? t("yearManufacture_notfound") : item.yearManufacture } </p></li> */}
-                          {/* <li style={{fontWeight:"400" , fontSize:"13px"}}><b style={{fontWeight:"400" , fontSize:"13px" , color:"#888" , textAlign:  "right !important" }}> {t('price')}</b> <p>{item.carPrice == "0" ? t("price_notfound") : item.carPrice }  */}
-                          {/* { (item.carPrice != "0") ? ( lang == "ar" ) ? current_currency?.titleAr : current_currency?.titleEn  : ""}   */}
-                          {/* </p> */}
-                          {/* </li> */}
                         </ul>
-                        <button className="btndetails" onClick={() => navigate(`/ads-details/${item.id}`)}>
+                        <button className="btndetails" onClick={()=>handleAds(item?.type,item?.id)}>
                           {t("discount_view")}
                         </button>
                       </Paper>
-                    </a>
                   </div>
                 </>
               )

@@ -99,7 +99,7 @@ function StudentDashboard() {
           {t("controlBoard")}
         </Typography> */}
       </motion.div>
-      {renderSection(t("Orders"), requestItems)}
+      {/* {renderSection(t("Orders"), requestItems)} */}
       {renderSection(t("Finance"), financeItems)}
       {renderSection(t("profile"), profileItems)}
     </Box>

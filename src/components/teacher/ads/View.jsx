@@ -1,41 +1,38 @@
 import React from "react";
-import { Box, Button, Dialog ,Avatar ,TableRow , Paper , TextField,TablePagination  , Table , TableContainer , TableBody  , TableCell } from "@mui/material";
-import { useTranslation } from "react-i18next";
-import { useState, useEffect } from "react";
+import { Box, Button, TableRow , Paper , TextField,TablePagination  , Table , TableContainer , TableBody  , TableCell } from "@mui/material";
+import { useTranslation }           from "react-i18next";
+import { useState, useEffect }      from "react";
 import { useSelector }              from "react-redux";
 import { useSnackbar }              from "notistack";
-import EditIcon                     from "@mui/icons-material/Edit";
+import { useNavigate }              from "react-router-dom";
+import EditIcon                     from "@mui/icons-material/ViewWeek";
 import DeleteIcon                   from "@mui/icons-material/Delete";
 import Cookies                      from "js-cookie";
 import Loading                      from "../../Loading";
-import { useCareers }               from "../../../hooks/useCareers";
-import countries                    from "../../../data/countries";
-import CareerUpdate                 from "./Update";
+import { useAdsByTeacherId } from "../../../hooks/useAdsByTeacherId";
+import TeacherLayout from "../TeacherLayout";
 
-
-export default function CareerView() {
+export default function View() {
   const { t } = useTranslation();
 
   const columns = [
-    { id: "status",              label: t("status"),        minWidth: 150 },
-    { id: "image",       label: t("image"),       minWidth: 150 },
-    { id: "careerDepartment",       label: t("careerDepartment"), minWidth: 150 },
-    { id: "country",       label: t("country"),     minWidth: 150 },
-    { id: "title",       label: t("title"),        minWidth: 150 },
-    { id: "description",  label: t("description"),   minWidth: 150 },
-    { id: "update",               label: t("update"), minWidth: 50 },
-    { id: "delete",               label: t("delete"), minWidth: 50 },
+    { id: "status",             label: t("status"),           minWidth: 150 },
+    { id: "titleAR",            label: t("titleAR"),          minWidth: 150 },
+    { id: "titleEN",            label: t("titleEN"),          minWidth: 150 },
+    { id: "descriptionAR",      label: t("descriptionAR"),    minWidth: 150 },
+    { id: "descriptionEN",      label: t("descriptionEN"),    minWidth: 150 },
+    { id: "link",               label: t("link"),             minWidth: 150 },
+    { id: "actions",             label: t("actions"),         minWidth: 150 },
   ];
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [searchInput, setSearchInput] = React.useState("");
-  const { data, isLoading } = useCareers();
-  const [Careers, setCareers] = useState([]);
-
-  const { token } = useSelector((state) => state.admin);
+  const { teacher, token }              = useSelector((state) => state.teacher);
+  const { data, isLoadingAds }        = useAdsByTeacherId(teacher.id);
+  const [ AdsData, setAdsData ]       = useState([]);
   const { closeSnackbar, enqueueSnackbar } = useSnackbar();
   const { lang } = Cookies.get("i18next") || "en";
-
+  const navigate            = useNavigate();
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -47,13 +44,12 @@ export default function CareerView() {
 
   useEffect(() => {
     if (data?.data) {
-      setCareers(data.data);
+      setAdsData(data?.data);
     }
   }, [data]);
 
   /** handle open dialog */
   const [open, setOpen] = React.useState(false);
-
   const handleClose = () => {
     setOpen(false);
   };
@@ -65,7 +61,7 @@ export default function CareerView() {
     if (!isConfirmed) return;
     try {
       const res = await fetch(
-        `${process.env.REACT_APP_API_KEY}api/v1/admin/career/${id}`,
+        `${process.env.REACT_APP_API_KEY}api/v1/teacher/ads/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -81,7 +77,7 @@ export default function CareerView() {
         } else {
           enqueueSnackbar(json.msg.arabic, { variant: "success" });
         }
-        setCareers(Careers.filter((c) => c.id !== id));
+        setAdsData(AdsData.filter((c) => c.id !== id));
       } else {
         enqueueSnackbar(res.message, { variant: "error" });
       }
@@ -91,8 +87,9 @@ export default function CareerView() {
     }
   };
   return (
+    <TeacherLayout>
     <Box>
-      {!isLoading ? (
+      {!isLoadingAds ? (
         <Paper sx={{ width: "100%", padding: "20px" }}>
           <TableContainer sx={{ maxHeight: 440 }}>
             <TextField
@@ -106,17 +103,16 @@ export default function CareerView() {
               <TableRow>
                 {columns.map((column) => (
                   <TableCell
-                    key={column.id}
-                    align={"center"}
-                    style={{ top: 57, minWidth: column.minWidth }}
+                    key  ={column.id}   align={"center"}
+                    style={{ top: 57,   minWidth: column.minWidth }}
                   >
                     {column.label}
                   </TableCell>
                 ))}
               </TableRow>
               <TableBody>
-                {Careers.length> 0 ?
-                Careers
+                { AdsData.length> 0 ?
+                  AdsData
                   ?.filter(
                     (row) =>
                       `${row.titleAR || ""}`
@@ -128,40 +124,26 @@ export default function CareerView() {
                   )
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => {
-                    let c = countries.find((e) => e.code === row?.country.toLowerCase())
-
                     let txt_status = t("waiting");
-                      if(row.status == "1"){
-                        txt_status = t("waiting");
-                      }
-                      else if(row.status == "0") txt_status = t("reject");
-                      else if(row.status == "2") txt_status = t("accept");
+                    if(row.status == "1"){
+                      txt_status = t("waiting");
+                    }
+                    else if(row.status == "0") txt_status = t("reject");
+                    else if(row.status == "2") txt_status = t("accept");
+                    
+
                     return (
-                      <TableRow hover role="checkbox" key={row.id + "demj"}>
-                        <TableCell align="center">{ txt_status }</TableCell>
+                      <TableRow hover role="checkbox" key={ row.id + "demj"}>
+                        <TableCell align="center">{ txt_status }       </TableCell>
+                        <TableCell align="center">{ row.titleAR }       </TableCell>
+                        <TableCell align="center">{ row.titleEN }       </TableCell>
+                        <TableCell align="center">{ row.descriptionAR } </TableCell>
+                        <TableCell align="center">{ row.descriptionEN } </TableCell>
+                        <TableCell align="center">{ row.link }          </TableCell>
                         <TableCell align="center">
-                        <Avatar
-                            sx={{ width: "85px", height: "85px" }}
-                            src={`${process.env.REACT_APP_API_KEY}images/${row.image}`}
-                        />
-                        </TableCell>
-                        <TableCell align="center">{ (lang==="en") ? row.CareerDepartment.titleEN : row.CareerDepartment.titleAR}</TableCell>
-                        <TableCell align="center">{ lang === "en" ? c.name_en : c.name_ar  }</TableCell>
-                        <TableCell align="center">{ (lang==="ar") ? row.titleAR : row.titleEN}</TableCell>
-                        <TableCell align="center">{ (lang==="ar") ? row.descriptionAr : row.descriptionEn}</TableCell>
-                        <TableCell align="center">
-                          <Button onClick={() => setOpen(row.id)}>
+                          <Button onClick={() => navigate(`/teacher/ads/details/${row.id}`)}>
                             <EditIcon />
                           </Button>
-                          <Dialog open={open === row.id} onClose={handleClose}>
-                            <CareerUpdate
-                              setCareers={setCareers}
-                              career={row}
-                              handleClose={handleClose}
-                            />
-                          </Dialog>
-                        </TableCell>
-                        <TableCell align="center">
                           <Button
                             color="error"
                             onClick={() => handleDelete(row.id)}
@@ -174,7 +156,7 @@ export default function CareerView() {
                   })
                   : <TableRow>
                       <TableCell align="center" colSpan={7}>
-                      <p>{t("career_notfound")}</p>
+                      <p>{t("ads_notfound")}</p>
                       </TableCell>
                     </TableRow>
                   }
@@ -184,7 +166,7 @@ export default function CareerView() {
           <TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={Careers?.length}
+            count={AdsData?.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -195,5 +177,7 @@ export default function CareerView() {
         <Loading />
       )}
     </Box>
+    </TeacherLayout>
+
   );
 }

@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
+import { Avatar, Box, Button, Container, Grid, Modal, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
 import { useNavigate, useParams } from "react-router-dom";
@@ -12,8 +12,11 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import SchoolIcon from "@mui/icons-material/School";
 import AboutPackage from "../../components/client/singleTeacher/AboutPackage";
 import Loading from "../../components/Loading";
+import { checkStudentSubscription } from "../../utils/subscriptionService";
 
 export default function SinglePackage() {
+    const [showModal, setShowModal] = useState(false);
+        const [message, setMessage] = useState("");
     const lang = Cookies.get("i18next") || "en";
     const { id, packageId } = useParams();
     const { student } = useSelector((state) => state.student);
@@ -53,12 +56,25 @@ export default function SinglePackage() {
         navigate(`/student/messages`);
     };
 
-    const handleRequestPackage = () => {
+    const handleRequestPackage = async() => {
         if (!student) {
             swal({ text: t("login_as_student"), icon: "error", button: t("ok") });
             return;
-        }
-        navigate(`/book-package/${packageId}`);
+        }else {
+                    const result = await checkStudentSubscription(student.id, "PackageId",packageId);
+                    if (result.isSubscribed) {
+                        setMessage(lang==="ar"?result.message.arabic:result.message.english); 
+                        setShowModal(true);
+                        setTimeout(() => {
+                            setShowModal(false);
+                            navigate("/student/package"); 
+                        }, 3000);
+        
+                    } else {
+                        navigate(`/book-package/${packageId}`);
+                    }
+        
+                }
     };
 
     return (
@@ -196,6 +212,23 @@ export default function SinglePackage() {
                 </Grid>:<Loading />}
                 
             </Container>
+                              <Modal open={showModal} onClose={() => setShowModal(false)}>
+                    <Box
+                      sx={{
+                        width: 300,
+                        margin: "15% auto",
+                        backgroundColor: "white",
+                        p: 4,
+                        borderRadius: 2,
+                        textAlign: "center",
+                      }}
+                    >
+                      <Typography variant="h6">{message}</Typography>
+                      <Typography variant="body2" sx={{ mt: 2, color: "gray" }}>
+                        {t("You will be converted within 3 seconds ...")}
+                      </Typography>
+                    </Box>
+                  </Modal>
         </Navbar>
     );
 }

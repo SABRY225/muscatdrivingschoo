@@ -1,4 +1,4 @@
-import { Box, CardMedia, Paper, Typography, useMediaQuery } from '@mui/material';
+import { Box, CardMedia, Paper, Typography, useMediaQuery, useTheme } from '@mui/material';
 import Cookies from 'js-cookie';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -8,13 +8,9 @@ import { useSelector } from 'react-redux';
 export default function AboutTest({ testData }) {
     const { t } = useTranslation();
     const lang = Cookies.get("i18next") || "en";
-    const isMobile = useMediaQuery("(max-width:600px)");
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // sm = 600px
     const { currency } = useSelector(state => state.currency);
-
-    function convertDate(dateString) {
-        const date = new Date(dateString);
-        return date.toISOString().split('T')[0]; // yyyy-mm-dd
-    }
 
     const [convertedAmount, setConvertedAmount] = React.useState(null);
 
@@ -27,71 +23,80 @@ export default function AboutTest({ testData }) {
     }, [testData.price, currency, testData.currency]);
 
     return (
-        <Paper sx={{ padding: "32px 24px", borderRadius: 2, boxShadow: 3 }}>
-            {/* صورة المحاضرة */}
+        <Paper sx={{ padding: 1, borderRadius: 2, boxShadow: 3 ,mt:4}}>
+            {/* صورة الاختبار */}
             <CardMedia
                 component="img"
-                height={isMobile ? "250px" : "400px"}
-                image={testData.image ? `${process.env.REACT_APP_API_KEY}images/${testData.image}` : "/logo.png"}
-                alt="package img"
-                sx={{ filter: "brightness(50%)", width: "100%", objectFit: "cover", borderRadius: 2 }}
+                height={isMobile ? "200px" : "400px"}
+                image={testData?.image ? `${process.env.REACT_APP_API_KEY}images/${testData?.image}` : "/logo.png"}
+                alt="test img"
+                sx={{
+                    filter: "brightness(50%)",
+                    width: "100%",
+                    objectFit: "cover",
+                    borderRadius: 2,
+                    marginBottom: 3,
+                }}
             />
-            
-            <Box sx={{ textAlign: "center", marginY: "8px", marginBottom: "2rem" }}>
-                <Typography variant={isMobile ? "h5" : "h4"} sx={{ fontWeight: "700" }}>
-                    {lang === "ar" ? testData.titleArabic : testData.titleEnglish}
+
+            {/* العنوان */}
+            <Box sx={{ textAlign: "center", mb: 4 }}>
+                <Typography variant={isMobile ? "h6" : "h4"} fontWeight="bold">
+                    {lang === "ar" ? testData?.titleArabic : testData?.titleEnglish}
                 </Typography>
             </Box>
 
-            {/* معلومات المحاضرة */}
-            {[ 
-                { label: t("studycurriculums"), value: lang === "ar" ? testData?.curriculums?.titleAR : testData?.curriculums?.titleEN },
-                { label: t("subject"), value: lang === "ar" ? testData.subject.titleAR : testData.subject.titleEN },
-                { label: t("classes"), value: lang === "ar" ? testData?.class?.titleAR : testData?.class?.titleEN },
-                { label: t("semester"), value: t(testData?.semester) },
-                { label: t("price"), value: convertedAmount },
-                { label: t("currency"), value: t(currency) },
-            ].map((item, index) => (
-                <Box
-                    key={index}
-                    sx={{
-                        display: "flex",
-                        flexDirection: isMobile ? "column" : "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        marginTop: "10px",
-                        gap: isMobile ? "8px" : "0",
-                    }}
-                >
-                    <Typography
-                        variant="body1"
+            {/* بيانات الاختبار */}
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                {[
+                    { label: t("studycurriculums"), value: lang === "ar" ? testData?.curriculums?.titleAR : testData?.curriculums?.titleEN },
+                    { label: t("subject"), value: lang === "ar" ? testData?.subject?.titleAR : testData?.subject?.titleEN },
+                    { label: t("classes"), value: lang === "ar" ? testData?.class?.titleAR : testData?.class?.titleEN },
+                    { label: t("semester"), value: t(testData?.semester) },
+                    { label: t("price"), value: convertedAmount },
+                    { label: t("currency"), value: t(currency) },
+                ].map((item, index) => (
+                    <Box
+                        key={index}
                         sx={{
-                            fontWeight: "700",
-                            background: "#f2f3f4",
-                            borderRadius: "1rem",
-                            padding: isMobile ? "0.8rem 2rem" : "1rem 5rem",
-                            width: isMobile ? "100%" : "300px",
-                            textAlign: "center"
+                            display: "flex",
+                            flexDirection: isMobile ? "column" : "row",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            gap: 2,
+                            flexWrap: "wrap"
                         }}
                     >
-                        {item.label}
-                    </Typography>
-                    <Typography
-                        variant="body1"
-                        sx={{
-                            fontWeight: "400",
-                            background: "#f2f3f4",
-                            borderRadius: "1rem",
-                            padding: isMobile ? "0.8rem 2rem" : "1rem 5rem",
-                            width: isMobile ? "100%" : "300px",
-                            textAlign: "center",
-                            color: "#5dade2"
-                        }}
-                    >
-                        {item.value}
-                    </Typography>
-                </Box>
-            ))}
+                        <Typography
+                            sx={{
+                                fontWeight: "bold",
+                                background: "#f2f3f4",
+                                borderRadius: "1rem",
+                                padding: "0.8rem 2rem",
+                                minWidth: "140px",
+                                textAlign: "center",
+                                flex: 1,
+                            }}
+                        >
+                            {item.label}
+                        </Typography>
+                        <Typography
+                            sx={{
+                                fontWeight: "400",
+                                background: "#f2f3f4",
+                                borderRadius: "1rem",
+                                padding: "0.8rem 2rem",
+                                textAlign: "center",
+                                flex: 1,
+                                color: "#5dade2",
+                                minWidth: "140px",
+                            }}
+                        >
+                            {item.value}
+                        </Typography>
+                    </Box>
+                ))}
+            </Box>
         </Paper>
     );
 }

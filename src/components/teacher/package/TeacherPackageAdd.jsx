@@ -72,7 +72,7 @@ function TeacherPackageAdd() {
 
   const { register, handleSubmit, formState: { errors }, control, getValues } = useForm({
     defaultValues: {
-      level: '',
+      LevelId: '',
       class: '',
       subject: '',
       semester: '',
@@ -224,7 +224,7 @@ function TeacherPackageAdd() {
                 })}
               >
                 {TrainingCategoryTypes?.data.map((row, index) => (
-                    <MenuItem key={index} value={row.id}>{i18next === "ar"?t(row.titleAR):t(row.titleEN)}</MenuItem>
+                  <MenuItem key={index} value={row.id}>{i18next === "ar" ? t(row.titleAR) : t(row.titleEN)}</MenuItem>
                 ))
                 }
               </Select>
@@ -258,12 +258,12 @@ function TeacherPackageAdd() {
             }}
           >
             <FormControl fullWidth margin="dense">
-              <InputLabel id="level">{t("choosesLevel")}</InputLabel>
+              <InputLabel id="LevelId">{t("level")}</InputLabel>
               <Select
-                labelId="level"
-                label={t("choosesLevel")}
+                labelId="LevelId"
+                label={t("level")}
                 defaultValue="" // قيمة افتراضية
-                {...register("level", {
+                {...register("LevelId", {
                   required: t("isRequired"),
                 })}
               >
@@ -298,40 +298,40 @@ function TeacherPackageAdd() {
               <p className="text-red-500">{errors.class?.message}</p>
             </FormControl>
           </Box>
-            <FormControl fullWidth margin="dense">
-              <InputLabel id="subject">{t("subject")}</InputLabel>
-              <Select
-                labelId="subject"
-                label={t("subject")}
-                defaultValue="" // قيمة افتراضية
-                {...register("subject", {
-                  required: t("isRequired"),
-                })}
-              >
-                {
-                  subjects?.data.map((subject, index) => (
-                    <MenuItem key={index} value={subject.id}>{i18next === "ar"?t(subject?.titleAR):t(subject?.titleEN)}</MenuItem>
-                  ))
-                }
-              </Select>
-              <p className="text-red-500">{errors.subject?.message}</p>
-            </FormControl>
           <FormControl fullWidth margin="dense">
-              <InputLabel id="gender">{t("package_gender")}</InputLabel>
-              <Select
-                labelId="gender"
-                label={t("package_gender")}
-                {...register("gender", {
-                  required: t("isRequired"),
-                })}
-              >
-                {genders.map((row, index) => (
-                    <MenuItem key={index} value={row.id}>{row.label}</MenuItem>
+            <InputLabel id="subject">{t("subject")}</InputLabel>
+            <Select
+              labelId="subject"
+              label={t("subject")}
+              defaultValue="" // قيمة افتراضية
+              {...register("subject", {
+                required: t("isRequired"),
+              })}
+            >
+              {
+                subjects?.data.map((subject, index) => (
+                  <MenuItem key={index} value={subject.id}>{i18next === "ar" ? t(subject?.titleAR) : t(subject?.titleEN)}</MenuItem>
                 ))
-                }
-              </Select>
-              <p className="text-red-500">{errors.gender?.message}</p>
-            </FormControl>
+              }
+            </Select>
+            <p className="text-red-500">{errors.subject?.message}</p>
+          </FormControl>
+          <FormControl fullWidth margin="dense">
+            <InputLabel id="gender">{t("package_gender")}</InputLabel>
+            <Select
+              labelId="gender"
+              label={t("package_gender")}
+              {...register("gender", {
+                required: t("isRequired"),
+              })}
+            >
+              {genders.map((row, index) => (
+                <MenuItem key={index} value={row.id}>{row.label}</MenuItem>
+              ))
+              }
+            </Select>
+            <p className="text-red-500">{errors.gender?.message}</p>
+          </FormControl>
           <Box
             sx={{
               display: { md: "flex", xs: "block" },
@@ -357,7 +357,7 @@ function TeacherPackageAdd() {
               </Select>
               <p className="text-red-500">{errors.curriculums?.message}</p>
             </FormControl>
-            <FormControl fullWidth margin="dense">
+            {/* <FormControl fullWidth margin="dense">
               <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }} id="semester">
                 {t("semester")}
               </InputLabel>
@@ -378,7 +378,7 @@ function TeacherPackageAdd() {
                   <MenuItem disabled>{t("noData")}</MenuItem>
                 )}
               </Select>
-            </FormControl>
+            </FormControl> */}
           </Box>
 
           <Box
@@ -390,7 +390,7 @@ function TeacherPackageAdd() {
           >
             <FormControl fullWidth margin="dense">
               <TextField
-                label={t("sharePrice")}
+                label={t("price")}
                 type="number"
                 variant="outlined"
                 {...register("price", {
@@ -409,7 +409,10 @@ function TeacherPackageAdd() {
               >
                 {
                   currencies.map((curr) => {
-                    return <MenuItem value={curr.title}>{lang === "en" ? curr.titleEn : curr.titleAr}</MenuItem>
+                    return <MenuItem key={curr.title} value={curr.title} sx={{ gap: "1rem" }} >
+                      <img src={`https://flagcdn.com/w320/${curr.code}.png`} style={{ width: "25px" }} />
+                      {lang === "en" ? curr.titleEn : curr.titleAr}
+                    </MenuItem>
                   })
                 }
               </Select>
@@ -417,10 +420,10 @@ function TeacherPackageAdd() {
             </FormControl>
           </Box>
 
-          <Box sx={{ display: "flex", gap: 3 }}>
+          <Box sx={{ display: "flex", gap: 3 ,marginBottom: "18px"}}>
             <Box sx={{ width: "100%" }}>
               <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
-                {t("lessonDate")}
+                {t("package_startDate")}
               </InputLabel>
               <Controller
                 name="startDate"
@@ -469,10 +472,10 @@ function TeacherPackageAdd() {
             </Box>
           </Box>
 
-          <Box sx={{ width: "100%" }}>
-            <InputLabel sx={{ marginBottom: "6px", fontSize: "13px", marginTop: "3px" }}>
-              {t("lessonEndDate")}
-            </InputLabel>
+          <Box sx={{ width: "100%" ,marginBottom: "18px"}}>
+              <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
+                {t("package_endDate")}
+              </InputLabel>
             <Controller
               name="endDate"
               control={control}
@@ -556,14 +559,10 @@ function TeacherPackageAdd() {
             }}
           >
             <FormControl fullWidth margin="dense">
-
-              <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
-                {t("descriptionAr")}
-              </InputLabel>
               <Controller
                 name="descriptionAr"
                 control={control}
-                render={({ field }) => <TextField multiline rows={4} {...field} fullWidth />}
+                render={({ field }) => <TextField multiline rows={4} {...field} fullWidth  label={t("descriptionAr")}/>}
                 {...register("descriptionAr", {
                   required: "description Address is required",
                 })}
@@ -579,13 +578,10 @@ function TeacherPackageAdd() {
               )}
             </FormControl>
             <FormControl fullWidth margin="dense">
-              <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
-                {t("descriptionEn")}
-              </InputLabel>
               <Controller
                 name="descriptionEn"
                 control={control}
-                render={({ field }) => <TextField multiline rows={4} {...field} fullWidth />}
+                render={({ field }) => <TextField multiline rows={4} {...field} fullWidth label={t("descriptionEn")}/>}
                 {...register("descriptionEn", {
                   required: "description Address is required",
                 })}

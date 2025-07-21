@@ -1,12 +1,11 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import {
-  Alert,  Box,  Checkbox,  Divider,
+  Alert, Box, Checkbox, Divider,
   FormControlLabel, Grid,
   InputLabel, MenuItem,
-  Select,     Snackbar,
-  TextField,  Typography,
-  Container,
-  Button
+  Select, Snackbar,
+  TextField, Typography,
+  Container, Button
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useSubjects } from "../../../hooks/useSubject";
@@ -17,99 +16,115 @@ import Navbar from "../../../components/Navbar";
 import CheckBoxSubjects from "../../../components/teacher/CheckBoxSubjects";
 import SelectedCategory from "../../../components/teacher/SelectedCategory";
 import currencies from "../../../data/currencies";
-import StepperButtons from "../../../components/reusableUi/StepperButtons";
 import HeaderSteps from "../../../components/auth/HeaderSteps";
+
 function TeacherSevenStep() {
-      const { closeSnackbar, enqueueSnackbar } = useSnackbar();
-      const { t } = useTranslation();
-      const navigate = useNavigate();
-      const token = localStorage.getItem("token");
-      const teacher = JSON.parse(localStorage.getItem("teacher"));
-      const { data, isLoading } = useSubjects();
-      const [choseCategories, setChosenCategories] = useState([]);
-      const [load, setLoad] = useState(false);
-      const [open, setOpen] = useState(false);
-      const [online, setOnline] = useState(false);
-      const [person, setPerson] = useState(false);
-      const [studentHome, setStudentHome] = useState(false);
-      const [teeacherHome, setTeacherHome] = useState(false);
-      const [remote, setRemote] = useState(null);
-      const [f2fStudent, setf2fStudent] = useState(null);
-      const [f2fTeacher, setf2fTeacher] = useState(null);
-      const [discount, setDiscount] = useState(0);
-      const { currency } = useSelector((state) => state.currency);
-    
-      function handleDeleteSelectedCategory(id) {
-        setChosenCategories((back) => back.filter((categ) => categ.id !== id));
+  const { closeSnackbar, enqueueSnackbar } = useSnackbar();
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  const teacher = JSON.parse(localStorage.getItem("teacher"));
+  const { data, isLoading } = useSubjects();
+
+  const [choseCategories, setChosenCategories] = useState([]);
+  const [load, setLoad] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [online, setOnline] = useState(false);
+  const [person, setPerson] = useState(false);
+  const [studentHome, setStudentHome] = useState(false);
+  const [teeacherHome, setTeacherHome] = useState(false);
+  const [remote, setRemote] = useState(null);
+  const [f2fStudent, setf2fStudent] = useState(null);
+  const [f2fTeacher, setf2fTeacher] = useState(null);
+  const [discount, setDiscount] = useState(0);
+  const { currency } = useSelector((state) => state.currency);
+
+  function handleDeleteSelectedCategory(id) {
+    setChosenCategories((back) => back.filter((categ) => categ.id !== id));
+  }
+
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") return;
+    setOpen(false);
+  };
+
+  const handleDiscount = (e) => {
+    closeSnackbar();
+    if (e.target.value < 0 || e.target.value > 100) {
+      enqueueSnackbar(t("discount_error"), { variant: "error", autoHideDuration: 5000 });
+    } else {
+      setDiscount(e.target.value);
+    }
+  };
+
+  const validateForm = () => {
+    if (choseCategories.length === 0) {
+      enqueueSnackbar(t("required_subjects"), { variant: "warning" });
+      return false;
+    }
+    if (!online && !person) {
+      enqueueSnackbar(t("select_teaching_method"), { variant: "warning" });
+      return false;
+    }
+    if (online && (!remote || !remote.price)) {
+      enqueueSnackbar(t("enter_online_price"), { variant: "warning" });
+      return false;
+    }
+    if (person) {
+      if (!teeacherHome && !studentHome) {
+        enqueueSnackbar(t("select_f2f_method"), { variant: "warning" });
+        return false;
       }
-    
-      const handleClose = (event, reason) => {
-        if (reason === "clickaway") {
-          return;
+      if (teeacherHome && (!f2fTeacher || !f2fTeacher.price)) {
+        enqueueSnackbar(t("enter_teacher_home_price"), { variant: "warning" });
+        return false;
+      }
+      if (studentHome && (!f2fStudent || !f2fStudent.price)) {
+        enqueueSnackbar(t("enter_student_home_price"), { variant: "warning" });
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const onSubmit = async () => {
+    if (!validateForm()) return;
+    setLoad(true);
+    let ar1 = choseCategories.map((sub) => ({ TeacherId: teacher.id, SubjectId: sub.id }));
+
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_KEY}api/v1/teacher/subjects/${teacher.id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+          body: JSON.stringify({
+            subjects: ar1,
+            remote: discount >= 0 && remote ? { ...remote, currency, discount: +discount } : remote,
+            f2fStudent: discount >= 0 && f2fStudent ? { ...f2fStudent, currency, discount: +discount } : f2fStudent,
+            f2fTeacher: discount >= 0 && f2fTeacher ? { ...f2fTeacher, currency, discount: +discount } : f2fTeacher,
+          }),
         }
-    
-        setOpen(false);
-      };
-    
-      const handleDiscount = (e) => {
-        closeSnackbar();
-        if (e.target.value < 0 || e.target.value > 100) {
-          enqueueSnackbar(t("discount_error"), {
-            variant: "error",
-            autoHideDuration: "5000",
-          });
-        } else {
-          setDiscount(e.target.value);
-        }
-      };
-    
- 
-      const onSubmit = async () => {
-        setLoad(true);
-        let ar1 = choseCategories.map((sub) => {
-          return { TeacherId: teacher.id, SubjectId: sub.id };
-        });
-        try {
-          const response = await fetch(
-            `${process.env.REACT_APP_API_KEY}api/v1/teacher/subjects/${teacher.id}`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: token,
-              },
-              body: JSON.stringify({
-                subjects: ar1,
-                remote:
-                  discount >= 0 && remote
-                    ? { ...remote, currency, discount: +discount }
-                    : remote,
-                f2fStudent:
-                  discount >= 0 && f2fStudent
-                    ? { ...f2fStudent, currency, discount: +discount }
-                    : f2fStudent,
-                f2fTeacher:
-                  discount >= 0 && f2fTeacher
-                    ? { ...f2fTeacher, currency, discount: +discount }
-                    : f2fTeacher,
-              }),
-            }
-          );
-          setLoad(false);
-          const resData = await response.json();
-          if (resData.status !== 200 && resData.status !== 201) {
-            throw new Error("");
-          } else {
-            enqueueSnackbar(t("update_success"), {
-              variant: "success",
-              autoHideDuration: 1000,
-            });
-            navigate("/teacherRegister/step8");
-          }
-        } catch (err) {
-          console.log(err);
-        }
-      };
+      );
+
+      setLoad(false);
+      const resData = await response.json();
+
+      if (resData.status !== 200 && resData.status !== 201) throw new Error("");
+
+      enqueueSnackbar(t("update_success"), {
+        variant: "success",
+        autoHideDuration: 1000,
+      });
+      navigate("/teacherRegister/step8");
+    } catch (err) {
+      console.log(err);
+    }
+  };
     
   return (
         <Navbar>
@@ -223,20 +238,24 @@ function TeacherSevenStep() {
                         <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
                           {t("Currency")}
                         </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          fullWidth
-                          value={currency}
-                        >
-                          {currencies.map((item, index) => {
-                            return (
-                              <MenuItem value={item.title} key={index + "mhb"}>
-                                {item.title}
-                              </MenuItem>
-                            );
-                          })}
-                        </Select>
+                      <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      fullWidth
+                      value={currency}
+                      // onChange={handleCurrencyChange}
+                    >
+                      {currencies.map((item, index) => {
+                        return (
+                          <MenuItem value={item.title} key={index + "mhb"}>
+                            <div style={{display:"flex",justifyItems:"center",alignItems:"center",gap:".5rem"}}>
+                              <div className="pl-1"><img src={`https://flagcdn.com/w320/${item.code}.png`} style={{width:"25px"}} /></div>
+                              <div>{t(item.title)}</div>
+                            </div>
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
                       </Grid>
                     </Grid>
                   )}
@@ -306,24 +325,24 @@ function TeacherSevenStep() {
                               >
                                 {t("Currency")}
                               </InputLabel>
-                              <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                fullWidth
-                                value={currency}
-                                // onChange={handleCurrencyChange}
-                              >
-                                {currencies.map((item, index) => {
-                                  return (
-                                    <MenuItem
-                                      value={item.title}
-                                      key={index + "mhnmnjjnb"}
-                                    >
-                                      {item.title}
-                                    </MenuItem>
-                                  );
-                                })}
-                              </Select>
+                     <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      fullWidth
+                      value={currency}
+                      // onChange={handleCurrencyChange}
+                    >
+                      {currencies.map((item, index) => {
+                        return (
+                          <MenuItem value={item.title} key={index + "mhb"}>
+                            <div style={{display:"flex",justifyItems:"center",gap:".5rem"}}>
+                              <div className="pl-1"><img src={`https://flagcdn.com/w320/${item.code}.png`} style={{width:"25px"}} /></div>
+                              <div>{t(item.title)}</div>
+                            </div>
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
                             </Grid>
                           </Grid>
                         )}
@@ -377,24 +396,24 @@ function TeacherSevenStep() {
                               >
                                 {t("Currency")}
                               </InputLabel>
-                              <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                fullWidth
-                                value={currency}
-                                // onChange={handleCurrencyChange}
-                              >
-                                {currencies.map((item, index) => {
-                                  return (
-                                    <MenuItem
-                                      value={item.title}
-                                      key={index + "mhbnbhx"}
-                                    >
-                                      {item.title}
-                                    </MenuItem>
-                                  );
-                                })}
-                              </Select>
+                      <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      fullWidth
+                      value={currency}
+                      // onChange={handleCurrencyChange}
+                    >
+                      {currencies.map((item, index) => {
+                        return (
+                          <MenuItem value={item.title} key={index + "mhb"}>
+                            <div style={{display:"flex",justifyItems:"center",alignItems:"center",gap:".5rem"}}>
+                              <div className="pl-1"><img src={`https://flagcdn.com/w320/${item.code}.png`} style={{width:"25px"}} /></div>
+                              <div>{t(item.title)}</div>
+                            </div>
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
                             </Grid>
                           </Grid>
                         )}

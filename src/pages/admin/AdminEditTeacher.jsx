@@ -116,7 +116,7 @@ const AdminEditTeacher = () => {
     <AdminLayout >
       <Box sx={{marginTop:"-100px"}}>
       <TeacherLayout active={0} title={t("about")} >
-      <Paper sx={{ width: "100%", padding: "20px" }}>
+      <Paper sx={{ padding: "20px" }}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box sx={{ width: { md: "500px", xs: "100%" } }}>
             <Box sx={{ marginBottom: "26px" }}>

@@ -7,13 +7,14 @@ import StudentLayout from "../../components/student/StudentLayout";
 import moment from "moment";
 import Loading from "../../components/Loading";
 import { useStudentPackages } from "../../hooks/useStudentPackages";
+import { useNavigate } from "react-router-dom";
 
 function StudentPackages() {
   const lang = Cookies.get("i18next") || "en";
   const { t } = useTranslation();
   const { student, token }    = useSelector((state) => state.student);
   const { data, isLoading }   = useStudentPackages(student.id);
-  console.log(data);
+
 
   return (
     <StudentLayout>

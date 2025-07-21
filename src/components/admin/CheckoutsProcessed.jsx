@@ -15,11 +15,14 @@ import { useProcessedCheckouts } from "../../hooks/useCheckouts";
 export default function CheckoutsProcessed() {
   const { t } = useTranslation();
 
-  const columns = [
-    { id: "teacher_name", label: t("teacher"), minWidth: 150 },
-    { id: "value", label: t("price"), minWidth: 150 },
-    { id: "status", label: t("status"), minWidth: 150 },
-  ];
+const columns = [
+  { id: "teacher_name", label: t("teacher"), minWidth: 150 },
+  { id: "value", label: t("price"), minWidth: 100 },
+  { id: "method", label: t("paymentMethod"), minWidth: 100 },
+  { id: "details", label: t("details"), minWidth: 250 },
+  { id: "actions", label: t("actions"), minWidth: 100 },
+];
+
   const { token } = useSelector((state) => state.admin);
   let { data, isLoading } = useProcessedCheckouts(token);
   const [list, setList] = useState([]);
@@ -43,7 +46,7 @@ export default function CheckoutsProcessed() {
   return (
     <Box>
       {!isLoading ? (
-        <Paper sx={{ width: "100%", padding: "20px" }}>
+        <Paper sx={{ padding: "20px" }}>
           <TableContainer sx={{ maxHeight: 440 }}>
             <Table stickyHeader aria-label="sticky table">
               <TableRow>
@@ -62,28 +65,39 @@ export default function CheckoutsProcessed() {
                   ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => {
                     return (
-                      <TableRow hover role="checkbox" key={row.id + "denjhbmj"}>
-                        <TableCell align="center">
-                          {row?.Teacher?.firstName +
-                            " " +
-                            row?.Teacher?.lastName}
-                        </TableCell>
-                        <TableCell align="center">{row?.value}</TableCell>
+                     <TableRow hover role="checkbox" key={row.id}>
+  <TableCell align="center">
+    {row?.Teacher?.firstName + " " + row?.Teacher?.lastName}
+  </TableCell>
 
-                        <TableCell align="center">
-                          {row.status === 1 ? (
-                            <Typography color={"green"}>
-                              {t("accept")}
-                            </Typography>
-                          ) : (
-                            row.status === -1 && (
-                              <Typography color={"red"}>
-                                {t("reject")}
-                              </Typography>
-                            )
-                          )}
-                        </TableCell>
-                      </TableRow>
+  <TableCell align="center">{row?.value}</TableCell>
+
+  <TableCell align="center">{t(row?.method)}</TableCell>
+
+  <TableCell align="center">
+    {row?.method === "phone" && (
+      <Box>{t("phoneNumber")}: {row?.phoneNumber}</Box>
+    )}
+    {row?.method === "bank" && (
+      <>
+        <Box>{t("bankName")}: {row?.bankName}</Box>
+        <Box>{t("accountNumber")}: {row?.accountNumber}</Box>
+        <Box>{t("iban")}: {row?.iban}</Box>
+      </>
+    )}
+  </TableCell>
+
+  <TableCell align="center">
+    {row.status === 1 ? (
+      <Typography color={"green"}>{t("accept")}</Typography>
+    ) : row.status === -1 ? (
+      <Typography color={"red"}>{t("reject")}</Typography>
+    ) : (
+      "-"
+    )}
+  </TableCell>
+</TableRow>
+
                     );
                   })}
               </TableBody>

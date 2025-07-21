@@ -16,14 +16,12 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 import DeleteIcon from "@mui/icons-material/Delete";
-// Added by Abdelwahab
+import Moment from "moment";
 import EmailIcon from "@mui/icons-material/Email";
 import TextField from "@mui/material/TextField";
 import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 import DoDisturbOffIcon from "@mui/icons-material/DoDisturbOff";
 import BuildIcon from "@mui/icons-material/Build";
-import { collection, addDoc, Timestamp } from "firebase/firestore";
-import { db } from "../../firebase";
 import Cookies from "js-cookie";
 
 export default function AdminStduents() {
@@ -31,17 +29,18 @@ export default function AdminStduents() {
   const navigate = useNavigate();
 
   const columns = [
-    { id: "",       label: t(""), minWidth: 10 },
-    { id: "Name",   label: t("name"), minWidth: 150 },
-    { id: "Email",  label: t("email"), minWidth: 150 },
+    { id: "", label: t(""), minWidth: 10 },
+    { id: "Joining date", label: t("Joining date"), minWidth: 250 },
+    { id: "Name", label: t("name"), minWidth: 150 },
+    { id: "Email", label: t("email"), minWidth: 150 },
     { id: "Gender", label: t("gender"), minWidth: 150 },
-    { id: "Phone",  label: t("phone"), minWidth: 150 },
+    { id: "Phone", label: t("phone"), minWidth: 150 },
     { id: "financialRecord", label: t("financialRecord"), minWidth: 150 },
     { id: "message", label: t("instant_messaging"), minWidth: 150 },
-    { id: "edit",    label: t("update"), minWidth: 150 },
+    { id: "edit", label: t("update"), minWidth: 150 },
     { id: "suspend", label: t("actions"), minWidth: 150 },
-    { id: "delete",  label: t("delete"), minWidth: 150 },
-    { id: "credit",  label: `${t("credit")} - OMR`, minWidth: 150 },
+    { id: "delete", label: t("delete"), minWidth: 150 },
+    { id: "credit", label: `${t("credit")} - OMR`, minWidth: 150 },
   ];
   const { lang } = Cookies.get("i18next") || "en";
 
@@ -109,7 +108,7 @@ export default function AdminStduents() {
   };
   // Added by Abdelwahab
   const handleCreateMessage = async (student) => {
-    const addFrind=(async () => {
+    const addFrind = (async () => {
       await fetch(`${process.env.REACT_APP_API_KEY}api/v1/chat/add`, {
         method: 'POST',
         headers: {
@@ -117,7 +116,7 @@ export default function AdminStduents() {
           'Authorization': `${token}`
         },
         body: JSON.stringify({
-          user1Id: student?.id, user1Type:"student", user2Id:1, user2Type:"admin"
+          user1Id: student?.id, user1Type: "student", user2Id: 1, user2Type: "admin"
         })
       });
     })
@@ -211,7 +210,7 @@ export default function AdminStduents() {
         />
       )}
       {!isLoading ? (
-        <Paper sx={{ width: "100%", padding: "20px" }}>
+        <Paper sx={{ padding: "20px" }}>
           <TableContainer sx={{ maxHeight: 440 }}>
             <TextField
               sx={{ m: 1, width: "90%" }}
@@ -256,16 +255,22 @@ export default function AdminStduents() {
                         <TableRow hover role="checkbox" key={row.id + "demj"}>
                           <TableCell align="center">
 
-                          {row?.isOnline =="1" ?
-                           <svg width="15" height="15">
-                              <circle r="5" cx="10" cy="10" fill="#F0CE01" stroke="lightgrey" stroke-width="1" stroke-dasharray="439.8" stroke-dashoffset="0"></circle>
-                            </svg>
-                            : 
-                            <svg width="15" height="15">
-                              <circle r="5" cx="10" cy="10" fill="#888" stroke="lightgrey" stroke-width="1" stroke-dasharray="439.8" stroke-dashoffset="0"></circle>
-                            </svg>
-                          }
+                            {row?.isOnline == "1" ?
+                              <svg width="15" height="15">
+                                <circle r="5" cx="10" cy="10" fill="#F0CE01" stroke="lightgrey" stroke-width="1" stroke-dasharray="439.8" stroke-dashoffset="0"></circle>
+                              </svg>
+                              :
+                              <svg width="15" height="15">
+                                <circle r="5" cx="10" cy="10" fill="#888" stroke="lightgrey" stroke-width="1" stroke-dasharray="439.8" stroke-dashoffset="0"></circle>
+                              </svg>
+                            }
                           </TableCell>
+                          <TableCell align="center">
+                            {Moment(row.createdAt).format(
+                              "YYYY/MM/DD , h:mm:ss a"
+                            )}
+                          </TableCell>
+
                           <TableCell align="center">
                             {row?.name}
                           </TableCell>

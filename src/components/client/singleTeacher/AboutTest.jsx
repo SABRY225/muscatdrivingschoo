@@ -52,7 +52,7 @@ export default function AboutTest({ testData }) {
                     { label: t("studycurriculums"), value: lang === "ar" ? testData?.curriculums?.titleAR : testData?.curriculums?.titleEN },
                     { label: t("subject"), value: lang === "ar" ? testData?.subject?.titleAR : testData?.subject?.titleEN },
                     { label: t("classes"), value: lang === "ar" ? testData?.class?.titleAR : testData?.class?.titleEN },
-                    { label: t("semester"), value: t(testData?.semester) },
+                    // { label: t("semester"), value: t(testData?.semester) },
                     { label: t("price"), value: convertedAmount },
                     { label: t("currency"), value: t(currency) },
                 ].map((item, index) => (

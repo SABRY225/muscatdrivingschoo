@@ -19,6 +19,7 @@ import Loading from "../../components/Loading";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import Cookies from "js-cookie";
+import { useLevels } from "../../hooks/useLevels";
 
 export default function PayLesson() {
   const { id } = useParams();
@@ -31,15 +32,26 @@ export default function PayLesson() {
   const { data, isLoading } = useRequestLessonById(id);
   const [lession, setlession] = useState([]);
   const { conversionRate } = useSelector((state) => state.conversionRate);
-  const { currency }                  = useSelector((state) => state.currency);
-    const lang                          = Cookies.get("i18next") || "en";
-  
+  const { currency } = useSelector((state) => state.currency);
+  const lang = Cookies.get("i18next") || "en";
+  const { data:levels } = useLevels();
+const [typeLesson, setTypeLesson] = useState(null);
+
+
 
   useEffect(() => {
     if (data) {
       setlession(data?.data);
     }
   }, [data]);
+  
+useEffect(() => {
+  if (levels?.data && lession?.typeLesson) {
+    const found = levels?.data?.find(level => level.id == lession.typeLesson);
+    setTypeLesson(found);
+  }
+}, [lession?.typeLesson]);
+
 
   const {
     register,
@@ -69,6 +81,8 @@ export default function PayLesson() {
         typeOfPayment: data.typeofbook,
         period: lession?.period,
         date: lession?.date,
+        time: lession?.time,
+        place:lession?.place,
         type: lession?.type,
         title: "Lesson Booking",
       };
@@ -126,7 +140,7 @@ export default function PayLesson() {
 
           {!isLoading ? (
             <>
-            
+
 
               {/* INVOICE SECTION */}
               <Box sx={{ mt: 4, borderTop: "2px solid #ddd", pt: 3 }}>
@@ -143,8 +157,27 @@ export default function PayLesson() {
                 </Box>
 
                 <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
-                  <Typography>{t("Type")}:</Typography>
-                  <Typography>{t("Session with the coach")}</Typography>
+                  <Typography>{t("lessonType")}:</Typography>
+                  <Typography>
+                    {lang==="ar"?typeLesson?.titleAR:typeLesson?.titleEN}
+                  </Typography>
+                </Box>
+                <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
+  <Typography>{t("Place Lesson")}:</Typography>
+  <Typography>
+    {lession?.place === "online"
+      ? t("online")
+      : lession?.place === "teacher"
+      ? t("teacher location")
+      : lession?.place === "student"
+      ? t("student location")
+      : lession?.place}
+  </Typography>
+</Box>
+
+                <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
+                  <Typography>{t("city teacher")}:</Typography>
+                  <Typography>{t(lession?.teacher?.city?.toLowerCase())} / {t(lession?.teacher?.country?.toLowerCase())}</Typography>
                 </Box>
 
                 <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
@@ -158,18 +191,27 @@ export default function PayLesson() {
                 </Box>
 
                 <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
-                  <Typography>{t("Time")}:</Typography>
-                  <Typography>{new Date(lession?.date).toLocaleTimeString()}</Typography>
-                </Box>
+  <Typography>{t("Time")}:</Typography>
+  <Typography>
+    {(() => {
+      if (!lession?.time) return "";
+      const [hourStr, minute] = lession.time.split(":");
+      let hour = parseInt(hourStr, 10);
+      const ampm = hour >= 12 ? "PM" : "AM";
+      hour = hour % 12 || 12;
+      return `${hour}:${minute} ${ampm}`;
+    })()}
+  </Typography>
+</Box>
 
                 <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2, pt: 2, borderTop: "1px dashed #ccc" }}>
                   <Typography variant="h6">{t("price")}:</Typography>
                   <Typography variant="h6" sx={{ color: "#1976d2" }}>
                     {parseFloat(lession?.price * conversionRate).toFixed(
-                    2
-                  )}
-                  {" "}
-                  {t(currency)}
+                      2
+                    )}
+                    {" "}
+                    {t(currency)}
                   </Typography>
                 </Box>
               </Box>

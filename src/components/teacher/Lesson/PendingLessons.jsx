@@ -1,20 +1,24 @@
-import React, { useState } from "react";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
-import { Box, Button } from "@mui/material";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import {
+  Box,
+  Button,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TablePagination,
+  TableRow,
+} from "@mui/material";
 import { useTranslation } from "react-i18next";
-import Cookies from 'js-cookie';
-import { useEffect } from "react";
+import Cookies from "js-cookie";
 import { useSnackbar } from "notistack";
 import DoneIcon from "@mui/icons-material/Done";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useSelector } from "react-redux";
 import Loading from "../../Loading";
+import LoadingButton from "@mui/lab/LoadingButton";
+import { useLevels } from "../../../hooks/useLevels";
 
 export default function PendingLessons() {
   const lang = Cookies.get("i18next") || "en";
@@ -24,11 +28,21 @@ export default function PendingLessons() {
   const { teacher } = useSelector((state) => state.teacher);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  
+  const [loadingActionId, setLoadingActionId] = useState(null);
+  const [loadingActionType, setLoadingActionType] = useState(null);
+  const { data } = useLevels();
+
+  const levelMap = useMemo(() => {
+    const map = {};
+    data?.data?.forEach(level => {
+      map[level.id] = level;
+    });
+    return map;
+  }, [data]);
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
-    
+
     async function getAdminLessons() {
       setLoading(true);
       setError(null);
@@ -39,15 +53,11 @@ export default function PendingLessons() {
           { signal }
         );
 
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`Error: ${response.status}`);
         const data = await response.json();
         setLesson(data.data);
       } catch (err) {
-        if (err.name === "AbortError") {
-          console.log("Fetch aborted");
-        } else {
+        if (err.name !== "AbortError") {
           console.error("Failed to fetch admin Lessons:", err);
           setError("Failed to fetch Lessons");
         }
@@ -57,119 +67,96 @@ export default function PendingLessons() {
     }
 
     getAdminLessons();
+    return () => controller.abort();
+  }, [teacher.id]);
 
-    return () => {
-      controller.abort(); // Cleanup to avoid memory leaks
-    };
-  }, []);
-
- 
   const columns = [
-    { id: "#", label: t("#"), minWidth: 50 },
+    { id: "#", label: t("#"), minWidth: 100 },
     { id: "student", label: t("student"), minWidth: 150 },
+    { id: "email", label: t("email"), minWidth: 150 },
+    { id: "city", label: t("city student"), minWidth: 150 },
     { id: "lessonType", label: t("lessonType"), minWidth: 150 },
-    { id: "price", label: t("price"), minWidth: 150 },
+    { id: "place", label: t("Place Lesson"), minWidth: 150 },
+    { id: "date", label: t("date"), minWidth: 150 },
+    { id: "Time", label: t("Time"), minWidth: 150 },
+    { id: "price", label: t("price"), minWidth: 100 },
     { id: "Session number", label: t("Session number"), minWidth: 100 },
     { id: "status", label: t("status"), minWidth: 150 },
     { id: "actions", label: t("actions"), minWidth: 300 },
   ];
 
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
+  const handleChangePage = (event, newPage) => setPage(newPage);
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
 
+  const filterTeachers = (id) => {
+    setLesson((prev) => prev.filter((lesson) => lesson.id !== id));
+  };
 
+  const handleLessonAction = useCallback(
+    async (id, type) => {
+      closeSnackbar();
+      setLoadingActionId(id);
+      setLoadingActionType(type);
 
-async function acceptLesson(id) {
-  closeSnackbar();
+      const url =
+        type === "accept"
+          ? `${process.env.REACT_APP_API_KEY}api/v1/lesson/accept-request/${id}`
+          : `${process.env.REACT_APP_API_KEY}api/v1/lesson/reject-request/${id}`;
 
-  try {
-    const response = await fetch(
-      `${process.env.REACT_APP_API_KEY}api/v1/lesson/accept-request/${id}`, {
+      const options = {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          lang,  // إرسال اللغة في الـ body
-        }),
-      }
-    );
+        ...(type === "accept" ? { body: JSON.stringify({ lang }) } : { body: JSON.stringify({ lang }) }),
+      };
 
-    if (!response.ok) {
-      enqueueSnackbar(t("error"), {
-        variant: "error",
-        autoHideDuration: 8000,
-      });
-    } else {
-      enqueueSnackbar(t("The Lesson has been verified."), {
-        variant: "success",
-        autoHideDuration: 8000,
-      });
+      try {
+        const response = await fetch(url, options);
 
-      filterTeachers(id);
-    }
-
-  } catch (error) {
-    enqueueSnackbar(t("The Lesson has been verified."), {
-      variant: "error",
-      autoHideDuration: 8000,
-    });
-  }
-}
-
-
-  async function rejectLesson(id) {
-    closeSnackbar();
-
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_KEY}api/v1/lesson/reject-request/${id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
+        if (!response.ok) {
+          enqueueSnackbar(
+            t(type === "accept" ? "error" : "The Lesson has not been cancelled."),
+            { variant: "error", autoHideDuration: 8000 }
+          );
+        } else {
+          enqueueSnackbar(
+            t(
+              type === "accept"
+                ? "The Lesson has been verified."
+                : "The Lesson has been rejected."
+            ),
+            { variant: "success", autoHideDuration: 8000 }
+          );
+          filterTeachers(id);
         }
-      );
-
-      if (!response.ok) {
-        enqueueSnackbar(t("The Lesson has been not cancaled."), {
+      } catch (error) {
+        enqueueSnackbar(t("Something went wrong."), {
           variant: "error",
           autoHideDuration: 8000,
         });
-      }else
-      {
-        enqueueSnackbar(t("The Lesson has been not verified."), {
-          variant: "success",
-          autoHideDuration: 8000,
-        });
-  
-        filterTeachers(id);
+      } finally {
+        setLoadingActionId(null);
+        setLoadingActionType(null);
       }
+    },
+    [lang, t]
+  );
 
-    } catch (error) {
-      enqueueSnackbar(t("The Lesson has been removed."), {
-        variant: "error",
-        autoHideDuration: 8000,
-      });
-    }
-  }
-
-  function filterTeachers(id) {
-    const filteredTeachers = Lesson.filter(
-      (teacher) => teacher.id.toString() !== id.toString()
-    );
-    setLesson(filteredTeachers);
-  }
+  const convertTo12Hour = (timeStr) => {
+    if (!timeStr) return "";
+    const [hourStr, minute] = timeStr.split(":");
+    let hour = parseInt(hourStr, 10);
+    const ampm = hour >= 12 ? "PM" : "AM";
+    hour = hour % 12 || 12;
+    return `${hour}:${minute} ${ampm}`;
+  };
 
   return (
     <>
@@ -179,19 +166,17 @@ async function acceptLesson(id) {
           justifyContent: "space-between",
           alignItems: "center",
           marginBottom: "30px",
-          marginTop: "0px",
         }}
-      >
-      </Box>
+      ></Box>
       {!isLoading ? (
-        <Paper sx={{ width: "100%", padding: "20px" }}>
+        <Paper sx={{ padding: "20px" }}>
           <TableContainer sx={{ maxHeight: 440 }}>
-            <Table stickyHeader aria-label="sticky table">
+            <Table stickyHeader>
               <TableRow>
                 {columns.map((column) => (
                   <TableCell
                     key={column.id}
-                    align={"center"}
+                    align="center"
                     style={{ top: 57, minWidth: column.minWidth }}
                   >
                     {column.label}
@@ -199,54 +184,92 @@ async function acceptLesson(id) {
                 ))}
               </TableRow>
               <TableBody>
-                {Lesson.length > 0 &&
-                  Lesson
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
-                      return (
-                        <TableRow hover role="checkbox" key={row.id + "demj"}>
-                          <TableCell align="center">{t(row.id)}</TableCell>
-                          <TableCell align="center">{t(row?.student?.name)}</TableCell>
-                          <TableCell align="center">{t(row?.type)}</TableCell>
-                          <TableCell align="center">{row?.price}{" "}{t(row?.currency)}</TableCell>
-                          <TableCell align="center">{row?.period}</TableCell>
-                          {row.isVerified ? <>
-                            <TableCell align="center" >
-                              {t("Available")}
-                            </TableCell>
-                          </> : <>
-                            <TableCell align="center">
-                              {t("Review")}
-                            </TableCell>
-                          </>}
-                          <TableCell align="center" sx={{
-                            display:"flex",
-                            justifyContent:"space-around",
-                            gap:"1"
-                          }}>
-                            <Button
-                              variant="contained"
-                            color="success">
-                              <DoneIcon 
-                              onClick={() => acceptLesson(row?.id)} 
-                              />
-                              {t("accept")}
-                            </Button>
-                            <Button
-                              color="error"
-                              variant="contained"
-                              onClick={() => rejectLesson(row?.id)}
-                            >
-                              <ClearIcon />
-                              {t("reject")}
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
+                {Lesson.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+                  <TableRow hover key={row.id}>
+                    <TableCell align="center">{row.id}</TableCell>
+                    <TableCell align="center">{row?.student?.name}</TableCell>
+                    <TableCell align="center">{row?.student?.email}</TableCell>
+                    <TableCell align="center">{row?.student?.city}</TableCell>
+
+                    {/* نوع الحصة */}
+                     <TableCell align="center">
+                                            {lang === "ar"
+                                              ? levelMap[row?.typeLesson]?.titleAR
+                                              : levelMap[row?.typeLesson]?.titleEN}
+                                          </TableCell>
+
+                    {/* مكان الحصة */}
+                    <TableCell align="center">
+                      {row?.place === "online"
+                        ? t("online")
+                        : row?.place === "teacher"
+                        ? t("teacher location")
+                        : row?.place === "student"
+                        ? t("student location")
+                        : row?.place}
+                    </TableCell>
+
+                    <TableCell align="center">
+                      {new Date(row?.date).toLocaleDateString("en-EG")}
+                    </TableCell>
+
+                    <TableCell align="center">{convertTo12Hour(row?.time)}</TableCell>
+
+                    <TableCell align="center">
+                      {row?.price} {t(row?.currency)}
+                    </TableCell>
+
+                    <TableCell align="center">{row?.period}</TableCell>
+
+                    {/* الحالة مع اللون */}
+                    <TableCell align="center">
+                      <Box
+                        sx={{
+                          backgroundColor: row.isVerified ? "#d4edda" : "#fff3cd",
+                          color: row.isVerified ? "#155724" : "#856404",
+                          borderRadius: "12px",
+                          display: "inline-block",
+                          px: 2,
+                          py: 0.5,
+                          fontWeight: "bold",
+                          fontSize: "13px",
+                        }}
+                      >
+                        {row.isVerified ? t("Available") : t("Review")}
+                      </Box>
+                    </TableCell>
+
+                    {/* الإجراءات */}
+                    <TableCell
+                      align="center"
+                      sx={{ display: "flex", justifyContent: "space-around" }}
+                    >
+                      <LoadingButton
+                        variant="contained"
+                        color="success"
+                        loading={loadingActionId === row.id && loadingActionType === "accept"}
+                        onClick={() => handleLessonAction(row.id, "accept")}
+                        startIcon={<DoneIcon />}
+                      >
+                        {t("accept")}
+                      </LoadingButton>
+
+                      <LoadingButton
+                        variant="contained"
+                        color="error"
+                        loading={loadingActionId === row.id && loadingActionType === "reject"}
+                        onClick={() => handleLessonAction(row.id, "reject")}
+                        startIcon={<ClearIcon />}
+                      >
+                        {t("reject")}
+                      </LoadingButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </TableContainer>
+
           <TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component="div"

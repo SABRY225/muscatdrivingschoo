@@ -241,6 +241,17 @@ import StepFour from "./components/teacher/ads/StepFour.jsx";
 import View from "./components/teacher/ads/View.jsx";
 import Details from "./components/teacher/ads/Details.jsx";
 import SingleAdsTeacher from "./pages/client/SingleAdsTeacher.jsx";
+import Studentcertificatesadmin from "./components/admin/StudentCertificates.jsx";
+import AdminExchangeRequestsTeachersCancel from "./pages/admin/AdminExchangeRequestsTeachersCancel.jsx";
+import AdminExchangeRequestsStudentsCancel from "./pages/admin/AdminExchangeRequestsStudentCancel.jsx";
+import AdminAddExchangeRequestsStudents from "./pages/admin/AdminAddExchangeRequestsStudents.jsx";
+import AdminAddExchangeRequestsTeachers from "./pages/admin/AdminAddExchangeRequestsTeachers.jsx";
+import PackagePage from "./pages/student/PackagePage.jsx";
+import ParentTable from "./components/student/ParentTable.jsx";
+import ParentPage from "./pages/admin/AdminParentsPages.jsx";
+import RequesStudents from "./components/teacher/RequesStudents.jsx";
+import InvoicePDFBalance from "./PDF/InvoicePDFBalance.jsx";
+import StudentViewLecture from "./pages/student/StudentViewLecture.jsx";
 
 const theme = createTheme({
   direction: "rtl",
@@ -311,7 +322,8 @@ function App() {
             <Route path="/teacherpendingapproval" element={<TeacherPendingApproval />} />
             <Route path="/statistics" element={<TestNow />} />
             <Route path="/invoicePDF/:sessionType/:sessionId/:sessionCreatedAt/:studentName/:TeacherFirstName/:TeacherLastName/:TeacherEmail/:TeacherPhone/:sessionPrice/:sessionCurrency" element={<InvoicePDF />} />
-            <Route path="/invoice-teacher/:SessionId/:CreatedAt/:StudentName/:TeacherFirstName/:TeacherLastName/:studentEmail/:StudentPhoneNumber/:Price/:Currency" element={<InvoiceTeacher />} />
+            <Route path="/invoice-balance/:sessionType/:sessionCreatedAt/:sessionStatus/:sessionPrice/:sessionCurrency" element={<InvoicePDFBalance />} />
+            <Route path="/invoice-teacher/:SessionId/:date/:StudentName/:TeacherFirstName/:TeacherLastName/:studentEmail/:StudentPhoneNumber/:Price/:Currency/:sessionType" element={<InvoiceTeacher />} />
             <Route path="/invoice-admin/:sessionId/:CreatedAt/:StudentName/:StudentEmail/:StudentPhoneNumber/:TeacherFirstName/:TeacherLastName/:TeacherPhone/:TeacherEmail/:Price/:Currency" element={<InvoiceAdmin />} />
             <Route path="/certificate/:StudentName/:teacherSignature/:trainingStage/:certificateDate" element={<Certificate />} />
             <Route path="/landing" element={<SearchTest />} />
@@ -394,6 +406,7 @@ function App() {
             <Route path="student/referral-system" element={student ? <StudentReferralSystem /> : <Navigate to="/login" />} />
             <Route path="student/request-lesson" element={student ? <StudentLesson /> : <Navigate to="/login" />} />
             <Route path="student/package" element={student ? <StudentPackage /> : <Navigate to="/login" />} />
+            <Route path="student/package/single-package" element={student ? <PackagePage /> : <Navigate to="/login" />} />
             <Route path="student/questions" element={student ? <StudentQuestion /> : <Navigate to="/login" />} />
             <Route path="student/exam" element={student ? <StudentExam /> : <Navigate to="/login" />} />
             <Route path="student/discount" element={student ? <StudentDiscount /> : <Navigate to="/login" />} />
@@ -442,6 +455,10 @@ function App() {
             <Route
               path="/student/lecture"
               element={student ? <StudentLecture /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/student/view-lecture"
+              element={student ? <StudentViewLecture /> : <Navigate to="/login" />}
             />
             <Route
               path="/book-discount/:discountId"
@@ -503,6 +520,10 @@ function App() {
             <Route
               path="teacher/request-lesson"
               element={teacher ? <RequestLesson /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="teacher/request-student"
+              element={teacher ? <RequesStudents /> : <Navigate to="/login" />}
             />
             <Route
               path="teacher/pointsearned"
@@ -753,6 +774,10 @@ function App() {
               element={admin ? <AdminParentStudent /> : <Navigate to="/admin/login" />}
             />
             <Route
+              path="admin/parents"
+              element={admin ? <ParentPage /> : <Navigate to="/admin/login" />}
+            />
+            <Route
               path="admin/package"
               element={admin ? <AdminPackage /> : <Navigate to="/admin/login" />}
             />
@@ -939,6 +964,14 @@ function App() {
               path="admin/exchange-requests"
               element={admin ? <AdminExchangeRequest /> : <Navigate to="/admin/login" />}
             />
+            <Route
+              path="admin/add-teacher-exchange-requests"
+              element={admin ? <AdminAddExchangeRequestsTeachers /> : <Navigate to="/admin/login" />}
+            />
+            <Route
+              path="admin/add-student-exchange-requests"
+              element={admin ? <AdminAddExchangeRequestsStudents /> : <Navigate to="/admin/login" />}
+            />
 
             <Route
               path="admin/exchange-request-teachers"
@@ -948,6 +981,10 @@ function App() {
             <Route
               path="admin/exchange-request-teachers/waiting"
               element={admin ? <AdminExchangeRequestsTeachersWaiting /> : <Navigate to="/admin/login" />}
+            />
+            <Route
+              path="admin/exchange-request-teachers/cancel"
+              element={admin ? <AdminExchangeRequestsTeachersCancel /> : <Navigate to="/admin/login" />}
             />
 
             <Route
@@ -969,7 +1006,10 @@ function App() {
               path="admin/exchange-request-students/waiting"
               element={admin ? <AdminExchangeRequestsStudentsWaiting /> : <Navigate to="/admin/login" />}
             />
-
+            <Route
+              path="admin/exchange-request-students/cancel"
+              element={admin ? <AdminExchangeRequestsStudentsCancel /> : <Navigate to="/admin/login" />}
+            />
             <Route
               path="admin/exchange-request-parents"
               element={admin ? <AdminExchangeRequestsParents /> : <Navigate to="/admin/login" />}
@@ -1003,6 +1043,7 @@ function App() {
             <Route path="admin/whatsapp-form/:phone" element={admin ? <AdminWhatsForm /> : <Navigate to="/admin/login" />} />
 
             <Route path="admin/cash-box" element={admin ? <AdminCashBox /> : <Navigate to="/admin/login" />} />
+            <Route path="admin/certificates" element={admin ? <Studentcertificatesadmin /> : <Navigate to="/admin/login" />} />
 
             <Route
               path="admin/details-financial-records/:studentId"

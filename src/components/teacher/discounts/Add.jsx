@@ -276,7 +276,7 @@ export default function AddDiscounts({ handleClose }) {
                                 rules={{ required: t("required") }}
                             />
                         </Box>
-                        <Box sx={{ flex: 1, marginBottom: "18px" }}>
+                        {/* <Box sx={{ flex: 1, marginBottom: "18px" }}>
                             <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
                                 {t("semester")}
                             </InputLabel>
@@ -301,7 +301,7 @@ export default function AddDiscounts({ handleClose }) {
                                 )}
                                 rules={{ required: t("required") }}
                             />
-                        </Box>
+                        </Box> */}
                     </Box>
                     <Box sx={{ marginBottom: "18px", display: { md: "flex", xs: "block" }, width: "100%", gap: "16px" }}>
                         <Box sx={{ flex: 1, marginBottom: "18px" }}>
@@ -340,7 +340,10 @@ export default function AddDiscounts({ handleClose }) {
                                 >
                                     {
                                         currencies.map((curr) => {
-                                            return <MenuItem value={curr.title}>{lang === "en" ? curr.titleEn : curr.titleAr}</MenuItem>
+                                            return  <MenuItem key={curr.title} value={curr.title} sx={{ gap: "1rem" }} >
+                      <img src={`https://flagcdn.com/w320/${curr.code}.png`} style={{ width: "25px" }} />
+                      {lang === "en" ? curr.titleEn : curr.titleAr}
+                    </MenuItem>
                                         })
                                     }
                                 </Select>

@@ -40,7 +40,7 @@ export default function Home() {
       {packages.length > 0 && <HomePackage packages={packages} />}
       {exams.length > 0 && <HomeExam exams={exams} />}
       {discounts.length > 0 && <Discounts discounts={discounts} />}
-      {advertisements.length > 0 && <HomeAds ads={advertisements} />}
+      {advertisements.length > 0 && <HomeAds ads={advertisements} />} 
       {news.length > 0 && <HomeNews news={news} />}
       <HomeWorks />
       <HomeQuestions />

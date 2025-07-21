@@ -72,7 +72,7 @@ export default function Add() {
     return (
         <>
 <Box sx={{width:"500px",maxWidth:"100%"}}>
-<Paper sx={{ width: "100%", padding: "20px" }}>
+<Paper sx={{ padding: "20px" }}>
     <form onSubmit={handleSubmit(onSubmit)}>
 
     {!isLoadingTeacher && (
@@ -115,7 +115,7 @@ export default function Add() {
     )}
 
     <Box sx={{marginBottom:"18px"}}>
-          <InputLabel sx={{marginBottom:"6px",fontSize:"14px"}}>{t('package_price')}</InputLabel>
+          <InputLabel sx={{marginBottom:"6px",fontSize:"14px"}}>{t('price')}</InputLabel>
           <TextField
               fullWidth name="amount"  type="number" min="0"  max="10000000000000" required
               sx={{ marginBottom: 3 }}

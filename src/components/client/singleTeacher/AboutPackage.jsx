@@ -112,11 +112,11 @@ export default function AboutPackage({ packageData }) {
         value={lang === "ar" ? packageData?.curriculums?.titleAR : packageData?.curriculums?.titleEN}
         color="#5dade2"
       />
-      <ResponsiveRow
+      {/* <ResponsiveRow
         label={t("semester")}
         value={t(packageData?.semester)}
         color="#5dade2"
-      />
+      /> */}
       <ResponsiveRow
         label={t("limetype")}
         value={lang === "ar" ? packageData?.LimeType?.titleAR : packageData?.LimeType?.titleEN}

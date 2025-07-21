@@ -12,7 +12,8 @@ import Cookies from "js-cookie";
 
 export default function CheckBoxTrainingCategoryTypes({ checked, setChecked }) {
   const { t }       = useTranslation();
-  const teacher  = JSON.parse(localStorage.getItem("teacher"))
+    const {teacher} = useSelector((state) => state.teacher);
+  const teacherFromRedux = JSON.parse(localStorage.getItem("teacher")) || teacher;
   const { data }    = useTrainingCategoryTypes();
   const lang        = Cookies.get("i18next") || "en";
 
@@ -21,7 +22,7 @@ export default function CheckBoxTrainingCategoryTypes({ checked, setChecked }) {
     const newChecked = [...checked];
 
     if (currentIndex === -1) {
-      newChecked.push({ TrainingCategoryTypeId: value, TeacherId: teacher.id });
+      newChecked.push({ TrainingCategoryTypeId: value, TeacherId: teacherFromRedux.id });
     } else {
       newChecked.splice(currentIndex, 1);
     }

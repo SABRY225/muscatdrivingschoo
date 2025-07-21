@@ -13,6 +13,7 @@ import { useTenStudents } from "../../hooks/useTenStudents";
 import { useSelector } from "react-redux";
 import Loading from "../Loading";
 import TextField from "@mui/material/TextField";
+import Moment from "moment";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -42,7 +43,7 @@ export default function NewStudentsList() {
   return (
     <>
       {!isLoading ? (
-        <Paper sx={{  padding: "20px" }}>
+        <Paper sx={{ padding: "20px" }}>
           <Typography sx={{ marginBottom: "30px" }}>
             {t("studentlist")}
           </Typography>
@@ -57,6 +58,7 @@ export default function NewStudentsList() {
             <Table sx={{ minWidth: 700 }} aria-label="customized table">
               <TableHead>
                 <TableRow>
+                  <StyledTableCell align="start">{t("Joining date")}</StyledTableCell>
                   <StyledTableCell align="start">{t("name")}</StyledTableCell>
                   <StyledTableCell align="start">{t("email")}</StyledTableCell>
                   <StyledTableCell align="start">
@@ -92,6 +94,11 @@ export default function NewStudentsList() {
                     )
                     .map((row) => (
                       <StyledTableRow key={row.name}>
+                        <StyledTableCell align="start">
+                          {Moment(row.createdAt).format(
+                            "YYYY/MM/DD , h:mm:ss a"
+                          )}
+                        </StyledTableCell>
                         <StyledTableCell
                           component="th"
                           scope="row"

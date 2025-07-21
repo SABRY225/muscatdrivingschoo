@@ -96,64 +96,87 @@ export default function StudentProfile() {
     }
   }, [data]);
 
-  const onSubmit = async (data) => {
-    if (countryCode === "") {
-      setCountryError(true);
-      return;
-    }
-    if (nationalityCode === "") {
-      setNationalityError(true);
-      return;
-    }
-    closeSnackbar();
-    setLoad(true);
-    const languages = chosenlanguages.map((lang) => {
-      return {
-        LanguageLevelId: lang.LanguageLevelId,
-        StudentId: student?.id,
-        LanguageId: lang.LanguageId,
-      };
-    });
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_KEY}api/v1/student/editAbout/${student.id}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: token,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: data.fullName,
-            gender: data.gender,
-            dateOfBirth: data.dateOfBirth,
-            phoneNumber: data.phone,
-            city: data.city,
-            nationality: nationalityCode,
-            location: countryCode,
-            regionTime: regionTime,
-            LevelId: data.level,
-            ClassId: data.class,
-            CurriculumId: data.curriculum,
-            languages: languages,
-          }),
-        }
-      );
-      const resData = await response.json();
-      if (response.status !== 200 && response.status !== 201) {
-        setLoad(false);
-        throw new Error("failed occured");
+const onSubmit = async (data) => {
+  closeSnackbar();
+
+  let hasError = false;
+
+  if (!regionTime) {
+    enqueueSnackbar(t("timezone_required"), { variant: "error" });
+    hasError = true;
+  }
+  if(!data.dateOfBirth){
+    return enqueueSnackbar(t("dateOfBirth_required"), { variant: "error" });
+  }
+  if (!countryCode) {
+    setCountryError(true);
+    enqueueSnackbar(t("location_required"), { variant: "error" });
+    hasError = true;
+  }
+
+  if (!chosenlanguages || chosenlanguages.length === 0) {
+    enqueueSnackbar(t("languages_required"), { variant: "error" });
+    hasError = true;
+  }
+
+if (!nationalityCode) {
+  setNationalityError(true);
+  enqueueSnackbar(t("nationality_required"), { variant: "error" });
+  hasError = true;
+}
+
+  if (hasError) return;
+
+  setLoad(true);
+
+  const languages = chosenlanguages.map((lang) => ({
+    LanguageLevelId: lang.LanguageLevelId,
+    StudentId: student?.id,
+    LanguageId: lang.LanguageId,
+  }));
+
+  try {
+    const response = await fetch(
+      `${process.env.REACT_APP_API_KEY}api/v1/student/editAbout/${student.id}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: data.fullName,
+          gender: data.gender,
+          dateOfBirth: data.dateOfBirth,
+          phoneNumber: data.phone,
+          city: data.city,
+          nationality: nationalityCode,
+          location: countryCode,
+          regionTime: regionTime,
+          LevelId: data.level,
+          ClassId: data.class,
+          CurriculumId: data.curriculum,
+          languages,
+        }),
       }
-      dispatch(changeStudentName({ name: data.fullName }));
-      enqueueSnackbar(
-        lang === "ar" ? resData.msg.arabic : resData.msg.english,
-        { variant: "success", autoHideDuration: 8000 }
-      );
-      setLoad(false);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+    );
+
+    const resData = await response.json();
+    if (!response.ok) throw new Error("Failed to update profile");
+
+    dispatch(changeStudentName({ name: data.fullName }));
+    enqueueSnackbar(
+      lang === "ar" ? resData.msg.arabic : resData.msg.english,
+      { variant: "success", autoHideDuration: 8000 }
+    );
+  } catch (err) {
+    enqueueSnackbar(t("error_occurred"), { variant: "error" });
+    console.error(err);
+  } finally {
+    setLoad(false);
+  }
+};
+
 
   const levels = useLevels();
   const classes = useClasses();
@@ -162,23 +185,25 @@ export default function StudentProfile() {
   const [selectedClasses, setSelectedClasses] = useState([]);
   const [selectedCurriculums, setSelectedCurriculums] = useState([]);
 
-  useEffect(() => {
-    if (classes?.data) {
-      const filteredClasses = classes?.data.data.filter(
-        (item) => item.LevelId == watch("level")
-      );
-      setSelectedClasses(filteredClasses);
-    }
-    if (curriculums?.data) {
-      const filteredCurriculms = curriculums.data.data.filter(
-        (item) =>
-          item.CurriculumLevels.findIndex(
-            (val) => val.LevelId == watch("level")
-          ) !== -1
-      );
-      setSelectedCurriculums(filteredCurriculms);
-    }
-  }, [classes || watch("level")]);
+useEffect(() => {
+  if (classes?.data) {
+    const filteredClasses = classes.data.data.filter(
+      (item) => item.LevelId === watch("level")
+    );
+    setSelectedClasses(filteredClasses);
+  }
+
+  if (curriculums?.data) {
+    const filteredCurriculums = curriculums.data.data.filter(
+      (item) =>
+        item.CurriculumLevels.findIndex(
+          (val) => val.LevelId === watch("level")
+        ) !== -1
+    );
+    setSelectedCurriculums(filteredCurriculums);
+  }
+}, [classes.data, curriculums.data, watch("level")]);
+
 
   return (
     <StudentLayout>
@@ -382,24 +407,24 @@ export default function StudentProfile() {
                 </InputLabel>
 <Autocomplete
   fullWidth
-  name="country"
+  name="nationality"
   options={countries}
-  value={countryValue}
-  inputValue={countryValue}
+  value={nationalityValue}
+  inputValue={nationalityValue}
   onChange={(event, newInputValue) => {
     if (newInputValue) {
-      setCountryValue(
+      setNationalityValue(
         lang === "en" ? newInputValue?.name_en : newInputValue?.name_ar
       );
-      setCountryCode(newInputValue?.code);
-      setCountryError(false);
+      setNationalityCode(newInputValue?.code); // التصحيح هنا
+      setNationalityError(false);
     } else {
-      setCountryValue("");
-      setCountryCode("");
+      setNationalityValue("");
+      setNationalityCode("");
     }
   }}
   onInputChange={(event, newInputValue) => {
-    setCountryValue(newInputValue);
+    setNationalityValue(newInputValue);
   }}
   getOptionLabel={(op) =>
     (lang === "en" ? op.name_en : op.name_ar) || op
@@ -430,7 +455,6 @@ export default function StudentProfile() {
     />
   )}
 />
-
                 {nationalityError && (
                   <Typography
                     color="error"

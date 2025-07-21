@@ -50,7 +50,7 @@ export default function TeacherChangePassword() {
     return (
     <Navbar>
         <TeacherLayout>
-            <Paper sx={{padding:"40px 20px"}}>
+            <Paper sx={{padding:"20px"}}>
                     <Typography sx={{marginBottom:"30px"}}>{t('changepassword')}</Typography>
                         <Box sx={{display:"flex",marginBottom:"32px",flexDirection:"column",alignItems:"start"}}>
                             <InputLabel sx={{marginBottom:"12px",fontSize:"13px"}}>{t('oldPassword')}</InputLabel>

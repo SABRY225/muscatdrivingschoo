@@ -134,18 +134,18 @@ export default function EditExam() {
     }, [id]);
 
     useEffect(() => {
-        if (exam) {
+        if ( exam?.LevelId) {
             reset({
                 price: exam.price,
-                subject: exam.subject,
+                subject: exam.subject?.id,
                 currency: exam.currency,
-                class: exam?.class,
-                LevelId: exam?.LevelId,
-                semester: exam?.semester,
+                class: exam?.class?.id,
+                LevelId: exam?.Level?.id,
+                // semester: "",
                 docs: exam.docs,
                 image: exam.image,
                 linkExam: exam.linkExam,
-                curriculums: exam?.curriculums,
+                curriculums: exam?.curriculums?.id,
             });
             setFileName(exam.docs);
             setFileImageName(exam.image);
@@ -201,7 +201,6 @@ export default function EditExam() {
         <>
             {isLoading ? (
                 <>
-                    <Navbar>
                         <TeacherLayout>
                             <Container sx={{ marginTop: "50px", marginBottom: "80px" }}>
                                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -293,7 +292,7 @@ export default function EditExam() {
                                         </Box>
                                         <Box sx={{ flex: 1, marginBottom: "18px" }}>
 
-                                            <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }} id="curriculums1">
+                                            <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
                                                 {t("level")}
                                             </InputLabel>
                                             <Controller
@@ -302,9 +301,9 @@ export default function EditExam() {
                                                 render={({ field }) => (
                                                     <Select {...field} fullWidth>
                                                         {
-                                                            levelsData?.data.map((curriculums, index) => (
-                                                                <MenuItem key={index} value={curriculums.id}>
-                                                                    {lang === "ar" ? t(curriculums?.titleAR) : t(curriculums.titleEN)}
+                                                            levelsData?.data.map((level, index) => (
+                                                                <MenuItem key={index} value={level.id}>
+                                                                    {lang === "ar" ? t(level?.titleAR) : t(level.titleEN)}
                                                                 </MenuItem>
                                                             ))
                                                         }
@@ -344,7 +343,7 @@ export default function EditExam() {
                                             />
                                         </Box>
 
-                                        <Box sx={{ flex: 1, marginBottom: "18px" }}>
+                                        {/* <Box sx={{ flex: 1, marginBottom: "18px" }}>
                                             <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }} id="curriculums2">
                                                 {t("semester")}
                                             </InputLabel>
@@ -366,7 +365,7 @@ export default function EditExam() {
                                                 )}
                                                 rules={{ required: t("required") }}
                                             />
-                                        </Box>
+                                        </Box> */}
                                     </Box>
 
                                     <Box sx={{ flex: 1, marginBottom: "18px" }}>
@@ -483,8 +482,6 @@ export default function EditExam() {
                                 </form>
                             </Container>
                         </TeacherLayout>
-
-                    </Navbar>
                 </>
             ) : (
                 <Loading />

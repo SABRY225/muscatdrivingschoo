@@ -15,9 +15,12 @@ import { useForm, Controller } from "react-hook-form";
 import currencies from "../../data/currencies";
 import { useSelector } from "react-redux";
 import { useState } from "react";
-
+import Cookies from "js-cookie";
+import { convertCurrency } from "../../utils/convertCurrency";
 export default function PayNow() {
   const { t } = useTranslation();
+    const lang = Cookies.get("i18next") || "en";
+  
   const {
     register,
     control,
@@ -34,34 +37,41 @@ export default function PayNow() {
 
   const { student, token } = useSelector((state) => state.student);
 
-  async function onSubmit(data) {
-    try {
-      setLoad(true);
-      const response = await fetch(
-        `${process.env.REACT_APP_API_KEY}api/v1/payment/charge`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token,
-          },
-          body: JSON.stringify({
-            StudentId: student.id,
-            price: data.amount,
-            currency: data.currency,
-          }),
-        }
-      );
-      const resData = await response.json();
-      if (response.status !== 200 && response.status !== 201) {
-        setLoad(false);
-        throw new Error("failed occured");
+
+async function onSubmit(data) {
+  try {
+    setLoad(true);
+
+    const omrAmount = await convertCurrency(data.amount, data.currency, "OMR");
+
+    const response = await fetch(
+      `${process.env.REACT_APP_API_KEY}api/v1/payment/charge`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify({
+          StudentId: student.id,
+          price: omrAmount, // القيمة المحوّلة إلى عملة عمان
+          currency: "OMR",  // يتم تثبيت العملة على عمان
+        }),
       }
-      window.location.replace(resData.data);
-    } catch (err) {
-      console.log(err);
+    );
+
+    const resData = await response.json();
+    if (response.status !== 200 && response.status !== 201) {
+      setLoad(false);
+      throw new Error("failed occurred");
     }
+
+    window.location.replace(resData.data);
+  } catch (err) {
+    console.error(err);
+    setLoad(false);
   }
+}
 
   return (
     <Box>
@@ -126,9 +136,18 @@ export default function PayNow() {
                     })}
                   >
                     {currencies.map((name) => (
-                      <MenuItem key={name.title} value={name.title}>
-                        {name.title}
-                      </MenuItem>
+            <MenuItem
+              key={name.title}
+              value={name.title}
+              sx={{ alignItem: "center" ,width:"200px"}}
+            >
+              <div className="flex items-center justify-start" style={{display:"flex",alignItems:"center",justifyContent:"start",gap:"0.5rem"}}>
+              <div className="pl-2 mr-2"><img src={`https://flagcdn.com/w320/${name.code}.png`} alt="" style={{width:"2rem"}} /></div>
+              <div sx={{
+                fontSize: "15px"
+              }}>{lang === "ar" ? name.titleAr : name.titleEn}</div>
+              </div>
+            </MenuItem>
                     ))}
                   </Select>
                 </FormControl>

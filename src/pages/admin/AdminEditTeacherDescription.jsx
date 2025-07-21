@@ -79,10 +79,10 @@ const AdminEditTeacherDescription = () => {
     <AdminLayout>
       <Box sx={{marginTop:"-100px"}}>
       <TeacherLayout active={6} title={t("Description")}>
-      <Paper sx={{ width: "100%", padding: "20px" }}>
+      <Paper sx={{ padding: "20px" }}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box sx={{ width: { md: "500px", xs: "100%" } }}>
-            <Box sx={{ marginBottom: "26px" }}>
+            {/* <Box sx={{ marginBottom: "26px" }}>
               <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
                 {t("headAr")}
               </InputLabel>
@@ -103,7 +103,7 @@ const AdminEditTeacherDescription = () => {
                   {t("required")}
                 </Typography>
               )}
-            </Box>
+            </Box> */}
             <Box sx={{ marginBottom: "26px" }}>
               <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
                 {t("descAr")}
@@ -128,7 +128,7 @@ const AdminEditTeacherDescription = () => {
                 </Typography>
               )}
             </Box>
-            <Box sx={{ marginBottom: "26px" }}>
+            {/* <Box sx={{ marginBottom: "26px" }}>
               <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
                 {t("headEn")}
               </InputLabel>
@@ -149,8 +149,8 @@ const AdminEditTeacherDescription = () => {
                   {t("required")}
                 </Typography>
               )}
-            </Box>
-            <Box sx={{ marginBottom: "26px" }}>
+            </Box> */}
+            {/* <Box sx={{ marginBottom: "26px" }}>
               <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
                 {t("descEn")}
               </InputLabel>
@@ -173,10 +173,10 @@ const AdminEditTeacherDescription = () => {
                   {t("required")}
                 </Typography>
               )}
-            </Box>
+            </Box> */}
             <Box sx={{ display: "flex", gap: "12px" }}>
               <StepperButtons skipLink="video" load={load} />
-              <Button
+              {/* <Button
                 sx={{ textTransform: "capitalize", marginTop: "40px" }}
                 variant="outlined"
                 onClick={() =>
@@ -184,7 +184,7 @@ const AdminEditTeacherDescription = () => {
                 }
               >
                 {t("skip")}
-              </Button>
+              </Button> */}
             </Box>
           </Box>
         </form>

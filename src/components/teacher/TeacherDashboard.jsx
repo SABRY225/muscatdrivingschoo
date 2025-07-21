@@ -7,7 +7,6 @@ import InfoIcon from '@mui/icons-material/Info';
 import DescriptionIcon from '@mui/icons-material/Description';
 import WalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import ListAltIcon from '@mui/icons-material/ListAlt';
-import Navbar from '../Navbar';
 import TeacherLayout from './TeacherLayout';
 import { t } from 'i18next';
 import { AccessTime, Lock, MenuBook, ReceiptLong, Replay, Star, Videocam, WorkspacePremium } from '@mui/icons-material';

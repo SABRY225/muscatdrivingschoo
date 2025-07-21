@@ -115,7 +115,7 @@ export default function AllLesson() {
       >
       </Box>
       {!isLoading ? (
-        <Paper sx={{ width: "100%", padding: "20px" }}>
+        <Paper sx={{ padding: "20px" }}>
           <TableContainer sx={{ maxHeight: 440 }}>
             <Table stickyHeader aria-label="sticky table">
               <TableRow>
@@ -137,8 +137,8 @@ export default function AllLesson() {
                       return (
                         <TableRow hover role="checkbox" key={row.id + "demj"}>
                           <TableCell align="center">{t(row.id)}</TableCell>
-                          <TableCell align="center">{row?.teacher.firstName}{" "}{row?.teacher.lastName}</TableCell>
-                          <TableCell align="center">{t(row?.student.name)}</TableCell>
+                          <TableCell align="center">{row?.teacher?.firstName}{" "}{row?.teacher?.lastName}</TableCell>
+                          <TableCell align="center">{t(row?.student?.name)}</TableCell>
                           <TableCell align="center">{t(row?.type)}</TableCell>
                           <TableCell align="center">{row?.price}{" "}{t(row.currency)}</TableCell>
                           <TableCell align="center">{row?.period}</TableCell>

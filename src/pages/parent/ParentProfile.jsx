@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Grid,
   InputLabel,
@@ -6,30 +7,28 @@ import {
   Box,
   TextField,
   Button,
+  CircularProgress,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
 import ParentLayout from "../../components/parent/ParentLayout";
 import { useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
-import { changeParentName } from "../../redux/parentSlice";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Cookies from "js-cookie";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { useSnackbar } from "notistack";
-
+import { changeParentName } from "../../redux/parentSlice";
 import { useParent } from "../../hooks/useParent";
 
 export default function ParentProfile() {
-  const { closeSnackbar, enqueueSnackbar } = useSnackbar();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { t } = useTranslation();
   const lang = Cookies.get("i18next") || "en";
   const dispatch = useDispatch();
-  const { t } = useTranslation();
-  const { parent, token }   = useSelector((s) => s.parent);
-  const { data, isLoading } = useParent(parent?.id , token);
-  const [load, setLoad]     = useState(false);
 
+  const { parent, token } = useSelector((s) => s.parent);
+  const { data, isLoading } = useParent(parent?.id, token);
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -47,21 +46,19 @@ export default function ParentProfile() {
 
   useEffect(() => {
     if (data) {
-      const user = data?.data;
+      const user = data.data;
       reset({
-        name:   user?.name,
-        phone:  user?.phone,
-        email:  user?.email,
+        name: user?.name || "",
+        phone: user?.phone || "",
+        email: user?.email || "",
       });
     }
-  }, [data]);
+  }, [data, reset]);
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (formData) => {
     closeSnackbar();
-    setLoad(true);
+    setLoading(true);
     try {
-      console.log("DATA");
-      console.log(data);
       const response = await fetch(
         `${process.env.REACT_APP_API_KEY}api/v1/parent/editProfile/${parent.id}`,
         {
@@ -69,114 +66,115 @@ export default function ParentProfile() {
           headers: {
             "Content-Type": "application/json",
             Authorization: token,
-            
           },
           body: JSON.stringify({
-            name:  data.name,
-            phone: data.phone,
+            name: formData.name,
+            phone: formData.phone,
           }),
         }
       );
-      const resData = await response.json();
-      if (resData.status !== 200 && resData.status !== 201) {
-        setLoad(false);
-        throw new Error("failed occured");
+
+      const result = await response.json();
+
+      if (result.status !== 200 && result.status !== 201) {
+        throw new Error("Failed to update profile");
       }
-      dispatch(changeParentName({ name: data.name }));
+
+      dispatch(changeParentName({ name: formData.name }));
       enqueueSnackbar(
-        lang === "ar" ? resData.msg.arabic : resData.msg.english,
-        { variant: "success", autoHideDuration: 8000 }
+        lang === "ar" ? result.msg.arabic : result.msg.english,
+        { variant: "success", autoHideDuration: 5000 }
       );
-      setLoad(false);
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      enqueueSnackbar(t("An error occurred"), {
+        variant: "error",
+        autoHideDuration: 5000,
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
-
   return (
     <ParentLayout>
-      <Paper sx={{ padding: "20px" }}>
-        <Typography
-          sx={{
-            fontSize: "24px",
-            marginTop: "12px",
-            fontWeight: "600",
-            marginBottom: "30px",
-          }}
-        >
+      <Paper sx={{ padding: 4 }}>
+        <Typography variant="h5" fontWeight={600} mb={4}>
           {t("personalInformation")}
         </Typography>
+
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Grid container spacing={6}>
-            <Grid item xs={12} md={7}>
-              <Box sx={{ marginBottom: "26px" }}>
-                <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
-                  {t("fullname")}
-                </InputLabel>
-                <Controller
-                  name="name"
-                  control={control}
-                  {...register("name", {
-                    required: "Name Address is required",
-                  })}
-                  render={({ field }) => <TextField {...field} fullWidth />}
-                />
-                {errors.name?.type === "required" && (
-                  <Typography
-                    color="error"
-                    role="alert"
-                    sx={{ fontSize: "13px", marginTop: "6px" }}
-                  >
-                    this field is required
-                  </Typography>
+          <Grid container spacing={4}>
+            <Grid item xs={12} md={6}>
+              <InputLabel sx={{ mb: 1 }}>{t("fullname")}</InputLabel>
+              <Controller
+                name="name"
+                control={control}
+                rules={{ required: t("required") }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    fullWidth
+                    variant="outlined"
+                    error={!!errors.name}
+                    helperText={errors.name ? errors.name.message : ""}
+                  />
                 )}
-              </Box>
-              <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" , textAlign:"right" , direction: "ltr", }}>
-                  {t("phone")}
-                </InputLabel>
-              <Box sx={{ direction: "rtl", marginBottom: "26px" }}>
-              
+              />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <InputLabel sx={{ mb: 1 }}>{t("phone")}</InputLabel>
+              <Box sx={{ direction: lang === "ar" ? "rtl" : "ltr" }}>
                 <Controller
                   name="phone"
                   control={control}
-                  render={({ field }) => <PhoneInput {...field} />}
-                  {...register("phone", {
-                    required: "Phone is required",
-                  })}
+                  rules={{ required: t("required") }}
+                  render={({ field }) => (
+                    <PhoneInput
+                      {...field}
+                      inputStyle={{ width: "100%" }}
+                      country={"om"}
+                    />
+                  )}
                 />
-                {errors.phone?.type === "required" && (
-                  <Typography
-                    color="error"
-                    role="alert"
-                    sx={{ fontSize: "13px", marginTop: "6px" }}
-                  >
-                    {t("required")}
-                  </Typography>
-                )}
               </Box>
-              
+              {errors.phone && (
+                <Typography
+                  variant="caption"
+                  color="error"
+                  sx={{ mt: 1, display: "block" }}
+                >
+                  {errors.phone.message}
+                </Typography>
+              )}
+            </Grid>
 
+            <Grid item xs={12}>
+              <InputLabel sx={{ mb: 1 }}>{t("email")}</InputLabel>
+              <TextField
+                fullWidth
+                disabled
+                {...register("email")}
+                variant="outlined"
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Button
+                type="submit"
+                variant="contained"
+                color="secondary"
+                disabled={loading}
+                sx={{ minWidth: 150 }}
+              >
+                {loading ? (
+                  <CircularProgress size={24} sx={{ color: "#fff" }} />
+                ) : (
+                  t("save")
+                )}
+              </Button>
             </Grid>
           </Grid>
-          {load ? (
-            <Button
-              variant="contained"
-              color="secondary"
-              sx={{ marginY: "10px", opacity: 0.7 }}
-            >
-              {t("save")}...
-            </Button>
-          ) : (
-            <Button
-              variant="contained"
-              color="secondary"
-              type="submit"
-              sx={{ marginY: "10px" }}
-            >
-              {t("save")}
-            </Button>
-          )}
         </form>
       </Paper>
     </ParentLayout>

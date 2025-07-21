@@ -1,13 +1,12 @@
 import {
-  Autocomplete,
   Box,
   Button,
   Container,
   InputLabel,
-  MenuItem,
   Paper,
-  Select,
-  TextField,Typography,} from "@mui/material";
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import Navbar from "../../../components/Navbar";
@@ -18,13 +17,13 @@ import { useSnackbar } from "notistack";
 import Cookies from "js-cookie";
 import countries from "../../../data/countries";
 import PhoneInput from "react-phone-input-2";
+import Autocomplete from "@mui/material/Autocomplete";
 
 export default function StudentFirstStep() {
   const {
-    register,
     control,
-    formState: { errors },
     handleSubmit,
+    formState: { errors },
   } = useForm({
     defaultValues: {
       fullName: "",
@@ -37,13 +36,11 @@ export default function StudentFirstStep() {
   const { t } = useTranslation();
   const { closeSnackbar, enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
-  const [countryValue, setCountryValue] = useState("");
-  const [countryCode, setCountryCode] = useState("");
-  const [countryError, setCountryError] = useState(false);
+  const [countryCode, setCountryCode] = useState("om"); // افتراضي عمان
   const lang = Cookies.get("i18next") || "en";
 
   useEffect(() => {
-    window.navigator.geolocation.getCurrentPosition(
+    navigator.geolocation.getCurrentPosition(
       (position) => {
         localStorage.setItem("latitude", position.coords.latitude);
         localStorage.setItem("longitude", position.coords.longitude);
@@ -54,43 +51,43 @@ export default function StudentFirstStep() {
     );
   }, []);
 
-  async function onSubmit(data) {
-    if (countryCode === "") {
-      setCountryError(true);
+  const onSubmit = async (data) => {
+    if (!countryCode) {
+      enqueueSnackbar(t("required"), { variant: "error" });
       return;
     }
+
     closeSnackbar();
+
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_KEY}api/v1/student/signup`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: data.email,
-            name: data.fullName,
-            location: countryCode,
-            phoneNumber: "+" + data.phone,
-            language: lang,
-          }),
-        }
-      );
+      const response = await fetch(`${process.env.REACT_APP_API_KEY}api/v1/student/signup`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: data.email,
+          name: data.fullName,
+          location: countryCode,
+          phoneNumber: "+" + data.phone,
+          language: lang,
+        }),
+      });
+
       const resData = await response.json();
-      if (response.status !== 200 && response.status !== 201) {
-        enqueueSnackbar(
-          lang === "ar" ? resData.message.arabic : resData.message.english,
-          { variant: "error", autoHideDuration: "8000" }
-        );
-        throw new Error("failed occured");
+
+      if (!response.ok) {
+        enqueueSnackbar(lang === "ar" ? resData.msg.arabic : resData.msg.english, {
+          variant: "error",
+          autoHideDuration: 8000,
+        });
+        return;
       }
+
       localStorage.setItem("studentEmail", data.email);
       navigate("/studentregister/step2");
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
-  }
+  };
 
   return (
     <Navbar>
@@ -99,11 +96,13 @@ export default function StudentFirstStep() {
           sx={{
             width: { md: "450px" },
             padding: "30px 50px",
-            margin: "60px auto 60px",
+            margin: "60px auto",
           }}
         >
           <HeaderSteps step={1} title={t("newAccount")} steps={4} />
-          <form onSubmit={handleSubmit(onSubmit)}>
+
+          <form onSubmit={handleSubmit(onSubmit)} noValidate>
+            {/* الاسم الكامل */}
             <Box sx={{ marginBottom: "30px" }}>
               <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
                 {t("fullname")}
@@ -111,23 +110,17 @@ export default function StudentFirstStep() {
               <Controller
                 name="fullName"
                 control={control}
-                render={({ field }) => (
-                  <TextField type="text" {...field} fullWidth />
-                )}
-                {...register("fullName", {
-                  required: "fullName Address is required",
-                })}
+                rules={{ required: t("required") }}
+                render={({ field }) => <TextField {...field} fullWidth />}
               />
-              {errors.fullName?.type === "required" && (
-                <Typography
-                  color="error"
-                  role="alert"
-                  sx={{ fontSize: "13px", marginTop: "6px" }}
-                >
-                  {t("required")}
+              {errors.fullName && (
+                <Typography color="error" sx={{ fontSize: "13px", mt: 1 }}>
+                  {errors.fullName.message}
                 </Typography>
               )}
             </Box>
+
+            {/* البريد الإلكتروني */}
             <Box sx={{ marginBottom: "30px" }}>
               <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
                 {t("email")}
@@ -135,154 +128,109 @@ export default function StudentFirstStep() {
               <Controller
                 name="email"
                 control={control}
-                render={({ field }) => (
-                  <TextField type="text" {...field} fullWidth />
-                )}
-                {...register("email", {
-                  required: "email Address is required",
-                })}
+                rules={{
+                  required: t("required"),
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: t("invalidEmail"),
+                  },
+                }}
+                render={({ field }) => <TextField {...field} fullWidth />}
               />
-              {errors.email?.type === "required" && (
-                <Typography
-                  color="error"
-                  role="alert"
-                  sx={{ fontSize: "13px", marginTop: "6px" }}
-                >
-                  {t("required")}
+              {errors.email && (
+                <Typography color="error" sx={{ fontSize: "13px", mt: 1 }}>
+                  {errors.email.message}
                 </Typography>
               )}
             </Box>
-            
-            <Box sx={{ marginBottom: "26px" }}>
+
+            {/* رقم الهاتف */}
+            <Box sx={{ marginBottom: "26px"  ,direction: "rtl" }}>
               <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
                 {t("phone")}
               </InputLabel>
-              <Box sx={{ direction: "rtl" }}>
-                <Controller
-                  name="phone"
-                  control={control}
-                  render={({ field }) => <PhoneInput {...field} />}
-                  {...register("phone", {
-                    required: "Phone Number is required",
-                  })}
-                />
-                {errors.phone?.type === "required" && (
-                  <Typography
-                    color="error"
-                    role="alert"
-                    sx={{ fontSize: "13px", marginTop: "6px" }}
-                  >
-                    {t("required")}
-                  </Typography>
-                )}
-              </Box>
-            </Box>
-            {/* ------------------- */}
-            {/* <Box sx={{ marginBottom: "30px" }}>
-              <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
-                {t("place")}
-              </InputLabel>
               <Controller
-                name="place"
+                name="phone"
                 control={control}
+                rules={{
+                  required: t("required"),
+                  minLength: { value: 8, message: t("invalidPhone") },
+                  maxLength: { value: 15, message: t("invalidPhone") },
+                  pattern: {
+                    value: /^[0-9]+$/,
+                    message: t("invalidPhone"),
+                  },
+                }}
                 render={({ field }) => (
-                  <Select
+                  <PhoneInput
                     {...field}
-                    fullWidth
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    MenuProps={{
-                      elevation: 1,
-                      PaperProps: {
-                        style: {
-                          maxHeight: 48 * 3 + 8,
-                          width: 160,
-                        },
-                      },
-                    }}
-                    {...register("place", { required: "place is required" })}
-                  >
-                    {countries.map((op, index) => {
-                      return (
-                        <MenuItem key={index + "mjnnj"} value={op.code}>
-                          {lang === "en" ? op.name_en : op.name_ar}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                )}
-              />
-              {errors.place?.type === "required" && (
-                <Typography
-                  color="error"
-                  role="alert"
-                  sx={{ fontSize: "13px", marginTop: "6px" }}
-                >
-                  {t("required")}
-                </Typography>
-              )}
-            </Box> */}
-            <Box sx={{ marginBottom: "26px" }}>
-              <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
-                {t("country")}
-              </InputLabel>
-              <Autocomplete
-                fullWidth
-                name="country"
-                options={countries}
-                value={countryValue}
-                inputValue={countryValue}
-                onChange={(event, newInputValue) => {
-                  if (newInputValue) {
-                    setCountryValue(
-                      lang === "en"
-                        ? newInputValue?.name_en
-                        : newInputValue?.name_ar
-                    );
-                    setCountryCode(newInputValue?.code);
-                    setCountryError(false);
-                  } else {
-                    setCountryValue("");
-                    setCountryCode("");
-                  }
-                }}
-                onInputChange={(event, newInputValue) => {
-                  setCountryValue(newInputValue);
-                }}
-                getOptionLabel={(op) =>
-                  (lang === "en" ? op.name_en : op.name_ar) || op
-                }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label={lang === "en" ? "Choose a country" : "إختر بلدك"}
-                    inputProps={{
-                      ...params.inputProps,
-                      autoComplete: "new-password",
+                    country="om"
+                    enableSearch
+                    inputStyle={{ width: "100%" }}
+                    onChange={(value, country) => {
+                      field.onChange(value);
+                      setCountryCode(country.countryCode);
                     }}
                   />
                 )}
               />
-              {countryError && (
-                <Typography
-                  color="error"
-                  role="alert"
-                  sx={{ fontSize: "13px", marginTop: "6px" }}
-                >
-                  {t("required")}
+              {errors.phone && (
+                <Typography color="error" sx={{ fontSize: "13px", mt: 1 }}>
+                  {errors.phone.message}
                 </Typography>
               )}
             </Box>
-            <Button
-              variant="contained"
-              color="secondary"
-              fullWidth
-              type="submit"
-              sx={{ textTransform: "capitalize" }}
-            >
+
+            {/* الدولة */}
+            <Box sx={{ marginBottom: "26px" }}>
+              <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
+                {t("country")}
+              </InputLabel>
+              <Controller
+                name="place"
+                control={control}
+                rules={{ required: t("required") }}
+                render={({ field }) => (
+                  <Autocomplete
+                    options={countries}
+                    getOptionLabel={(option) =>
+                      lang === "en" ? option.name_en : option.name_ar
+                    }
+                    onChange={(_, selected) => {
+                      field.onChange(selected?.code || "");
+                      setCountryCode(selected?.code || "");
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label={t("place")}
+                        error={!!errors.place}
+                        helperText={errors.place ? errors.place.message : ""}
+                      />
+                    )}
+                    renderOption={(props, option) => (
+                      <li {...props} style={{ display: "flex", alignItems: "center" }}>
+                        <img
+                          src={`https://flagcdn.com/w40/${option.code}.png`}
+                          alt={option.code}
+                          width="30"
+                          style={{ marginLeft: 8 }}
+                        />
+                        <span>{lang === "en" ? option.name_en : option.name_ar}</span>
+                      </li>
+                    )}
+                  />
+                )}
+              />
+            </Box>
+
+            {/* زر التسجيل */}
+            <Button type="submit" variant="contained" color="secondary" fullWidth>
               {t("register")}
             </Button>
           </form>
+
+          {/* تسجيل الدخول */}
           <Typography
             sx={{
               marginTop: "20px",
@@ -294,11 +242,7 @@ export default function StudentFirstStep() {
           >
             {t("haveanaccount")}
           </Typography>
-          <Button
-            fullWidth
-            variant="contained"
-            onClick={() => navigate("/login")}
-          >
+          <Button fullWidth variant="contained" onClick={() => navigate("/login")}>
             {t("login")}
           </Button>
         </Paper>

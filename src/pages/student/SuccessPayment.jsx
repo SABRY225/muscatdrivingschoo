@@ -18,9 +18,7 @@ export default function SuccessPayment() {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-              language: lang,
-            }),
+            body: JSON.stringify({ language: lang }),
           }
         );
         const data = await response.json();
@@ -32,41 +30,46 @@ export default function SuccessPayment() {
         console.log(err);
       }
     }
+
     handleSuccess();
   }, []);
 
   const { t } = useTranslation();
+
   return (
     <Navbar>
-      <Container sx={{ marginTop: "120px" }}>
+      <Container maxWidth="sm" sx={{ marginTop:"8rem" }}>
         <Paper
+          elevation={3}
           sx={{
-            width: "350px",
-            margin: "80px auto",
-            borderRadius: "12px",
-            padding: "20px",
+            mx: "auto",
+            borderRadius: "16px",
+            p: { xs: 3, sm: 4 },
+            textAlign: "center",
           }}
         >
           <Box
             sx={{
-              width: "55px",
-              height: "55px",
+              width: 70,
+              height: 70,
               backgroundColor: "#0cbc87",
               borderRadius: "50%",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              margin: "auto",
+              mx: "auto",
             }}
           >
-            <CheckIcon sx={{ color: "white", fontSize: "34px" }} />
+            <CheckIcon sx={{ color: "#fff", fontSize: 40 }} />
           </Box>
+
           <Typography
+            variant="h6"
+            component="h2"
             sx={{
-              textAlign: "center",
-              fontSize: "22px",
-              fontWeight: "600",
-              marginTop: "20px",
+              mt: 3,
+              fontWeight: "bold",
+              fontSize: { xs: "18px", sm: "22px" },
             }}
           >
             {t("pay_success")}

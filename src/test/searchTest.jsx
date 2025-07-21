@@ -16,8 +16,8 @@ import { useNavigate } from "react-router-dom";
 function SearchTest() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-const { i18n } = useTranslation();
-const isRTL = i18n.dir() === "rtl";
+  const { i18n } = useTranslation();
+  const isRTL = i18n.dir() === "rtl";
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState({
     grade: "",
@@ -41,19 +41,39 @@ const isRTL = i18n.dir() === "rtl";
 
   const handleFinalStepNext = () => {
     console.log(formData);
-    
+
     navigate(`/teachers/search?level=${formData.specialty}&subjects=${formData.grade}`);
   };
 
   return (
     <Navbar>
-      <Box sx={{ width: "100%", marginTop: "10rem" }}>
+      <Box sx={{ marginTop: "10rem" }}>
         <Typography sx={{ mx: 5, my: 2, fontSize: "25px", fontWeight: "700" }}>
           {t("Let's start looking for a coach.")}
         </Typography>
 
-<Box sx={{ direction:"ltr"}}>
-  <Stepper activeStep={activeStep} alternativeLabel>
+       <Box
+  sx={{
+    direction: "ltr",
+    // width: "100%",
+    overflowX: "auto",
+    px: { xs: 1, sm: 2 },
+  }}
+>
+  <Stepper
+    activeStep={activeStep}
+    alternativeLabel
+    sx={{
+      flexWrap: "wrap", // يسمح للخطوات باللف
+      ".MuiStepLabel-label": {
+        fontSize: { xs: "12px", sm: "14px" },
+        textAlign: "center",
+      },
+      ".MuiStepConnector-root": {
+        minWidth: "30px",
+      },
+    }}
+  >
     {steps.map((label, index) => (
       <Step key={label}>
         <StepButton onClick={() => handleStepClick(index)}>
@@ -63,6 +83,7 @@ const isRTL = i18n.dir() === "rtl";
     ))}
   </Stepper>
 </Box>
+
 
         <Box sx={{ padding: 2 }}>
           {activeStep === 0 && (

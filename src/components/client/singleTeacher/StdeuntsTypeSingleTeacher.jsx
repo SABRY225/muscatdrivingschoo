@@ -24,7 +24,7 @@ export default function StdeuntsTypeSingleTeacher({teacher}) {
             <Typography sx={{fontSize:"22px",marginBottom:"18px"}}>
                 {t('typeStudent')}
             </Typography>
-            <Box sx={{display:"flex",columnGap:"20px"}}>
+            <Box sx={{display:{md:"flex"},columnGap:"20px"}}>
                 <Stack direction="row" spacing={2} columnGap="10px">
                     <IconWrapper><TransgenderIcon/></IconWrapper>
                     <Box>

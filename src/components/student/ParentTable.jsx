@@ -103,7 +103,7 @@ console.log(data.data);
   return (
     <Box>
       {!isLoading ? (
-        <Paper sx={{ width: "100%", padding: "20px", marginTop : "20px" }}>
+        <Paper sx={{ padding: "20px", marginTop : "0px" }}>
           <TableContainer sx={{ maxHeight: 440 }}>
             
             <Table stickyHeader aria-label="sticky table">

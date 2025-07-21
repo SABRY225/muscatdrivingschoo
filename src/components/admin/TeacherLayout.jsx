@@ -26,7 +26,7 @@ export default function TeacherLayout({ children }) {
     { title: t("profile_photo"),          link: "/edit/teacher/photo" },
     { title: t("additionalInformation"),  link: "/edit/teacher/additionalInformation" },
     { title: t("subjects"),               link: "/edit/teacher/subjects" },
-    { title: t("resume"),                 link: "/edit/teacher/resume" },
+    // { title: t("resume"),                 link: "/edit/teacher/resume" },
     { title: t("availability"),           link: "/edit/teacher/availability" },
     { title: t("description"),            link: "/edit/teacher/description" },
     { title: t("video"),                  link: "/edit/teacher/video" },
@@ -42,7 +42,6 @@ export default function TeacherLayout({ children }) {
   }, [data]);
   console.log(teacher);
   return (
-    <Navbar>
       <Container sx={{ marginTop: "120px", marginBottom: "60px" }}>
         {!isLoading ? 
         <Grid container spacing={2}>
@@ -96,11 +95,5 @@ export default function TeacherLayout({ children }) {
           <Loading />
         )}
       </Container>
-      {/* <Box sx={{marginTop:"120px"}}>
-                <DownloadApp/>
-                <LinksFooter/>
-                <Footer/>
-            </Box> */}
-    </Navbar>
   );
 }

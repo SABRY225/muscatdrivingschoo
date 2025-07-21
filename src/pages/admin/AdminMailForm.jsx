@@ -67,7 +67,7 @@ export default function AdminMailForm() {
 
   return (
     <AdminLayout>
-      <Paper sx={{ width: "100%", padding: "20px" }}>
+      <Paper sx={{ padding: "20px" }}>
 
           <Box sx={{ marginBottom: "26px" }}>
           <form onSubmit={handleSubmit(onSubmit)}>

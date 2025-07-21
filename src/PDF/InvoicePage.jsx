@@ -116,7 +116,7 @@ const InvoicePDF = () => {
                             </Text>
                             <Text>
                                 <Text style={styles.label}>Date: </Text>
-                                <Text style={styles.label2}>{new Date(sessionCreatedAt).toDateString()}</Text>
+                                <Text style={styles.label2}>{new Date(sessionCreatedAt).toLocaleDateString("en-EG")}</Text>
                             </Text>
                         </View>
                         <View style={styles.section}>

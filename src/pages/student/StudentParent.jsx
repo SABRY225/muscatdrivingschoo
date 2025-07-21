@@ -12,31 +12,7 @@ export default function ParentView() {
 
   return (
     <StudentLayout>
-      <Box sx={{padding:"40px 20px"}}>
-
-        <Typography
-          sx={{
-            color: "#000000",
-            fontWeight: "500",
-            fontSize: "18px",
-            marginBottom: "32px",
-          }}
-        >
-          {t("parent_name")}
-        </Typography>
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <Link to={"/student"}>
-            <Tabs value="1">
-              <Tab label={t("view_parent")} value="1" />
-            </Tabs>
-          </Link>
-        </Box>
-        <Container>
-         
-            <ParentTable />
-          
-        </Container>
-      </Box>
+        <ParentTable />
     </StudentLayout>
   );
 }

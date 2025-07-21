@@ -56,6 +56,7 @@ export default function BookLecture() {
             date: "",
             title: "",
             language: lang,
+            type : "lecture_booking"
           }),
         }
       );
@@ -121,7 +122,7 @@ export default function BookLecture() {
           <Loading />
         ) : (
           <Paper sx={{ padding: "30px 20px" }}>
-            <Typography sx={{ fontSize: "24px", fontWeight: "600", marginBottom: "24px" }}>
+            <Typography sx={{ fontSize: {md:"24px",xs:"20px"}, fontWeight: "600", marginBottom: "24px" }}>
               {t("bookDetails_Lecture")} {(lang == "en") ? ObjLecture?.titleEN : ObjLecture?.titleAR}
             </Typography>
             <form onSubmit={handleSubmit(onSubmit)}>

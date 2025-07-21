@@ -99,7 +99,7 @@ const AdminEditTeacherResume = () => {
   return (
     <AdminLayout>
       <TeacherLayout active={4} title={t("resume")}>
-      <Paper sx={{ width: "100%", padding: "20px" }}>
+      <Paper sx={{ padding: "20px" }}>
         <Box sx={{ marginY: "30px" }}>
           <Typography sx={{ fontSize: "20px", marginBottom: "10px" }}>
             {t("workExper")}

@@ -89,7 +89,7 @@ export default function View() {
   return (
     <Box>
       {!isLoading ? (
-        <Paper sx={{ width: "100%", padding: "20px" }}>
+        <Paper sx={{ padding: "20px" }}>
           <TableContainer sx={{ maxHeight: 440 }}>
             <TextField
               sx={{ m: 1, width: "90%" }}

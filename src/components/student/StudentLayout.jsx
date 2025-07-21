@@ -14,7 +14,6 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Navbar from "../Navbar";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import SchoolIcon from "@mui/icons-material/School";
@@ -26,25 +25,42 @@ import AssignmentIcon from '@mui/icons-material/Assignment'; // ✅ للامتح
 import DiscountIcon from '@mui/icons-material/Percent'; // ✅ للخصومات
 import SupportAgentIcon from '@mui/icons-material/SupportAgent'; // ✅ للدعم الفني
 import { AccountTree, WorkspacePremium } from "@mui/icons-material";
+import WalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+import PaymentIcon from "@mui/icons-material/Payment";
+import { Lock, ReceiptLong, Star } from '@mui/icons-material';
+import EscalatorWarningIcon from "@mui/icons-material/EscalatorWarning";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import ImageIcon from '@mui/icons-material/Image';
 
 export default function StudentLayout({ children }) {
   const { t } = useTranslation();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
 
- const topics = [
-  { icon: <SpaceDashboardIcon />, title: t("controlBoard"), link: "/dashboard" },
-      { icon: <AccountTree />, title: t("Statistics"), link: "/statistics" },
-  { icon: <WorkspacePremium />, title: t("certification"), link: "/certificates" },
-  { icon: <MenuBookIcon />, title: t("alllessons"), link: "/lessons" },
-  { icon: <LocalOfferIcon />, title: t("packages"), link: "/package" },
-  { icon: <SchoolIcon />, title: t("Lectures"), link: "/lecture" },
-  { icon: <QuizIcon />, title: t("Questions"), link: "/questions" },          // ✅ تغيير لأيقونة Quiz
-  { icon: <AssignmentIcon />, title: t("Exams"), link: "/exam" },             // ✅ تغيير لأيقونة Assignment
-  { icon: <DiscountIcon />, title: t("Discounts"), link: "/discount" },       // ✅ تغيير لأيقونة Percent
-  { icon: <MessageIcon />, title: t("messages"), link: "/messages" },
-  { icon: <SupportAgentIcon />, title: t("Complaints"), link: "/technical-support" } // ✅ تغيير لأيقونة دعم
-];
+  const topics = [
+    // { icon: <SpaceDashboardIcon />, title: t("controlBoard"), link: "/dashboard" },
+    { icon: <AccountTree />, title: t("Statistics"), link: "/statistics" },
+    { icon: <WorkspacePremium />, title: t("certification"), link: "/certificates" },
+    { title: t("Lesson booking requests"), icon: <ListAltIcon />, link: '/request-lesson' },
+    { title: t("About me"), icon: <AccountCircleIcon />, link: '/profile' },
+    { title: t("profile_photo"), icon: <ImageIcon />, link: '/profile_photo' },
+    { title: t("parent"), icon: <EscalatorWarningIcon />, link: '/parents' },
+    { title: t("setting_changepassword"), icon: <Lock />, link: '/changepassword' },
+    { title: t("my_teachers"), icon: <SchoolIcon />, link: '/teachers' },
+    { title: t("credit"), icon: <WalletIcon />, link: '/credit' },
+    { title: t("Points earned"), icon: <Star />, link: '/referral-system' },
+    { title: t("My bills"), icon: <ReceiptLong />, link: '/mybills' },
+    { title: t("paymentOperations"), icon: <PaymentIcon />, link: '/financial-records' },
+    { icon: <MenuBookIcon />, title: t("alllessons"), link: "/lessons" },
+    { icon: <LocalOfferIcon />, title: t("packages"), link: "/package" },
+    { icon: <SchoolIcon />, title: t("Lectures"), link: "/lecture" },
+    { icon: <QuizIcon />, title: t("Questions"), link: "/questions" },         
+    { icon: <AssignmentIcon />, title: t("Exams"), link: "/exam" },            
+    { icon: <DiscountIcon />, title: t("Discounts"), link: "/discount" },      
+    { icon: <MessageIcon />, title: t("messages"), link: "/messages" },
+    { icon: <SupportAgentIcon />, title: t("Complaints"), link: "/technical-support" }
+  ];
 
 
   const handleDrawerToggle = () => {
@@ -53,17 +69,17 @@ export default function StudentLayout({ children }) {
 
   const drawer = (
     <Paper sx={{
-  padding: "0px 20px 0px",
-  backgroundColor: "#800020",
-  borderRadius: 0,
-  margin: "6.5rem 0 0",
-  position: "fixed",
-  top: 0,
-  left: 0,
-  right: 0,
-  width: "230px",
-  zIndex: 7,
-}}>
+      padding: "0px 20px 0px",
+      backgroundColor: "#800020",
+      borderRadius: 0,
+      // margin: "6.5rem 0 0",
+      // position: "fixed",
+      // top: 0,
+      // left: 0,
+      // right: 0,
+      width: "230px",
+      zIndex: 7,
+    }}>
 
       <List>
         {topics.map((topic, index) => {
@@ -123,14 +139,14 @@ export default function StudentLayout({ children }) {
             onClose={handleDrawerToggle}
             sx={{
               display: { xs: "block", md: "none" },
-              "& .MuiDrawer-paper": { width: 270,background:"rgba(255, 255, 255, 0)" },
+              "& .MuiDrawer-paper": { width: 270, background: "rgba(255, 255, 255, 0)" },
 
             }}
           >
             {drawer}
           </Drawer>
 
-          <Grid item xs={12} lg={8} sx={{ marginTop: "2rem" ,height: "80vh"}}>
+          <Grid item xs={12} lg={8} sx={{ marginTop: "2rem", height: "80vh" }}>
             {children}
           </Grid>
         </Grid>

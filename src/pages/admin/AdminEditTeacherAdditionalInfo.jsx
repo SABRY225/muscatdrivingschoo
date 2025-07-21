@@ -131,7 +131,7 @@ const AdminEditTeacherAdditionalInfo = () => {
       <Box sx={{marginTop:"-100px"}}>
       
       <TeacherLayout active={2} title={t("additionalInformation")}>
-      <Paper sx={{ width: "100%", padding: "20px" }}>
+      <Paper sx={{ padding: "20px" }}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box sx={{ marginBottom: "26px" }}>
             <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
@@ -494,7 +494,7 @@ const AdminEditTeacherAdditionalInfo = () => {
           />
           <Box sx={{ display: "flex", gap: "12px" }}>
             <StepperButtons load={load} />
-            <Button
+            {/* <Button
               sx={{ textTransform: "capitalize", marginTop: "40px" }}
               variant="outlined"
               onClick={() =>
@@ -502,7 +502,7 @@ const AdminEditTeacherAdditionalInfo = () => {
               }
             >
               {t("skip")}
-            </Button>
+            </Button> */}
           </Box>
         </form>
         </Paper>

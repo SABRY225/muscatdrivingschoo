@@ -60,7 +60,7 @@ import PersonOffIcon from '@mui/icons-material/PersonOff';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import axios from "axios";
 import DraftsIcon from '@mui/icons-material/Drafts';
-
+import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 //teachers-account-statment
 const drawerWidth = 240;
 
@@ -89,242 +89,282 @@ function AdminLayout(props) {
   };
 
   const topics = [
+  // ⚙️ لوحة التحكم
+  {
+    title: t("controlBoard"),
+    icon: HomeIcon,
+    link: "",
+  },
     {
-      title: t("controlBoard"),
-      icon: HomeIcon,
-      link: "",
-    },
+    title: t("Distinctive settings on the platform"),
+    icon: AnalyticsIcon,
+    link: "/counts",
+  },
+  {
+    title: t("add_profit"),
+    icon: PercentIcon,
+    link: "/add-profit",
+  },
+  {
+    title: t("Balance"),
+    icon: MonetizationOnIcon,
+    link: "/balance",
+  },
     {
-      title: t("studentlist"),
-      icon: PeopleAltIcon,
-      link: "/student-new",
-    },
+    title: t("view_account_statement"),
+    icon: MoneyOffIcon,
+    link: "/teachers-account-statment",
+  },
+  {
+    title: t("file_manager"),
+    icon: Inventory2Icon,
+    link: "/history",
+  },
+  {
+    title: t("exchange_requests"),
+    icon: MoneyIcon,
+    link: "/exchange-requests",
+  },
+  {
+    title: t("exchange_requests_teachers"),
+    icon: MoneyIcon,
+    link: "/add-teacher-exchange-requests",
+  },
+  {
+    title: t("exchange_requests_students"),
+    icon: MoneyIcon,
+    link: "/add-student-exchange-requests",
+  },
+  {
+    title: t("checkout_requests"),
+    icon: CurrencyExchangeIcon,
+    link: "/checkout-requests",
+  },
+  {
+    title: t("Balancechargeoperations"),
+    icon: PaymentsIcon,
+    link: "/payments",
+  },
+  {
+    title: t("cash_box"),
+    icon: PaymentIcon,
+    link: "/cash-box",
+  },
     {
-      title: t("Distinctive settings on the platform"),
-      icon: AnalyticsIcon,
-      link: "/counts",
-    },
-        {
-      title: t("Balance"),
-      icon: MonetizationOnIcon,
-      link: "/balance",
-    },
+    title: t("studylevels"),
+    icon: SchoolIcon,
+    link: "/levels",
+  },
+  {
+    title: t("studyyears"),
+    icon: HourglassBottomIcon,
+    link: "/years",
+  },
+  {
+    title: t("studycurriculums"),
+    icon: AssignmentIcon,
+    link: "/curriculums",
+  },
     {
-      title: t("studylevels"),
-      icon: SchoolIcon,
-      link: "/levels",
-    },
-    {
-      title: t("trainingcategorytype"),
-      icon: CategoryIcon,
-      link: "/trainingcategorytypes",
-    },
-    {
-      title: t("Lesson booking requests"),
-      icon: GradingIcon,
-      link: "/request-lesson",
-    },
-    {
-      title: t("package"),
-      icon: CategoryIcon,
-      link: "/package",
-    },
-    {
-      title: t("limetype"),
-      icon: CategoryIcon,
-      link: "/limetype",
-    },
-    {
-      title: t("studyyears"),
-      icon: HourglassBottomIcon,
-      link: "/years",
-    },
-    {
-      title: t("studycurriculums"),
-      icon: AssignmentIcon,
-      link: "/curriculums",
-    },
-    {
-      title: t("curriculumstoLevel"),
-      icon: AddIcon,
-      link: "/Curriculums_insert",
-    },
-    {
-      title: t("subjects"),
-      icon: SubjectIcon,
-      link: "/subjects",
-    },
-    {
-      title: t("categories"),
-      icon: CategoryIcon,
-      link: "/categories",
-    },
-   
-    {
-      title: t("student_parent"),
-      icon: SubjectIcon,
-      link: "/parent-student",
-    },
-    
-    {
-      title: t("viewrate"),
-      icon: RateIcon,
-      link: "/rate",
-    },
-    {
-      title: t("Booking"),
-      icon: BookIcon,
-      link: "/booked-lessons",
-    },
-   
-    {
-      title: t("lectures"),
-      icon: BeenhereIcon,
-      link: "/lectures",
-    },
-    {
-      title: t("teachersapprove"),
-      icon: BeenhereIcon,
-      link: "/teachers_approve",
-    },
-    {
-      title: t("teachers"),
-      icon: PersonIcon,
-      link: "/teachers",
-    },
-    {
-      title: t("view_account_statement"),
-      icon: MoneyOffIcon,
-      link: "/teachers-account-statment",
-    },
-    {
-      title: t("students"),
-      icon: PeopleAltIcon,
-      link: "/students",
-    },
-    {
-      title: t("social"),
-      icon: ConnectWithoutContactIcon,
-      link: "/social-media",
-    },
-    {
-      title: t("add_profit"),
-      icon: PercentIcon,
-      link: "/add-profit",
-    },
-    {
-      title: t("Complaints"),
-      icon: SupportIcon,
-      link: "/complaints",
-    },
-    {
-      title: t("messages"),
-      icon: EmailIcon,
-      link: "/messages",
-    },
-    {
-      title: t("file_manager"),
-      icon: Inventory2Icon,
-      link: "/history",
-    },
-    {
-      title: t("view_drivinglicenses"),
-      icon: CarIcon,
-      link: "/driving",
-    },
-    {
-      title: t("button_send_mail"),
-      icon: MailIcon,
-      link: "/send-mail",
-    },
-    {
-      title: t("admins"),
-      icon: PersonIcon,
-      link: "/admin-view",
-    },
-    {
-      title: t("career_department"),
-      icon: CareetDepartmentIcon,
-      link: "/career-department",
-    },
-    {
-      title: t("careers"),
-      icon: CareeIcon,
-      link: "/career",
-    },
+    title: t("subjects"),
+    icon: SubjectIcon,
+    link: "/subjects",
+  },
+  {
+    title: t("curriculumstoLevel"),
+    icon: AddIcon,
+    link: "/Curriculums_insert",
+  },
+  {
+    title: t("trainingcategorytype"),
+    icon: CategoryIcon,
+    link: "/trainingcategorytypes",
+  },
+  {
+    title: t("limetype"),
+    icon: CategoryIcon,
+    link: "/limetype",
+  },
+  {
+    title: t("categories"),
+    icon: CategoryIcon,
+    link: "/categories",
+  },
+  // 👨‍🎓 الطلاب والأهالي
+  {
+    title: t("studentlist"),
+    icon: PeopleAltIcon,
+    link: "/student-new",
+  },
+  {
+    title: t("students"),
+    icon: PeopleAltIcon,
+    link: "/students",
+  },
+  {
+    title: t("teachers"),
+    icon: PersonIcon,
+    link: "/teachers",
+  },
+  {
+    title: t("teachersapprove"),
+    icon: BeenhereIcon,
+    link: "/teachers_approve",
+  },
+  {
+    title: t("parents"),
+    icon: PersonIcon,
+    link: "/parents",
+  },
+  {
+    title: t("student_parent"),
+    icon: SubjectIcon,
+    link: "/parent-student",
+  },
 
+  {
+    title: t("Ghost students"),
+    icon: PersonOffIcon,
+    link: "/ghost-students",
+  },
     {
-      title: t("news"),
-      icon: NewsIcon,
-      link: "/news",
-    },
+    title: t("Ghost teachers"),
+    icon: PersonOffIcon,
+    link: "/ghost-teachers",
+  },
 
-    {
-      title: t("tests"),
-      icon: TestsIcon,
-      link: "/tests",
-    },
+  {
+    title: t("Ghost parents"),
+    icon: PersonOffIcon,
+    link: "/ghost-parents",
+  },
 
-    {
-      title: t("exchange_requests"),
-      icon: MoneyIcon,
-      link: "/exchange-requests",
-    },
-    {
-      title: t("Ghost teachers"),
-      icon: PersonOffIcon,
-      link: "/ghost-teachers",
-    },
-    {
-      title: t("Ghost students"),
-      icon: PersonOffIcon,
-      link: "/ghost-students",
-    },
-    {
-      title: t("Ghost parents"),
-      icon: PersonOffIcon,
-      link: "/ghost-parents",
-    },
-    {
-      title: t("ads_department"),
-      icon: CareetDepartmentIcon,
-      link: "/ads-department",
-    },
 
+  // 📚 التدريب والباقات
+  {
+    title: t("package"),
+    icon: CategoryIcon,
+    link: "/package",
+  },
+  {
+    title: t("Lectures"),
+    icon: BeenhereIcon,
+    link: "/lectures",
+  },
     {
-      title: t("ads"),
-      icon: CampaignIcon,
-      link: "/ads",
-    },
-    
+    title: t("discounts"),
+    icon: DiscountIcon,
+    link: "/discounts",
+  },
+  {
+    title: t("tests"),
+    icon: TestsIcon,
+    link: "/tests",
+  },
     {
-      title: t("discounts"),
-      icon: DiscountIcon,
-      link: "/discounts",
-    },
+    title: t("certificates students"),
+    icon: WorkspacePremiumIcon,
+    link: "/certificates",
+  },
     {
-      title: t("Group messages"),
-      icon: DraftsIcon,
-      link: "/send-groupmessages",
-    },
-    {
-      title: t("checkout_requests"),
-      icon: CurrencyExchangeIcon,
-      link: "/checkout-requests",
-    },
+    title: t("Lesson booking requests"),
+    icon: GradingIcon,
+    link: "/request-lesson",
+  },
+  {
+    title: t("Booking"),
+    icon: BookIcon,
+    link: "/booked-lessons",
+  },
 
-    {
-      title: t("Balancechargeoperations"),
-      icon: PaymentsIcon,
-      link: "/payments",
-    },
+  {
+    title: t("viewrate"),
+    icon: RateIcon,
+    link: "/rate",
+  },
 
-    {
-      title: t("cash_box"),
-      icon: PaymentIcon,
-      link: "/cash-box",
-    },
-  ];
+  // 🧾 الشهادات والاختبارات
+
+
+  // 📣 الإعلانات والأخبار
+  {
+    title: t("ads_department"),
+    icon: CareetDepartmentIcon,
+    link: "/ads-department",
+  },
+  {
+    title: t("ads"),
+    icon: CampaignIcon,
+    link: "/ads",
+  },
+  {
+    title: t("career_department"),
+    icon: CareetDepartmentIcon,
+    link: "/career-department",
+  },
+  {
+    title: t("careers"),
+    icon: CareeIcon,
+    link: "/career",
+  },
+  {
+    title: t("news"),
+    icon: NewsIcon,
+    link: "/news",
+  },
+
+  // 💬 الرسائل والدعم
+  {
+    title: t("messages"),
+    icon: EmailIcon,
+    link: "/messages",
+  },
+  {
+    title: t("button_send_mail"),
+    icon: MailIcon,
+    link: "/send-mail",
+  },
+  {
+    title: t("Group messages"),
+    icon: DraftsIcon,
+    link: "/send-groupmessages",
+  },
+
+
+  // 📁 ملفات وسجلات
+
+
+
+  // 👤 الإدارة والتوظيف
+
+
+
+
+
+  //
+
+  {
+    title: t("social"),
+    icon: ConnectWithoutContactIcon,
+    link: "/social-media",
+  },
+  {
+    title: t("Complaints"),
+    icon: SupportIcon,
+    link: "/complaints",
+  },
+  {
+    title: t("view_drivinglicenses"),
+    icon: CarIcon,
+    link: "/driving",
+  },
+  {
+    title: t("admins"),
+    icon: PersonIcon,
+    link: "/admin-view",
+  },
+];
+
 
   const drawer = (
     <div>

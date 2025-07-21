@@ -80,7 +80,7 @@ export default function TeacherPhoto() {
   return (
     <Navbar>
       <TeacherLayout active={1} title={t("profile_photo")}>
-      <Paper sx={{ width: "100%", padding: "20px" }}>
+      <Paper sx={{ padding: "20px" }}>
         <input
           type="file"
           id="image"

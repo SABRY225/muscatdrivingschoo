@@ -19,7 +19,6 @@ import CheckBoxLevels from "../../../components/teacher/CheckBoxLevels";
 import CheckBoxCurriculum from "../../../components/teacher/CheckBoxCurriculum";
 import CheckBoxTrainingCategoryTypes from "../../../components/teacher/CheckBoxTrainingCategoryTypes";
 import CheckBoxLimeType from "../../../components/teacher/CheckBoxLimeType";
-import StepperButtons from "../../../components/reusableUi/StepperButtons";
 import HeaderSteps from "../../../components/auth/HeaderSteps";
 
 function TeacherSixStep() {
@@ -32,7 +31,7 @@ function TeacherSixStep() {
   const teacher = JSON.parse(localStorage.getItem("teacher"));
   const [load, setLoad] = useState(false);
   const navigate = useNavigate();
-  const { closeSnackbar, enqueueSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   const [profit, setProfit] = useState("");
 
   const {
@@ -74,6 +73,7 @@ function TeacherSixStep() {
   const onSubmit = async (passedData) => {
     setLoad(true);
     try {
+      // تحقق من أن كل checkboxes مختارة
       if (
         checked.length === 0 ||
         checked_2.length === 0 ||
@@ -100,8 +100,8 @@ function TeacherSixStep() {
             levels: checked,
             trainingcategorytypes: checked_3,
             limetypes: checked_4,
-            haveCertificates: passedData.certificates === "no" ? false : true,
-            haveExperience: passedData.experience === "no" ? false : true,
+            haveCertificates: passedData.certificates === "yes",
+            haveExperience: passedData.experience === "yes",
             favHours: passedData.hours_per_week,
             favStdGender: passedData.gender,
             experienceYears: passedData.yearsOfExperience,
@@ -128,6 +128,10 @@ function TeacherSixStep() {
       navigate("/teacherRegister/step7");
     } catch (err) {
       console.log(err);
+      enqueueSnackbar(t("something_went_wrong"), {
+        variant: "error",
+      });
+      setLoad(false);
     }
   };
 
@@ -148,16 +152,8 @@ function TeacherSixStep() {
               rules={{ required: true }}
               render={({ field }) => (
                 <RadioGroup {...field}>
-                  <FormControlLabel
-                    value="yes"
-                    control={<Radio size="2px" />}
-                    label={t("yes")}
-                  />
-                  <FormControlLabel
-                    value="no"
-                    control={<Radio size="2px" />}
-                    label={t("no")}
-                  />
+                  <FormControlLabel value="yes" control={<Radio />} label={t("yes")} />
+                  <FormControlLabel value="no" control={<Radio />} label={t("no")} />
                 </RadioGroup>
               )}
             />
@@ -179,16 +175,8 @@ function TeacherSixStep() {
               rules={{ required: true }}
               render={({ field }) => (
                 <RadioGroup {...field}>
-                  <FormControlLabel
-                    value="yes"
-                    control={<Radio size="2px" />}
-                    label={t("yes")}
-                  />
-                  <FormControlLabel
-                    value="no"
-                    control={<Radio size="2px" />}
-                    label={t("no")}
-                  />
+                  <FormControlLabel value="yes" control={<Radio />} label={t("yes")} />
+                  <FormControlLabel value="no" control={<Radio />} label={t("no")} />
                 </RadioGroup>
               )}
             />
@@ -225,7 +213,7 @@ function TeacherSixStep() {
             )}
           </Box>
 
-          {/* الجنس المفضل */}
+          {/* الجنس */}
           <Box sx={{ marginBottom: "26px" }}>
             <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
               {t("genderType")}
@@ -249,21 +237,43 @@ function TeacherSixStep() {
             )}
           </Box>
 
-          {/* الحقول المتقدمة */}
+          {/* checkboxes */}
           <CheckBoxLevels checked={checked} setChecked={setChecked} />
+          {checked.length === 0 && (
+            <Typography color="error" sx={{ fontSize: "13px", mb: 2 }}>
+              {t("required")}
+            </Typography>
+          )}
+
           <CheckBoxCurriculum checked={checked_2} setChecked={setChecked_2} />
+          {checked_2.length === 0 && (
+            <Typography color="error" sx={{ fontSize: "13px", mb: 2 }}>
+              {t("required")}
+            </Typography>
+          )}
+
           <CheckBoxTrainingCategoryTypes checked={checked_3} setChecked={setChecked_3} />
+          {checked_3.length === 0 && (
+            <Typography color="error" sx={{ fontSize: "13px", mb: 2 }}>
+              {t("required")}
+            </Typography>
+          )}
+
           <CheckBoxLimeType checked={checked_4} setChecked={setChecked_4} />
+          {checked_4.length === 0 && (
+            <Typography color="error" sx={{ fontSize: "13px", mb: 2 }}>
+              {t("required")}
+            </Typography>
+          )}
 
           <Button
-  variant="contained"
-  onClick={handleSubmit(onSubmit)}
-  disabled={load}
-  sx={{ textTransform: "capitalize" }}
->
-  {load ? t("loading") : t("next") || "التالي"}
-</Button>
-
+            variant="contained"
+            type="submit"
+            disabled={load}
+            sx={{ textTransform: "capitalize" }}
+          >
+            {load ? t("loading") : t("next")}
+          </Button>
         </form>
       </Container>
     </Navbar>

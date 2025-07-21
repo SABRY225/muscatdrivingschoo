@@ -13,6 +13,7 @@ import {
   FormControlLabel,
   RadioGroup,
   Radio,
+  Autocomplete,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
@@ -41,7 +42,12 @@ const AdminEditStudent = () => {
   const [load, setLoad] = useState(false);
   const [regionTime, setRegionTime] = useState(null);
   const { token } = useSelector((state) => state.admin);
-
+  const [countryValue, setCountryValue] = useState("");
+  const [countryCode, setCountryCode] = useState("");
+  const [countryError, setCountryError] = useState(false);
+  const [nationalityValue, setNationalityValue] = useState("");
+  const [nationalityCode, setNationalityCode] = useState("");
+  const [nationalityError, setNationalityError] = useState(false);
   const {
     register,
     control,
@@ -113,15 +119,44 @@ const AdminEditStudent = () => {
   }, [classes || watch("level")]);
 
   const onSubmit = async (data) => {
-    closeSnackbar();
-    setLoad(true);
-    const languages = chosenlanguages.map((lang) => {
-      return {
-        LanguageLevelId: lang.LanguageLevelId,
-        StudentId: studentId,
-        LanguageId: lang.LanguageId,
-      };
-    });
+  closeSnackbar();
+
+  let hasError = false;
+
+  // if (!regionTime) {
+  //   enqueueSnackbar(t("timezone_required"), { variant: "error" });
+  //   hasError = true;
+  // }
+  if(!data.dateOfBirth){
+    return enqueueSnackbar(t("dateOfBirth_required"), { variant: "error" });
+  }
+  if (!countryCode) {
+    setCountryError(true);
+    enqueueSnackbar(t("location_required"), { variant: "error" });
+    hasError = true;
+  }
+
+  if (!chosenlanguages || chosenlanguages.length === 0) {
+    enqueueSnackbar(t("languages_required"), { variant: "error" });
+    hasError = true;
+  }
+
+if (!nationalityCode) {
+  setNationalityError(true);
+  enqueueSnackbar(t("nationality_required"), { variant: "error" });
+  hasError = true;
+}
+
+  if (hasError) return;
+
+  setLoad(true);
+
+  const languages = chosenlanguages.map((lang) => ({
+    LanguageLevelId: lang.LanguageLevelId,
+    StudentId: studentId,
+    LanguageId: lang.LanguageId,
+  }));
+
     try {
       const response = await fetch(
         `${process.env.REACT_APP_API_KEY}api/v1/admin/edit/student/${studentId}`,
@@ -176,7 +211,7 @@ const AdminEditStudent = () => {
         >
           {t("personalInformation")}
         </Typography>
-        <form onSubmit={handleSubmit(onSubmit)}>
+     <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={6}>
             <Grid item xs={12} md={7}>
               <Box sx={{ marginBottom: "26px" }}>
@@ -298,39 +333,58 @@ const AdminEditStudent = () => {
                 <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
                   {t("location")}
                 </InputLabel>
-                <Controller
-                  name="location"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      fullWidth
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      MenuProps={{
-                        elevation: 1,
-                        PaperProps: {
-                          style: {
-                            maxHeight: 48 * 3 + 8,
-                            width: 160,
-                          },
-                        },
-                      }}
-                      {...register("location", {
-                        required: "location is required",
-                      })}
-                    >
-                      {countries.map((op, index) => {
-                        return (
-                          <MenuItem key={index + "mjnnj"} value={op.code}>
-                            {lang === "en" ? op.name_en : op.name_ar}
-                          </MenuItem>
-                        );
-                      })}
-                    </Select>
-                  )}
-                />
-                {errors.location?.type === "required" && (
+                <Autocomplete
+  fullWidth
+  name="country"
+  options={countries}
+  value={countryValue}
+  inputValue={countryValue}
+  onChange={(event, newInputValue) => {
+    if (newInputValue) {
+      setCountryValue(
+        lang === "en" ? newInputValue?.name_en : newInputValue?.name_ar
+      );
+      setCountryCode(newInputValue?.code);
+      setCountryError(false);
+    } else {
+      setCountryValue("");
+      setCountryCode("");
+    }
+  }}
+  onInputChange={(event, newInputValue) => {
+    setCountryValue(newInputValue);
+  }}
+  getOptionLabel={(op) =>
+    (lang === "en" ? op.name_en : op.name_ar) || op
+  }
+  isOptionEqualToValue={(op, value) =>
+    lang === "en" ? op.name_en === value : op.name_ar === value
+  }
+  renderOption={(props, option) => (
+    <Box component="li" sx={{ display: "flex", alignItems: "center" }} {...props}>
+      <img
+        loading="lazy"
+        width="25"
+        src={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png`}
+        alt=""
+        style={{ marginLeft: 8 }}
+      />
+      {lang === "en" ? option.name_en : option.name_ar}
+    </Box>
+  )}
+  renderInput={(params) => (
+    <TextField
+      {...params}
+      label={lang === "en" ? "Choose a country" : "إختر بلدك"}
+      inputProps={{
+        ...params.inputProps,
+        autoComplete: "new-password",
+      }}
+    />
+  )}
+/>
+
+                {countryError && (
                   <Typography
                     color="error"
                     role="alert"
@@ -344,38 +398,65 @@ const AdminEditStudent = () => {
                 <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
                   {t("nationality")}
                 </InputLabel>
-                <Controller
-                  name="nationality"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      fullWidth
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      MenuProps={{
-                        elevation: 1,
-                        PaperProps: {
-                          style: {
-                            maxHeight: 48 * 3 + 8,
-                            width: 160,
-                          },
-                        },
-                      }}
-                      {...register("nationality", {
-                        required: "nationality is required",
-                      })}
-                    >
-                      {countries.map((op, index) => {
-                        return (
-                          <MenuItem key={index + "mjnnj"} value={op.code}>
-                            {lang === "en" ? op.name_en : op.name_ar}
-                          </MenuItem>
-                        );
-                      })}
-                    </Select>
-                  )}
-                />
+<Autocomplete
+  fullWidth
+  name="nationality"
+  options={countries}
+  value={nationalityValue}
+  inputValue={nationalityValue}
+  onChange={(event, newInputValue) => {
+    if (newInputValue) {
+      setNationalityValue(
+        lang === "en" ? newInputValue?.name_en : newInputValue?.name_ar
+      );
+      setNationalityCode(newInputValue?.code); // التصحيح هنا
+      setNationalityError(false);
+    } else {
+      setNationalityValue("");
+      setNationalityCode("");
+    }
+  }}
+  onInputChange={(event, newInputValue) => {
+    setNationalityValue(newInputValue);
+  }}
+  getOptionLabel={(op) =>
+    (lang === "en" ? op.name_en : op.name_ar) || op
+  }
+  isOptionEqualToValue={(op, value) =>
+    lang === "en" ? op.name_en === value : op.name_ar === value
+  }
+  renderOption={(props, option) => (
+    <Box component="li" sx={{ display: "flex", alignItems: "center" }} {...props}>
+      <img
+        loading="lazy"
+        width="25"
+        src={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png`}
+        alt=""
+        style={{ marginLeft: 8 }}
+      />
+      {lang === "en" ? option.name_en : option.name_ar}
+    </Box>
+  )}
+  renderInput={(params) => (
+    <TextField
+      {...params}
+      label={lang === "en" ? "Choose a country" : "إختر بلدك"}
+      inputProps={{
+        ...params.inputProps,
+        autoComplete: "new-password",
+      }}
+    />
+  )}
+/>
+                {nationalityError && (
+                  <Typography
+                    color="error"
+                    role="alert"
+                    sx={{ fontSize: "13px", marginTop: "6px" }}
+                  >
+                    {t("required")}
+                  </Typography>
+                )}
               </Box>
               <AddLanguages
                 chosenlanguages={chosenlanguages}

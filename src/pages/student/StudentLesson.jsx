@@ -9,8 +9,22 @@ import { useRequestLession } from '../../hooks/useRequestLession';
 import Loading from '../../components/Loading';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
+import { useLevels } from '../../hooks/useLevels';
+import Cookies from "js-cookie";
 
 const LessonItem = ({ item, t, onPay, onDelete }) => {
+  const { data } = useLevels();
+    const lang = Cookies.get("i18next") || "en";
+  
+const [typeLesson, setTypeLesson] = useState(null);
+
+useEffect(() => {
+  if (data?.data && item?.typeLesson) {
+    const found = data?.data?.find(level => level.id == item.typeLesson);
+    setTypeLesson(found);
+  }
+}, [item?.typeLesson]);
+
   const getStatusColor = (status) => {
     switch (status) {
       case 'pending': return '#f4d03f';
@@ -19,6 +33,15 @@ const LessonItem = ({ item, t, onPay, onDelete }) => {
       default: return '#333';
     }
   };
+  console.log(item);
+function convertTo12Hour(timeStr) {
+  const [hourStr, minute] = timeStr.split(':');
+  let hour = parseInt(hourStr, 10);
+  const ampm = hour >= 12 ? 'PM' : 'AM';
+  hour = hour % 12 || 12; // لو 0 خليه 12
+  return `${hour}:${minute} ${ampm}`;
+}
+
 
   return (
     <Box
@@ -47,8 +70,22 @@ const LessonItem = ({ item, t, onPay, onDelete }) => {
 
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
         <Info label={t("day")} value={dayjs(item.date).format('YYYY-MM-DD')} />
-        <Info label={t("Time")} value={dayjs(item.date).format('HH:mm')} />
-        <Info label={t("lessonType")} value={t(item.type)} />
+        <Info label={t("Time")} value={convertTo12Hour(item?.time)} />
+        <Info label={t("lessonType")} value={lang==="ar"?typeLesson?.titleAR:typeLesson?.titleEN} />
+        <Info label={t("Place Lesson")} value={
+          item?.place === "online"
+            ? t("online")
+            : item?.place === "teacher"
+              ? t("teacher location")
+              : item?.place === "student"
+                ? t("student location")
+                : item?.place
+        } />
+        {item.place==="teacher"&&<Info
+          label={t("city teacher")}
+          value={`${t(item?.teacher?.city?.toLowerCase())} / ${t(item?.teacher?.country?.toLowerCase())}`}
+        />}
+        
         <Info label={t("Session number")} value={item.period} />
         <Info label={t("price")} value={`${item.price} ${t(item.currency)}`} />
         <Info

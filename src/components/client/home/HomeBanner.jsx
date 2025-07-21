@@ -1,7 +1,6 @@
 import { Box, Button, styled, Typography } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import NumberTab from "./NumberTab";
 import whatsapp from "../../../images/whatsapp.png";
 import email from "../../../images/email.png";
@@ -31,19 +30,20 @@ export default function HomeBanner() {
 
   return (
     <Wrapper>
+      {/* Left side: Text & contact info */}
       <Box
         sx={{
           mt: { md: "5rem", xs: "5rem" },
           textAlign: "center",
           maxWidth: "600px",
-          width: "100%",
+          // width: "100%",
           px: 2,
         }}
       >
         <Typography
           sx={{
-            marginBottom: "12px",
-            fontSize: { md: "30px", xs: "20px" },
+            mb: 2,
+            fontSize: { md: "30px", xs: "22px" },
             fontWeight: "bold",
             color: "#800020",
           }}
@@ -54,77 +54,93 @@ export default function HomeBanner() {
         <Typography
           sx={{
             fontSize: { md: "16px", xs: "14px" },
-            fontWeight: "400",
+            fontWeight: 400,
             color: "#000",
-            mb: 2,
+            mb: 3,
           }}
         >
           {t("bannerDesc")}
         </Typography>
 
+        {/* Contact info */}
         <Box
           sx={{
-            fontSize: { lg: "18px", md: "16px", xs: "14px" },
-            fontWeight: "300",
-            mt: "1.5rem",
+            fontSize: { md: "16px", xs: "14px" },
+            fontWeight: 300,
             color: "#fff",
             display: "flex",
-            flexDirection: { md: "row", xs: "column" },
+            flexDirection: { xs: "column", md: "row" },
             alignItems: "center",
             justifyContent: "center",
-            gap: "16px",
+            gap: 2,
+            mt: 3,
           }}
         >
-          <a href="mailto:info@muscatdrivingschool.com">
+          {/* Email */}
+          <a href="mailto:info@muscatdrivingschool.com" style={{ textDecoration: "none" }}>
             <Box
               sx={{
                 display: "flex",
                 alignItems: "center",
-                columnGap: "8px",
+                gap: 1,
                 justifyContent: "center",
               }}
             >
               <Typography
                 sx={{
-                  fontSize: { md: "20px", xs: "16px" },
+                  fontSize: { md: "18px", xs: "16px" },
                   color: "#800020",
-                  fontWeight: "700",
+                  fontWeight: 700,
                 }}
               >
                 info@muscatdrivingschool.com
               </Typography>
-              <img src={email} alt="Email" width={40} height={40} />
+              <Box
+                component="img"
+                src={email}
+                alt="Email"
+                sx={{ width: { xs: 30, md: 40 }, height: { xs: 30, md: 40 } }}
+              />
             </Box>
           </a>
 
+          {/* WhatsApp */}
           <a
-            target="_blank"
             href="https://api.whatsapp.com/send?phone=96894085688"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ textDecoration: "none" }}
           >
             <Box
               sx={{
                 display: "flex",
                 alignItems: "center",
-                columnGap: "8px",
+                gap: 1,
                 justifyContent: "center",
               }}
             >
               <Typography
                 sx={{
-                  fontSize: { md: "20px", xs: "16px" },
+                  fontSize: { md: "18px", xs: "16px" },
                   color: "#800020",
-                  fontWeight: "700",
+                  fontWeight: 700,
                 }}
               >
-                {"96894085688+"}
+                +96894085688
               </Typography>
-              <img src={whatsapp} alt="WhatsApp" width={40} height={40} />
+              <Box
+                component="img"
+                src={whatsapp}
+                alt="WhatsApp"
+                sx={{ width: { xs: 30, md: 40 }, height: { xs: 30, md: 40 } }}
+              />
             </Box>
           </a>
         </Box>
       </Box>
 
-      <Box sx={{ px: 2, width: { xs: "100%", md: "auto" } }}>
+      {/* Right side: NumberTab */}
+      <Box sx={{ px: 2}}>
         <NumberTab />
       </Box>
     </Wrapper>

@@ -189,52 +189,42 @@ function TeacherFourStep() {
               <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
                 {t("country")}
               </InputLabel>
-              <Autocomplete
-                fullWidth
-                name="country"
-                options={countries}
-                value={countryValue}
-                inputValue={countryValue}
-                onChange={(event, newInputValue) => {
-                  if (newInputValue) {
-                    setCountryValue(
-                      lang === "en"
-                        ? newInputValue?.name_en
-                        : newInputValue?.name_ar
-                    );
-                    setCountryCode(newInputValue?.code);
-                    setCountryError(false);
-                  } else {
-                    setCountryValue("");
-                    setCountryCode("");
-                  }
-                }}
-                onInputChange={(event, newInputValue) => {
-                  setCountryValue(newInputValue);
-                }}
-                getOptionLabel={(op) =>
-                  (lang === "en" ? op.name_en : op.name_ar) || op
-                }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label={lang === "en" ? "Choose a country" : "إختر بلدك"}
-                    inputProps={{
-                      ...params.inputProps,
-                      autoComplete: "new-password",
-                    }}
-                  />
-                )}
-              />
-              {countryError && (
-                <Typography
-                  color="error"
-                  role="alert"
-                  sx={{ fontSize: "13px", marginTop: "6px" }}
-                >
-                  {t("required")}
-                </Typography>
-              )}
+              <Controller
+                              name="country"
+                              control={control}
+                              rules={{ required: t("required") }}
+                              render={({ field }) => (
+                                <Autocomplete
+                                  options={countries}
+                                  getOptionLabel={(option) =>
+                                    lang === "en" ? option.name_en : option.name_ar
+                                  }
+                                  onChange={(_, selected) => {
+                                    field.onChange(selected?.code || "");
+                                    setCountryCode(selected?.code || "");
+                                  }}
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      label={t("place")}
+                                      error={!!errors.place}
+                                      helperText={errors.place ? errors.place.message : ""}
+                                    />
+                                  )}
+                                  renderOption={(props, option) => (
+                                    <li {...props} style={{ display: "flex", alignItems: "center" }}>
+                                      <img
+                                        src={`https://flagcdn.com/w40/${option.code}.png`}
+                                        alt={option.code}
+                                        width="30"
+                                        style={{ marginLeft: 8 }}
+                                      />
+                                      <span>{lang === "en" ? option.name_en : option.name_ar}</span>
+                                    </li>
+                                  )}
+                                />
+                              )}
+                            />
             </Box>
             <Box sx={{flex:1, marginBottom: "26px" }}>
               <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>

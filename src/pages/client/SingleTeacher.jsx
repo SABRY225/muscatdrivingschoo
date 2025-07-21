@@ -73,13 +73,12 @@ export default function SingleTeacher() {
               <AvailablitySingleTeacher   teacher={data?.data} />
               <RatingTeacher              teacher={data?.data} />
               <PayingTeacher              teacher={data?.data} />
-              <ResumeSingleTeacher        teacher={data?.data} />
               <LectureSingleTeacher       teacher={data?.data}  />
               <PackageSingleTeacher       teacher={data?.data}  />
               <TestSingleTeacher          teacher={data?.data}  />
               <DiscountSingleTeacher      teacher={data?.data}  />
             </Grid>
-            <Grid item md={12} lg={4}>
+            <Grid item xs={12} lg={4}>
               <Paper sx={{ padding: "24px 12px", marginY: "30px" }}>
                 <Button
                   variant="contained"

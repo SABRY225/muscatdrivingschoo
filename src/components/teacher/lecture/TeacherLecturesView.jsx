@@ -21,10 +21,10 @@ export default function TeacherLecturesView() {
     { id: "title",           label: t("title"),           minWidth: 150 },
     { id: "description",     label: t("Description"),     minWidth: 150 },
     { id: "subject",           label: t("subject"),           minWidth: 150 },
-    { id: "semester",     label: t("semester"),     minWidth: 150 },
+    // { id: "semester",     label: t("semester"),     minWidth: 150 },
     { id: "classes",     label: t("classes"),     minWidth: 150 },
     { id: "price",     label: t("price"),     minWidth: 150 },
-    { id: "status",            label: t("status"),            minWidth: 50 },
+    { id: "status",            label: t("status"),            minWidth: 150 },
     { id: "update",            label: t("update"),            minWidth: 50 },
     { id: "delete",            label: t("delete"),            minWidth: 50 },
   ];
@@ -90,7 +90,7 @@ export default function TeacherLecturesView() {
   return (
     <Box>
       {!isLoading ? (
-        <Paper sx={{ width: "100%", padding: "20px" }}>
+        <Paper sx={{  padding: "20px" }}>
           <TableContainer sx={{ maxHeight: 440 }}>
             <TextField
               sx={{ m: 1, width: "90%" }}
@@ -138,7 +138,7 @@ export default function TeacherLecturesView() {
                         <TableCell align="center">{lang==="ar"?row?.titleAR:row?.titleEN}</TableCell>
                         <TableCell align="center">{lang==="ar"?row?.descriptionAr:row?.descriptionEn}</TableCell>
                         <TableCell align="center">{lang==="ar"?row?.subject?.titleAR:row?.subject?.titleEN}</TableCell>
-                        <TableCell align="center">{t(row?.semester)}</TableCell>
+                        {/* <TableCell align="center">{t(row?.semester)}</TableCell> */}
                         <TableCell align="center">{lang==="ar"?row?.class?.titleAR:row?.class?.titleEN}</TableCell>
                         <TableCell align="center">{row?.price}{" "}{t(row?.currency)}</TableCell>
                         <TableCell align="center">{row?.status==1?t("status_waiting"):row?.status==2?t("status_accept"):t("status_rejected")}</TableCell>

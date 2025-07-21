@@ -20,33 +20,43 @@ export default function AdminLogin() {
 
     const navigate = useNavigate()
 
-    async function onSubmit(data)
-    {
-        closeSnackbar()
-        try{
-            const response = await fetch(`${process.env.REACT_APP_API_KEY}api/v1/admin/login`,{
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
-                },     
-                body:JSON.stringify({email:data.email,password:data.password})
-            })
-            const resData = await response.json()
-            if(response.status!==200&&response.status!==201)
-            {
-                enqueueSnackbar(resData.message,{variant:"error",autoHideDuration:"8000"})
-                throw new Error('failed occured')
-            }
-            localStorage.clear()
-            dispatch(adminLogin({admin:resData.data,token:resData.token}))
-            navigate('/admin')
-            enqueueSnackbar('success',{variant:"success",autoHideDuration:"8000"})
-        }
-        catch(err)
-        {
-            console.log(err)
-        }
+   async function onSubmit(data) {
+  closeSnackbar();
+  try {
+    const response = await fetch(`${process.env.REACT_APP_API_KEY}api/v1/admin/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: data.email, password: data.password }),
+    });
+
+    const resData = await response.json();
+
+    if (!response.ok) {
+      enqueueSnackbar(resData?.msg?.arabic || "حدث خطأ أثناء تسجيل الدخول", {
+        variant: "error",
+        autoHideDuration: 8000,
+      });
+      return; // لا ترمي خطأ، فقط أوقف التنفيذ
     }
+
+    localStorage.clear();
+    dispatch(adminLogin({ admin: resData.data, token: resData.token }));
+    navigate("/admin");
+
+    enqueueSnackbar("تم تسجيل الدخول بنجاح", {
+      variant: "success",
+      autoHideDuration: 8000,
+    });
+  } catch (err) {
+    console.error("Login Error:", err);
+    enqueueSnackbar("خطأ في الاتصال بالخادم", {
+      variant: "error",
+      autoHideDuration: 8000,
+    });
+  }
+}
 
     return (
         <Container>

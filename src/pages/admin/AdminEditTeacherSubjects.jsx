@@ -151,7 +151,7 @@ const AdminEditTeacherSubjects = () => {
           variant: "success",
           autoHideDuration: 1000,
         });
-        navigate("/admin/edit/teacher/resume/" + teacherId);
+        navigate("/admin/edit/teacher/availability/" + teacherId);
       }
     } catch (err) {
       console.log(err);
@@ -161,7 +161,7 @@ const AdminEditTeacherSubjects = () => {
   return (
     <AdminLayout>
       <TeacherLayout active={3} title={t("subjects")}>
-      <Paper sx={{ width: "100%", padding: "20px" }}>
+      <Paper sx={{ padding: "20px" }}>
         {!isLoading && (
           <Grid container spacing={4}>
             <Grid item xs={12} lg={9}>
@@ -284,7 +284,7 @@ const AdminEditTeacherSubjects = () => {
                       {currencies.map((item, index) => {
                         return (
                           <MenuItem value={item.title} key={index + "mhb"}>
-                            {item.title}
+                            {t(item.title)}
                           </MenuItem>
                         );
                       })}
@@ -379,7 +379,7 @@ const AdminEditTeacherSubjects = () => {
                                   value={item.title}
                                   key={index + "mhnmnjjnb"}
                                 >
-                                  {item.title}
+                                  {t(item.title)}
                                 </MenuItem>
                               );
                             })}
@@ -458,7 +458,7 @@ const AdminEditTeacherSubjects = () => {
                                   value={item.title}
                                   key={index + "mhbnbhx"}
                                 >
-                                  {item.title}
+                                  {t(item.title)}
                                 </MenuItem>
                               );
                             })}
@@ -474,14 +474,14 @@ const AdminEditTeacherSubjects = () => {
         </Box>
 
         <Box sx={{ display: "flex", gap: "12px" }}>
-          <StepperButtons skipLink="resume" onSubmit={onSubmit} load={load} />
-          <Button
+          <StepperButtons skipLink="availability" onSubmit={onSubmit} load={load} />
+          {/* <Button
             sx={{ textTransform: "capitalize", marginTop: "40px" }}
             variant="outlined"
             onClick={() => navigate("/admin/edit/teacher/resume/" + teacherId)}
           >
             {t("skip")}
-          </Button>
+          </Button> */}
         </Box>
         </Paper>
       </TeacherLayout>

@@ -1,7 +1,7 @@
 import React from 'react';
 import StudentLayout from '../../components/student/StudentLayout'
 import { useSelector } from 'react-redux';
-import { Button, Paper, styled, Table, TableBody, TableCell, TableContainer, TablePagination, TableRow } from '@mui/material';
+import { Box, Button, Paper, styled, Table, TableBody, TableCell, TableContainer, TablePagination, TableRow } from '@mui/material';
 import { t } from 'i18next';
 import Loading from '../../components/Loading';
 import Cookies from "js-cookie";
@@ -52,11 +52,15 @@ function StudentDiscount() {
 
 
     if (data === null) return <Loading />
-    else if (!data.length) return <StudentLayout><h1 className='text-center text-2xl text-sky-500 mt-20'>{t("Discounts are not available now")}</h1></StudentLayout>
+    else if (!data.length) return <StudentLayout>
+        <Box sx={{display:"flex",justifyContent:"center"}}>
+        <h3 className='text-center'>{t("Discounts are not available now")}</h3>
+        </Box>        
+        </StudentLayout>
     else return (
         <StudentLayout>
             <Root>
-                <Paper sx={{ width: "100%", padding: "20px" }}>
+                <Paper sx={{ padding: "20px" }}>
                     <TableContainer sx={{ maxHeight: 440 }}>
                         <Table stickyHeader aria-label="sticky table">
                             <TableRow>

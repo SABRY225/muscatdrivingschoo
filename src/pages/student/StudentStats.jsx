@@ -29,6 +29,7 @@ import StudentLayout from "../../components/student/StudentLayout";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useStatsStudent } from "../../hooks/useStatsStudent";
+import { convertCurrency } from "../../utils/convertCurrency";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#AA66CC"];
 
@@ -75,11 +76,20 @@ const StudentStats = () => {
   const { student } = useSelector((state) => state.student);
   const { data } = useStatsStudent(student.id);
   const [stats, setStats] = useState(null);
+    const {currency} = useSelector((state)=>state.currency)
 
   useEffect(() => {
     if (data) setStats(data);
   }, [data]);
-
+    const [convertedAmount, setConvertedAmount] = React.useState(null);
+  
+ React.useEffect(() => {
+    const fetchCurrency=async()=>{
+          const result = await convertCurrency(data?.data?.wallet,"OMR",currency);
+          setConvertedAmount(result)
+    }
+    fetchCurrency();
+ },[currency])
   return (
     <StudentLayout>
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
@@ -136,10 +146,10 @@ const StudentStats = () => {
   <StatCard label={t("Lessons This Week")} value={stats?.sessionsThisWeek} icon={EventAvailableIcon} isWarning to="/student/lessons" />
   <StatCard label={t("Lectures Attended")} value={stats?.lecturePay} icon={SchoolIcon} to="/student/lectures" />
   <StatCard label={t("Booked Packages")} value={stats?.packagePay} icon={CardGiftcardIcon} to="/student/package" />
-  <StatCard label={t("Discounts")} value={stats?.discountPay} icon={LocalOfferIcon} to="/student/discounts" />
+  <StatCard label={t("Discounts")} value={stats?.discountPay} icon={LocalOfferIcon} to="/student/discount" />
   <StatCard label={t("Tests")} value={stats?.testPay} icon={QuizIcon} to="/student/exam" />
   {/* <StatCard label={t("My Instructors")} value={stats?.teachers} icon={PeopleIcon} to="/student/teachers" /> */}
-  <StatCard label={t("My Wallet")} value={`${student?.wallet}`} icon={AccountBalanceWalletIcon} to="/student/credit" />
+  <StatCard label={t("My Wallet")} value={`${convertedAmount} ${t(currency)}`} icon={AccountBalanceWalletIcon} to="/student/credit" />
 </Box>
 
       </Box>

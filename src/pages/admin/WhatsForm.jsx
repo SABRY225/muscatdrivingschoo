@@ -108,7 +108,7 @@ export default function WhatsForm() {
 
   return (
     <AdminLayout>
-      <Paper sx={{ width: "100%", padding: "20px" }}>
+      <Paper sx={{ padding: "20px" }}>
       {!isLoading ? (
         <Box sx={{ marginBottom: "26px" }}>
 

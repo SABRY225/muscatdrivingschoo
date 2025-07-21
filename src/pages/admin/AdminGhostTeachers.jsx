@@ -7,7 +7,12 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { Box, Button, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Typography,
+  TextField,
+} from "@mui/material";
 import { useTranslation } from "react-i18next";
 import Loading from "../../components/Loading";
 import { useSelector } from "react-redux";
@@ -21,8 +26,9 @@ export default function AdminGhostTeachers() {
   const { token } = useSelector((state) => state.admin);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const {enqueueSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   const { data, isLoading, refetch } = useAdminGhostTeachers(token);
+  const [searchValue, setSearchValue] = useState("");
 
   const columns = [
     { id: "Name", label: t("name"), minWidth: 150 },
@@ -57,7 +63,7 @@ export default function AdminGhostTeachers() {
           variant: "success",
           autoHideDuration: 4000,
         });
-        refetch(); // Refresh the data after successful deletion
+        refetch();
       } else {
         enqueueSnackbar(t("Failed to delete teacher"), {
           variant: "error",
@@ -75,9 +81,18 @@ export default function AdminGhostTeachers() {
 
   useEffect(() => {
     if (!data) {
-      refetch(); // Ensure data is fetched when the component mounts
+      refetch();
     }
   }, [data, refetch]);
+
+  const filteredData =
+    data?.data?.filter((row) => {
+      const fullName = `${row.firstName || ""} ${row.lastName || ""}`.toLowerCase();
+      return (
+        fullName.includes(searchValue.toLowerCase()) ||
+        row.email?.toLowerCase().includes(searchValue.toLowerCase())
+      );
+    }) || [];
 
   return (
     <AdminLayout>
@@ -95,8 +110,18 @@ export default function AdminGhostTeachers() {
         </Typography>
       </Box>
 
+      <Box sx={{ mb: 2 }}>
+        <TextField
+          fullWidth
+          label={t("searchByNameOrEmail")}
+          variant="outlined"
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
+        />
+      </Box>
+
       {!isLoading ? (
-        <Paper sx={{ width: "100%", padding: "20px" }}>
+        <Paper sx={{ padding: "20px" }}>
           <TableContainer sx={{ maxHeight: 440 }}>
             <Table stickyHeader aria-label="sticky table">
               <TableRow>
@@ -111,8 +136,8 @@ export default function AdminGhostTeachers() {
                 ))}
               </TableRow>
               <TableBody>
-                {data?.data.length > 0 &&
-                  data.data
+                {filteredData.length > 0 ? (
+                  filteredData
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => (
                       <TableRow hover role="checkbox" key={row.id}>
@@ -132,14 +157,21 @@ export default function AdminGhostTeachers() {
                           </Button>
                         </TableCell>
                       </TableRow>
-                    ))}
+                    ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5} align="center">
+                      {t("noResults")}
+                    </TableCell>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           </TableContainer>
           <TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={data?.data.length}
+            count={filteredData.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

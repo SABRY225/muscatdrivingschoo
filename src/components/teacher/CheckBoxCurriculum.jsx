@@ -13,14 +13,15 @@ export default function CheckBoxCurriculum({ checked, setChecked }) {
   const { t } = useTranslation();
   const { data } = useCurriculums();
   const lang = Cookies.get("i18next") || "en";
-  const teacher  = JSON.parse(localStorage.getItem("teacher"))
+    const {teacher} = useSelector((state) => state.teacher);
+  const teacherFromRedux = JSON.parse(localStorage.getItem("teacher")) || teacher;
 
   const handleToggle = (value) => () => {
     const currentIndex = checked.findIndex((l) => l.CurriculumId === value);
     const newChecked = [...checked];
 
     if (currentIndex === -1) {
-      newChecked.push({ CurriculumId: value, TeacherId: teacher.id });
+      newChecked.push({ CurriculumId: value, TeacherId: teacherFromRedux.id });
     } else {
       newChecked.splice(currentIndex, 1);
     }

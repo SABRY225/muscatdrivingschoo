@@ -16,7 +16,6 @@ import { useDiscount } from "../../../hooks/useDiscount";
 export default function BookDiscount() {
   const lang                          = Cookies.get("i18next") || "en";
   const { discountId }                = useParams();
-  console.log(discountId);
 
   const { data , isLoadingPackage}    = useDiscount(discountId);
   const [ objDiscount , setDiscount]  = useState("");
@@ -57,6 +56,7 @@ export default function BookDiscount() {
             date          : "",
             title         : "",
             language      : lang,
+            type : "discount_booking"
           }),
         }
       );

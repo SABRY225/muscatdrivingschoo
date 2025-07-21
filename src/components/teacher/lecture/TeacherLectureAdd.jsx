@@ -124,9 +124,9 @@ export default function TeacherLectureAdd({ handleClose }) {
         formData.append("image", Image);
         formData.append("TeacherId", teacher.id);
         formData.append("class", data.classes);
-        formData.append("semester", data.Semester);
+        // formData.append("semester", "");
         for (const key in data) {
-            if (key !== "image" && key !== "teacherId" && key !== "docs" && key !== "class" && key !== "semester" && key !== "classes" && key !== "Semester") {
+            if (key !== "image" && key !== "teacherId"&& key !== "Semester" && key !== "docs" && key !== "class"  && key !== "classes") {
                 formData.append(key, data[key]);
             }
         }
@@ -305,7 +305,10 @@ export default function TeacherLectureAdd({ handleClose }) {
                                     >
                                         {
                                             currencies.map((curr) => {
-                                                return <MenuItem value={curr.title}>{lang === "en" ? curr.titleEn : curr.titleAr}</MenuItem>
+                                                return  <MenuItem key={curr.title} value={curr.title} sx={{ gap: "1rem" }} >
+                      <img src={`https://flagcdn.com/w320/${curr.code}.png`} style={{ width: "25px" }} />
+                      {lang === "en" ? curr.titleEn : curr.titleAr}
+                    </MenuItem>
                                             })
                                         }
                                     </Select>
@@ -406,7 +409,7 @@ export default function TeacherLectureAdd({ handleClose }) {
                                 </Select>
                             </FormControl>
                         </Box>
-                        <Box sx={{ flex: 1, marginBottom: "18px" }}>
+                        {/* <Box sx={{ flex: 1, marginBottom: "18px" }}>
                             <FormControl fullWidth margin="dense">
                                 <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }} id="curriculums2">
                                     {t("semester")}
@@ -429,7 +432,7 @@ export default function TeacherLectureAdd({ handleClose }) {
                                     )}
                                 </Select>
                             </FormControl>
-                        </Box>
+                        </Box> */}
                     </Box>
                     <Box sx={{
                         display: { md: "flex", xs: "block" },

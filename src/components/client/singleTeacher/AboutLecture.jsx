@@ -26,7 +26,7 @@ export default function AboutLecture({ lectureData }) {
         { label: t("studycurriculums"), value: lang === "ar" ? lectureData?.curriculums?.titleAR : lectureData?.curriculums?.titleEN },
         { label: t("subject"), value: lang === "ar" ? lectureData?.subject?.titleAR : lectureData?.subject?.titleEN },
         { label: t("classes"), value: lang === "ar" ? lectureData?.class?.titleAR : lectureData?.class?.titleEN },
-        { label: t("semester"), value: t(lectureData?.semester) },
+        // { label: t("semester"), value: t(lectureData?.semester) },
         { label: t("price"), value: convertedAmount },
         { label: t("currency"), value: t(currency) },
     ];

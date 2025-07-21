@@ -3,12 +3,19 @@ import Navbar from "../../components/Navbar";
 import TeacherLayout from "../../components/teacher/TeacherLayout";
 import CheckBoxSubjects from "../../components/teacher/CheckBoxSubjects";
 import {
-  Alert,  Box,  Checkbox,  Divider,
-  FormControlLabel, Grid,
-  InputLabel, MenuItem,
-  Select,     Snackbar,
-  TextField,  Typography,
-  Paper
+  Alert,
+  Box,
+  Checkbox,
+  Divider,
+  FormControlLabel,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  Snackbar,
+  TextField,
+  Typography,
 } from "@mui/material";
 import SelectedCategory from "../../components/teacher/SelectedCategory";
 import StepperButtons from "../../components/reusableUi/StepperButtons";
@@ -21,6 +28,7 @@ import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { changeCurrency } from "../../redux/currency";
 import { fetchConversionRate } from "../../redux/conversionRate";
+import { Padding } from "@mui/icons-material";
 
 export default function TeacherSubjects() {
   const { closeSnackbar, enqueueSnackbar } = useSnackbar();
@@ -105,7 +113,7 @@ export default function TeacherSubjects() {
         setf2fTeacher({
           price: +user?.F2FSessionTeacher?.price,
           TeacherId: user?.F2FSessionTeacher?.TeacherId,
-          // currency: user?.F2FSessionTeacher?.currency,
+          currency: user?.F2FSessionTeacher?.currency,
           discount: discount,
         });
         setDiscount(user?.F2FSessionTeacher?.discount);
@@ -118,6 +126,32 @@ export default function TeacherSubjects() {
   }, [teacher2]);
 
   const onSubmit = async () => {
+    if (!choseCategories.length) {
+      enqueueSnackbar(t("select_at_least_one_subject"), { variant: "error" });
+      return;
+    }
+    if (!online && !person) {
+      enqueueSnackbar(t("The teaching method must be chosen."), { variant: "error" });
+      return;
+    }
+    if (online && (!remote || !remote.price || remote.price== 0)) {
+      enqueueSnackbar(t("please_fill_online_rate"), { variant: "error" });
+      return;
+    }
+    if (person) {
+      if (!teeacherHome && !studentHome) {
+        enqueueSnackbar(t("The choice must be made at the student's or teacher's home."), { variant: "error" });
+        return;
+      }
+      if (teeacherHome && (!f2fTeacher || !f2fTeacher.price || f2fTeacher.price==0)) {
+        enqueueSnackbar(t("please_fill_teacher_home_rate"), { variant: "error" });
+        return;
+      }
+      if (studentHome && (!f2fStudent || !f2fStudent.price || f2fStudent.price==0)) {
+        enqueueSnackbar(t("please_fill_student_home_rate"), { variant: "error" });
+        return;
+      }
+    }
     setLoad(true);
     let ar1 = choseCategories.map((sub) => {
       return { TeacherId: teacher.id, SubjectId: sub.id };
@@ -160,20 +194,20 @@ export default function TeacherSubjects() {
         navigate("/teacher/availability");
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
   return (
-    <Navbar>
+
+      <TeacherLayout active={3} title={t("subjects")} sx={{Padding:'1rem'}}>
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
           {t("discount_error")}
         </Alert>
       </Snackbar>
-      <TeacherLayout active={3} title={t("subjects")}>
-      <Paper sx={{padding:"40px 20px"}}>
-        {!isLoading && (
+        <Paper sx={{ padding: "20px" }}>
+          {!isLoading && (
           <Grid container spacing={4}>
             <Grid item xs={12} lg={9}>
               {data?.data.map((subject, index) => {
@@ -286,7 +320,10 @@ export default function TeacherSubjects() {
                       {currencies.map((item, index) => {
                         return (
                           <MenuItem value={item.title} key={index + "mhb"}>
-                            {item.title}
+                            <div style={{display:"flex",alignItems:"center",gap:"0.5rem",justifyContent:"center"}}>
+                              <div className="pl-1"><img src={`https://flagcdn.com/w320/${item.code}.png`} alt="" style={{width:"20px"}} /></div>
+                              <div>{t(item.title)}</div>
+                            </div>
                           </MenuItem>
                         );
                       })}
@@ -368,20 +405,21 @@ export default function TeacherSubjects() {
                             onChange={handleCurrencyChange}
                           >
                             {currencies.map((item, index) => {
-                              return (
-                                <MenuItem
-                                  value={item.title}
-                                  key={index + "mhnmnjjnb"}
-                                >
-                                  {item.title}
-                                </MenuItem>
-                              );
-                            })}
+                        return (
+                          <MenuItem value={item.title} key={index + "mhb"}>
+                            <div style={{display:"flex",alignItems:"center",gap:"0.5rem",justifyContent:"center"}}>
+                              <div className="pl-1"><img src={`https://flagcdn.com/w320/${item.code}.png`} alt="" style={{width:"20px"}} /></div>
+                              <div>{t(item.title)}</div>
+                            </div>
+                          </MenuItem>
+                        );
+                      })}
                           </Select>
                         </Grid>
                       </Grid>
                     )}
                   </Box>
+                  
                   <Box sx={{ marginBottom: "30px" }}>
                     <FormControlLabel
                       control={
@@ -439,15 +477,15 @@ export default function TeacherSubjects() {
                             onChange={handleCurrencyChange}
                           >
                             {currencies.map((item, index) => {
-                              return (
-                                <MenuItem
-                                  value={item.title}
-                                  key={index + "mhbnbhx"}
-                                >
-                                  {item.title}
-                                </MenuItem>
-                              );
-                            })}
+                        return (
+                          <MenuItem value={item.title} key={index + "mhb"}>
+                            <div style={{display:"flex",alignItems:"center",gap:"0.5rem",justifyContent:"center"}}>
+                              <div className="pl-1"><img src={`https://flagcdn.com/w320/${item.code}.png`} alt="" style={{width:"20px"}} /></div>
+                              <div>{t(item.title)}</div>
+                            </div>
+                          </MenuItem>
+                        );
+                      })}
                           </Select>
                         </Grid>
                       </Grid>
@@ -458,9 +496,8 @@ export default function TeacherSubjects() {
             </Box>
           </Box>
         </Box>
-        <StepperButtons skipLink="resume" onSubmit={onSubmit} load={load} />
-    </Paper>  
-    </TeacherLayout>
-    </Navbar>
+        <StepperButtons skipLink="availability" onSubmit={onSubmit} load={load} />
+        </Paper>
+      </TeacherLayout>
   );
 }

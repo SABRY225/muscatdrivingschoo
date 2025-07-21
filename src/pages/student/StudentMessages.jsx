@@ -44,11 +44,11 @@ export default function StudentMessages() {
   return (
     <StudentLayout>
         <Stack spacing={2} mb={3}>
-          <Alert severity="warning" sx={{ width: '100%' }}>
+          <Alert severity="warning" >
             {t("In order to maintain your rights, do not communicate with anyone outside the site")}
           </Alert>
           
-          <Alert severity="warning" sx={{ width: '100%' }}>
+          <Alert severity="warning" >
             {t("Beware of fraud and do not transfer any amounts to the user outside the Muscat Driving Learning Platform. ")}{" "}
             <Link to="/student/technical-support" style={{ 
               color: theme.palette.primary.main,
@@ -69,7 +69,7 @@ export default function StudentMessages() {
         >
           {/* Contacts List */}
           <Paper sx={{ 
-            width: { xs: '100%', md: 320 },
+            width: { md: 320 },
             flexShrink: 0,
             display: 'flex',
             flexDirection: 'column'

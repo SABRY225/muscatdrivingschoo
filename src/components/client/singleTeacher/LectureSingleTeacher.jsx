@@ -9,8 +9,8 @@ export default function LectureSingleTeacher({teacher}) {
     const lang = Cookies.get("i18next") || "en";
     const {t} = useTranslation()
     return (
-        <Paper sx={{padding:"32px 24px",marginY:"30px" , width : "94.5%"}}>
-        <Typography sx={{fontSize:"22px",marginBottom:"18px"}}>{t('lectures')}</Typography>
+        <Paper sx={{padding:"32px 24px",marginY:"30px" }}>
+        <Typography sx={{fontSize:"22px",marginBottom:"18px"}}>{t('Lectures')}</Typography>
         <Paper style={{padding:"0px" , display:"flex" , flexFlow:"wrap", width:"100%" , boxShadow:"none" , margin:"0px"}}>
                 {
                     teacher?.TeacherLectures?.length>0&&
@@ -21,7 +21,7 @@ export default function LectureSingleTeacher({teacher}) {
                 <>
                 <Grid item  xs={12} md={4}  lg={3}
                  style={{ marginTop:"20px" , display: "inline-block", width : "30%" , marginRight:"20px"}} key={item.id + "kmk"}>
-                  <a href={`/course/${item.id}`} >
+                  <a href={`/course/${item.TeacherId}/${item.id}`} >
                   <Paper style={{padding: "10px 6px",  display: "flex",  flexDirection: "column",
                       alignItems: "center", backgroundColor:"#FFF",  borderRadius:"20px" }}>
                     <Avatar
@@ -43,7 +43,7 @@ export default function LectureSingleTeacher({teacher}) {
                       <br />
 
                     </Typography>
-                    <Typography
+                    {/* <Typography
                       sx={{
                         fontWeight: "500",
                         marginY:    "0px",
@@ -55,9 +55,9 @@ export default function LectureSingleTeacher({teacher}) {
                     >
                       {lang==="ar"?item?.descriptionAr:item?.descriptionEn}
 
-                    </Typography>
+                    </Typography> */}
                     <Button
-                      onClick={() => navigate(`/course/${item.id}`)}
+                      onClick={() => navigate(`/course/${item.TeacherId}/${item.id}`)}
                     >
                       {t("view")}
                     </Button>

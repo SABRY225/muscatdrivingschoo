@@ -77,7 +77,7 @@ export default function Login() {
       
       if (response.status !== 200 && response.status !== 201) {
         setLoad(false);
-        enqueueSnackbar(resData.message, {
+        enqueueSnackbar(t(resData.message), {
           variant: "error",
           autoHideDuration: "8000",
         });
@@ -89,11 +89,11 @@ export default function Login() {
            navigate("/teacherpendingapproval");
         }else{
         dispatch(loginTeacher({ token: resData.token, teacher: resData.data }));
-        navigate("/teacher/dashboard");
+        navigate("/teacher/statistics");
         }
       } else if (resData.role === "student") {
         dispatch(loginStudent({ token: resData.token, student: resData.data }));
-        navigate("/student/dashboard");
+        navigate("/student/statistics");
       } else if (resData.role === "parent") {
         dispatch(loginParent({ token: resData.token, parent: resData.data }));
         navigate("/parent");

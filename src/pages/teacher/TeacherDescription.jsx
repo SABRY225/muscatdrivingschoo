@@ -70,7 +70,6 @@ export default function TeacherDescription() {
   const { t } = useTranslation();
 
   return (
-    <Navbar>
       <TeacherLayout active={6} title={t("Description")}>
       <Paper sx={{padding:"40px 20px"}}>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -104,6 +103,5 @@ export default function TeacherDescription() {
         </form>
         </Paper>
       </TeacherLayout>
-    </Navbar>
   );
 }

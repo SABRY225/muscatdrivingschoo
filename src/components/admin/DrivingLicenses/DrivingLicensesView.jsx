@@ -91,7 +91,7 @@ export default function DrivingLicensesView() {
   return (
     <Box>
       {!isLoading ? (
-        <Paper sx={{ width: "100%", padding: "20px" }}>
+        <Paper sx={{ padding: "20px" }}>
           <TableContainer sx={{ maxHeight: 440 }}>
             <TextField
               sx={{ m: 1, width: "90%" }}
@@ -135,9 +135,9 @@ export default function DrivingLicensesView() {
                             src={`${process.env.REACT_APP_API_KEY}images/${row.image}`}
                         />
                         </TableCell>
-                        <TableCell align="center">{ lang === "en" ? row.titleEN : row.titleAR}</TableCell>
-                        <TableCell align="center">{ lang === "en" ? c.name_en : c.name_ar }</TableCell>
-                        <TableCell align="center">{ lang === "en" ? row.requirementsEN : row.requirementsAR}</TableCell>
+                        <TableCell align="center">{ lang === "en" ? row?.titleEN : row?.titleAR}</TableCell>
+                        <TableCell align="center">{ lang === "en" ? c?.name_en : c?.name_ar }</TableCell>
+                        <TableCell align="center">{ lang === "en" ? row?.requirementsEN : row?.requirementsAR}</TableCell>
                         <TableCell align="center">
                           <Button onClick={() => setOpen(row.id)}>
                             <EditIcon />

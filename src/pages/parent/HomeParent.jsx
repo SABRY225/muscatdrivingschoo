@@ -1,10 +1,21 @@
-import {Avatar,Box,Button,Container,Grid,Paper,Tab,Tabs,Typography,} from "@mui/material";
-import React from "react";
+import {
+  Avatar,
+  Box,
+  Button,
+  Container,
+  Grid,
+  Paper,
+  Tab,
+  Tabs,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
+import React, { useState, useMemo } from "react";
 import Navbar from "../../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import { useTranslation }       from "react-i18next";
-import ParentAddStudent         from "../../components/parent/ParentAddStudent";
+import { useTranslation } from "react-i18next";
+import ParentAddStudent from "../../components/parent/ParentAddStudent";
 import { useStudentsForParent } from "../../hooks/useStudentsForParent";
 import { useSelector } from "react-redux";
 
@@ -12,18 +23,8 @@ function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+    <div hidden={value !== index} {...other}>
+      {value === index && <Box sx={{ p: 2 }}>{children}</Box>}
     </div>
   );
 }
@@ -36,115 +37,100 @@ TabPanel.propTypes = {
 
 function a11yProps(index) {
   return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
+    id: `tab-${index}`,
+    "aria-controls": `tabpanel-${index}`,
   };
 }
 
 export default function HomeParent() {
   const navigate = useNavigate();
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
+  const { parent, token } = useSelector((s) => s.parent);
+  const { t } = useTranslation();
+
+  const { data, isLoading } = useStudentsForParent(parent.id, token);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  const { parent, token } = useSelector((s) => s.parent);
-
-  const { data } = useStudentsForParent(parent.id, token);
-  const { t } = useTranslation();
+  const students = useMemo(() => data?.data || [], [data]);
 
   return (
     <Navbar>
-      <Container sx={{ marginTop: "120px" }}>
-        <Typography
-          sx={{
-            color: "#000000",
-            fontWeight: "700",
-            fontSize: "24px",
-            marginBottom: "8px",
-          }}
-        >
+      <Container sx={{ marginTop: "100px", marginBottom: "30px" }}>
+        <Typography variant="h5" fontWeight="bold" mb={1}>
           {t("parent_welcome")}
         </Typography>
-        <Typography
-          sx={{
-            color: "#000000",
-            fontWeight: "500",
-            fontSize: "18px",
-            marginBottom: "32px",
-          }}
-        >
+        <Typography variant="body1" fontWeight="medium" mb={3}>
           {t("parent_desc")}
         </Typography>
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            aria-label="basic tabs example"
-          >
+
+        <Box borderBottom={1} borderColor="divider" mb={3}>
+          <Tabs value={value} onChange={handleChange}>
             <Tab label={t("view_children")} {...a11yProps(0)} />
             <Tab label={t("add")} {...a11yProps(1)} />
           </Tabs>
         </Box>
+
         <TabPanel value={value} index={0}>
-          <Grid container spacing={2}>
-            {data?.data.map((st) => {
-              console.log(st.Student);
-              return (
-                <Grid
-                  item
-                  xs={12}
-                  md={4}
-                  lg={3}
-                  sx={{ width: "100%" }}
-                  key={st.Student.id + "kmk"}
-                >
+          {isLoading ? (
+            <Box display="flex" justifyContent="center">
+              <CircularProgress />
+            </Box>
+          ) : students.length > 0 ? (
+            <Grid container spacing={2}>
+              {students.map((st) => (
+                <Grid item xs={12} md={6} lg={4} key={st.Student.id}>
                   <Paper
                     sx={{
-                      padding: "8px 6px",
+                      padding: 2,
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
+                      borderRadius: 3,
                     }}
+                    elevation={3}
                   >
                     <Avatar
-                      alt={st.name}
                       src={`${process.env.REACT_APP_API_KEY}images/${st.Student.image}`}
-                      sx={{ width: "105px", height: "105px", fontSize: "42px" }}
+                      alt={st.Student.name}
+                      sx={{ width: 100, height: 100, fontSize: "32px" }}
                     />
-                    <Typography
-                      sx={{
-                        fontWeight: "500",
-                        marginY:    "10px",
-                        fontSize:   "18px",
-                        minHeight:  "50px",
-                        textAlign:  "center",
-                      }}
-                    >
+                    <Typography mt={1.5} fontWeight="500" textAlign="center">
                       {t("student")} : {st.Student.name}
-                      <br />
-                      <p class="p_email">{t("email")} : {st.Student.email}</p>
-
                     </Typography>
-                    <div>
-                    <a className="btn-details-2"
-                      onClick={() => navigate(`/parent/student/${st.Student.id}`)}
-                    >
-                      {t("view_student_profile")}
-                    </a>
-                    <a className="btn-details-2"
-                      onClick={() => navigate(`/parent/student-lessons/${st.Student.id}`)}
-                    >
-                      {t("view_student_lessons")}
-                    </a>
-                    </div>
+                    <Typography fontSize="14px" color="text.secondary" textAlign="center">
+                      {t("email")} : {st.Student.email}
+                    </Typography>
+
+                    <Box mt={2} display="flex" flexDirection="column" gap={1} width="100%">
+                      <Button
+                        fullWidth
+                        variant="contained"
+                        onClick={() => navigate(`/parent/student/${st.Student.id}`)}
+                      >
+                        {t("view_student_profile")}
+                      </Button>
+                      <Button
+                        fullWidth
+                        variant="outlined"
+                        onClick={() => navigate(`/parent/student-lessons/${st.Student.id}`)}
+                      >
+                        {t("view_student_lessons")}
+                      </Button>
+                    </Box>
                   </Paper>
                 </Grid>
-              );
-            })}
-          </Grid>
+              ))}
+            </Grid>
+          ) : (
+            <Typography align="center" color="text.secondary">
+              {t("no_students_found")}
+            </Typography>
+          )}
         </TabPanel>
+
         <TabPanel value={value} index={1}>
           <ParentAddStudent />
         </TabPanel>

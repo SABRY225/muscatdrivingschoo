@@ -1,5 +1,4 @@
-// src/components/Certificate.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Document,
   Page,
@@ -10,8 +9,8 @@ import {
   Image,
 } from "@react-pdf/renderer";
 import { useParams } from "react-router-dom";
+import QRCode from "qrcode";
 
-// 🖌️ تنسيقات الشهادة
 const styles = StyleSheet.create({
   page: {
     backgroundColor: "#f3f3f3",
@@ -24,14 +23,15 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     textAlign: "center",
     backgroundColor: "#ffffff",
+    position: "relative",
   },
-    logo: {
-        width: 70,
-        alignSelf: "center",
-        marginBottom: 20,
-        border: "1pt solid #ccc",
-        borderRadius: 50,
-    },
+  logo: {
+    width: 70,
+    alignSelf: "center",
+    marginBottom: 20,
+    border: "1pt solid #ccc",
+    borderRadius: 50,
+  },
   heading: {
     fontSize: 28,
     color: "#2c3e50",
@@ -40,9 +40,6 @@ const styles = StyleSheet.create({
   subheading: {
     fontSize: 20,
     marginBottom: 10,
-  },
-  dateStudent:{
-    marginTop: 10,
   },
   name: {
     fontSize: 26,
@@ -66,40 +63,77 @@ const styles = StyleSheet.create({
   },
   signature: {
     fontSize: 16,
-    textAlign:"center"
+    textAlign: "center",
   },
+  qrImage: {
+    width: 60,
+    height: 60,
+    marginTop: 20,
+    alignSelf: "center",
+  },
+  contact: {
+    marginTop: 10,
+    fontSize: 12,
+    color: "#333",
+    textAlign: "center",
+  },
+  contactRow: {
+    marginTop: 15,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 12, // مسافة بين العناصر (خاصية غير رسمية لكن مدعومة)
+  },
+  contactText: {
+    fontSize: 12,
+    color: "#333",
+    marginHorizontal: 10,
+  },
+
 });
 
-// 📄 مكون الشهادة
 const Certificate = () => {
-  const {StudentName,teacherSignature,trainingStage,certificateDate}=useParams()
+  const { StudentName, teacherSignature, trainingStage, certificateDate } = useParams();
+  const [qrUrl, setQrUrl] = useState(null);
+
+  // ✅ توليد QR لصفحة الشهادة أو رابط تحقق
+  useEffect(() => {
+    const url = `${window.location.origin}/certificate/${StudentName}/${teacherSignature}/${trainingStage}/${certificateDate}`;
+    QRCode.toDataURL(url)
+      .then((data) => setQrUrl(data))
+      .catch((err) => console.error(err));
+  }, [StudentName, certificateDate]);
+
+  if (!qrUrl) return null;
+
   return (
     <PDFViewer width="100%" height="700">
       <Document>
-        <Page size={[842, 500]} style={styles.page}>
+        <Page size={[900, 585]} style={styles.page}>
           <View style={styles.container}>
-            {/* 🔗 اللوجو (تقدر تغيره أو تحذفه) */}
-            <Image
-              src="/logo.png"
-              style={styles.logo}
-            />
-
+            <Image src="/logo.png" style={styles.logo} />
             <Text style={styles.heading}>Certificate of Completion</Text>
             <Text style={styles.subheading}>This is to certify that</Text>
-            <View style={styles.dateStudent}>
-              <Text style={styles.name}>{StudentName}</Text>
-            <Text style={styles.subheading}>
-              has successfully completed the course:
-            </Text>
+            <Text style={styles.name}>{StudentName}</Text>
+            <Text style={styles.subheading}>has successfully completed the course:</Text>
             <Text style={styles.course}>{trainingStage}</Text>
-            </View>
 
             <View style={styles.dateSignature}>
               <Text style={styles.date}>Date: {certificateDate}</Text>
-              <View >
+              <View>
                 <Text style={styles.signature}>Signature</Text>
-                <Text style={{fontWeight:700}}>{teacherSignature}</Text>
+                <Text style={{ fontWeight: 700 }}>{teacherSignature}</Text>
               </View>
+            </View>
+
+            {/* ✅ QR Code */}
+            <Image src={qrUrl} style={styles.qrImage} />
+
+            {/* ✅ Contact Info */}
+            <View style={styles.contactRow}>
+              <Text style={styles.contactText}>+968 94085688</Text>
+              <Text style={styles.contactText}>info@muscatdrivingschool.com</Text>
+              <Text style={styles.contactText}>www.muscatdrivingschool.com</Text>
             </View>
           </View>
         </Page>

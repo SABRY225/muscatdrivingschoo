@@ -26,11 +26,13 @@ export default function HeaderSingleTeacher({ teacher }) {
           </Typography>
         </Box>
       )}
-      <Box sx={{ marginTop: "30px", display: "flex", columnGap: "20px" }}>
-        <Avatar
+      <Box sx={{ marginTop: "30px", display: {md:"flex"},justifyContent:"center", columnGap: "20px" }}>
+        <Box sx={{display:"flex",justifyContent:"center",mb:{xs:"2rem"}}}>
+          <Avatar
           src={`${process.env.REACT_APP_API_KEY}images/${teacher?.image}`}
-          sx={{ width: "141px", height: "141px" }}
+          sx={{ width: "141px", height: "141px"}}
         />
+        </Box>
         <Box>
           <Typography
             sx={{ fontSize: "20px", marginBottom: "8px", fontWeight: "700" }}

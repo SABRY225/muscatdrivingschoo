@@ -16,6 +16,7 @@ import Moment from "moment";
 import TextField from "@mui/material/TextField";
 import { useNavigate } from "react-router-dom";
 import jsPDF from "jspdf";
+import moment from "moment";
 
 export default function AdminBookedLessons() {
   const { token } = useSelector((state) => state.admin);
@@ -30,7 +31,7 @@ export default function AdminBookedLessons() {
     { id: "session_number", label: t("Session number"), minWidth: 150 },
     { id: "price", label: t("price"), minWidth: 150 },
     { id: "Phone", label: t("currency"), minWidth: 150 },
-    { id: "bookingDate", label: t("bookingDate"), minWidth: 150 },
+    { id: "bookingDate", label: t("bookingDate"), minWidth: 250 },
     { id: "payment", label: t("payment"), minWidth: 150 },
     { id: "Type", label: t("Type"), minWidth: 150 },
     { id: "confirm", label: t("Confirm Payment"), minWidth: 150 },
@@ -71,7 +72,7 @@ export default function AdminBookedLessons() {
         </Typography>
       </Box>
       {!isLoading ? (
-        <Paper sx={{ width: "100%", padding: "20px" }}>
+        <Paper sx={{ padding: "20px" }}>
           <TableContainer sx={{ maxHeight: 440 }}>
             <TextField
               sx={{ m: 1, width: "90%" }}
@@ -112,10 +113,7 @@ export default function AdminBookedLessons() {
                         `${row.currency || ""}`
                           .toLowerCase()
                           .includes(searchInput.toLowerCase().trim()) ||
-                        `${Moment(row.createdAt).format(
-                          "MMMM Do YYYY, h:mm:ss a"
-                        ) || ""
-                          }`
+                        `${row.createdAt ? moment(row.createdAt).format("YYYY/MM/DD , h:mm:ss a") : ""}`
                           .toLowerCase()
                           .includes(searchInput.toLowerCase().trim()) ||
                         `${t(row?.typeOfPayment) || ""}`
@@ -160,7 +158,7 @@ export default function AdminBookedLessons() {
                           <TableCell align="center">{row?.currency}</TableCell>
                           <TableCell align="center">
                             {Moment(row.createdAt).format(
-                              "MMMM Do YYYY, h:mm:ss a"
+                              "YYYY/MM/DD , h:mm:ss a"
                             )}
                           </TableCell>
                           <TableCell align="center">

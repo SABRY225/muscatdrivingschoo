@@ -63,7 +63,7 @@ export default function EditDiscount() {
       titleEN: "",
       discountType: "",
       class: '',
-      semester: '',
+      // semester: '',
       curriculums: '',
       percentage: "",
       amountBeforeDiscount: "",
@@ -135,9 +135,9 @@ export default function EditDiscount() {
         titleEN: discount.titleEN,
         discountType: discount.discountType,
         percentage: discount.percentage,
-        class: discount?.class,
-        semester: discount.semester,
-        curriculums: discount?.curriculums,
+        class: discount?.class?.id,
+        // semester: discount.semester,
+        curriculums: discount?.curriculums?.id,
         amountBeforeDiscount: discount?.amountBeforeDiscount,
         amountAfterDiscount: discount?.amountAfterDiscount,
         descriptionAR: discount?.descriptionAR,
@@ -346,7 +346,7 @@ export default function EditDiscount() {
                       rules={{ required: t("required") }}
                     />
                   </Box>
-                  <Box sx={{ flex: 1,marginBottom: "18px" }}>
+                  {/* <Box sx={{ flex: 1,marginBottom: "18px" }}>
                     <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
                       {t("semester")}
                     </InputLabel>
@@ -371,7 +371,7 @@ export default function EditDiscount() {
                       )}
                       rules={{ required: t("required") }}
                     />
-                  </Box>
+                  </Box> */}
                   </Box>
 
                   <FormControl fullWidth margin="dense">
@@ -385,7 +385,10 @@ export default function EditDiscount() {
                     >
                       {
                         currencies.map((curr) => {
-                          return <MenuItem value={curr.title}>{lang === "en" ? curr.titleEn : curr.titleAr}</MenuItem>
+                          return  <MenuItem key={curr.title} value={curr.title} sx={{ gap: "1rem" }} >
+                      <img src={`https://flagcdn.com/w320/${curr.code}.png`} style={{ width: "25px" }} />
+                      {lang === "en" ? curr.titleEn : curr.titleAr}
+                    </MenuItem>
                         })
                       }
                     </Select>

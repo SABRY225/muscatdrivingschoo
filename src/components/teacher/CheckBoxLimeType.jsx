@@ -12,16 +12,17 @@ import Cookies from "js-cookie";
 
 export default function CheckBoxLimeType({ checked, setChecked }) {
   const { t }       = useTranslation();
-  const teacher  = JSON.parse(localStorage.getItem("teacher"))
+  const {teacher} = useSelector((state) => state.teacher);
+  const teacherFromRedux = JSON.parse(localStorage.getItem("teacher")) || teacher;
   const { data }    = useLimeType();
   const lang        = Cookies.get("i18next") || "en";
-
+ 
   const handleToggle = (value) => () => {
     const currentIndex = checked.findIndex((l) => l.LimeTypeId === value);
     const newChecked = [...checked];
 
     if (currentIndex === -1) {
-      newChecked.push({ LimeTypeId: value, TeacherId: teacher.id });
+      newChecked.push({ LimeTypeId: value, TeacherId: teacherFromRedux.id });
     } else {
       newChecked.splice(currentIndex, 1);
     }

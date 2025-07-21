@@ -27,7 +27,7 @@ function StudentLecture() {
         { id: "description_course_en", label: t("Description"), minWidth: 150 },
         { id: "subject", label: t("subject"), minWidth: 150 },
         { id: "class", label: t("classes"), minWidth: 150 },
-        { id: "semester", label: t("semester"), minWidth: 150 },
+        // { id: "semester", label: t("semester"), minWidth: 150 },
         { id: "studycurriculums", label: t("studycurriculums"), minWidth: 150 },
         { id: "linkLecture", label: t("view lecture"), minWidth: 150 },
         { id: "docs", label: t("Lecture documents"), minWidth: 150 },
@@ -57,14 +57,14 @@ function StudentLecture() {
     }, [student.id]);
     const handelViewLecture=(lecture)=>{
         localStorage.setItem("lectureVideo",lecture.linkLecture);
-        localStorage.setItem("lectureNameAR",lecture.titleArabic);
-        localStorage.setItem("lectureNameEN",lecture.titleEnglish);
+        localStorage.setItem("lectureNameAR",lecture.titleAR);
+        localStorage.setItem("lectureNameEN",lecture.titleEN);
         navigate("/student/view-lecture")
     }
      return (
         <StudentLayout>
             <Root>
-                <Paper sx={{ width: "100%", padding: "20px" }}>
+                <Paper sx={{ padding: "20px" }}>
                     <TableContainer sx={{ maxHeight: 440 }}>
                         <Table stickyHeader aria-label="sticky table">
                             <TableRow>
@@ -80,11 +80,6 @@ function StudentLecture() {
                             </TableRow>
                             <TableBody>
                                 {data
-                                    ?.filter((row) => {
-                                        return lang === "ar"
-                                            ? row.TeacherLecture?.titleAR && row.TeacherLecture?.descriptionAr
-                                            : row.TeacherLecture?.titleEN && row.TeacherLecture?.descriptionEn;
-                                    })
                                     ?.map((row) => {
                                         return (
                                             <TableRow hover role="checkbox" key={row.id + "demj"}>
@@ -94,7 +89,7 @@ function StudentLecture() {
 
                                                 <TableCell align="center">{lang === "ar" ?row.TeacherLecture?.subject?.titleAR:row.TeacherLecture?.subject?.titleEN}</TableCell>
                                                 <TableCell align="center">{lang === "ar" ?row?.TeacherLecture?.classData?.titleAR:row?.TeacherLecture?.classData?.titleEN}</TableCell>
-                                                <TableCell align="center">{t(row?.TeacherLecture?.semester)}</TableCell>
+                                                {/* <TableCell align="center">{t(row?.TeacherLecture?.semester)}</TableCell> */}
                                                 <TableCell align="center">{lang === "ar" ?row.TeacherLecture?.curriculum?.titleAR:row?.TeacherLecture?.curriculum?.titleEN}</TableCell>
                                                 {row.TeacherLecture?.linkLecture ? <TableCell align="center">
                             <Button

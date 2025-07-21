@@ -90,21 +90,21 @@ export default function TeacherLectureUpdate() {
     watch
   } = useForm({
     defaultValues: {
-            titleAR: "",
-            titleEN: "",
-            descriptionAr: "",
-            descriptionEn: "",
-            locationAr: "",
-            locationEn: "",
-            price: "",
-            currency: "",
-            curriculums: "",
-            semester: "",
-            class: "",
-            subject: "",
-            linkLecture: "",
-            docs: "",
-            image: ""
+      titleAR: "",
+      titleEN: "",
+      descriptionAr: "",
+      descriptionEn: "",
+      locationAr: "",
+      locationEn: "",
+      price: "",
+      currency: "",
+      curriculums: "",
+      semester: "",
+      class: "",
+      subject: "",
+      linkLecture: "",
+      docs: "",
+      image: ""
     },
   });
   useEffect(() => {
@@ -112,7 +112,7 @@ export default function TeacherLectureUpdate() {
       try {
         const response = await fetch(`${process.env.REACT_APP_API_KEY}api/v1/teacher/lecture/${id}`);
         console.log(response);
-        
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -126,22 +126,24 @@ export default function TeacherLectureUpdate() {
   }, [id])
   useEffect(() => {
     console.log(lecture);
-    
+
     if (lecture) {
+      console.log(lecture);
+      
       reset({
-            titleAR: lecture?.titleAR,
-            titleEN: lecture?.titleEN,
-            descriptionAr:lecture?.descriptionAr,
-            descriptionEn: lecture?.descriptionEn,
-            locationAr:lecture?.locationAr,
-            locationEn: lecture?.locationEn,
-            price:lecture?.price,
-            currency:lecture?.currency,
-            curriculums:lecture?.curriculums?.id,
-            semester: lecture?.semester,
-            class:  lecture?.class?.id,
-            subject:lecture?.subject?.id,
-            linkLecture:lecture?.linkLecture,
+        titleAR: lecture?.titleAR ? String(lecture.titleAR) : "",
+        titleEN: lecture?.titleEN ? String(lecture.titleEN) : "",
+        descriptionAr: lecture?.descriptionAr ? String(lecture.descriptionAr) : "",
+        descriptionEn: lecture?.descriptionEn ? String(lecture.descriptionEn) : "",
+        locationAr: lecture?.locationAr ? String(lecture.locationAr) : "",
+        locationEn: lecture?.locationEn ? String(lecture.locationEn) : "",
+        price: lecture?.price !== undefined && lecture?.price !== null ? String(lecture.price) : "",
+        currency: lecture?.currency ? String(lecture.currency) : "",
+        curriculums: lecture?.curriculums?.id ? String(lecture.curriculums.id) : (lecture?.curriculums ? String(lecture.curriculums) : ""),
+        semester: lecture?.semester ? String(lecture.semester) : "",
+        class: lecture?.class?.id ? String(lecture.class.id) : (lecture?.class ? String(lecture.class) : ""),
+        subject: lecture?.subject?.id ? String(lecture.subject.id) : (lecture?.subject ? String(lecture.subject) : ""),
+        linkLecture: lecture?.linkLecture ? String(lecture.linkLecture) : "",
       });
       setFileImageName(lecture.image);
       setFileName(lecture.docs);
@@ -156,13 +158,17 @@ export default function TeacherLectureUpdate() {
     navigate("/teacher/lectures")
   }
   const watchLinkLecture = watch("linkLecture"); // مراقبة الرابط
+  const docs = watch("docs"); // مراقبة الرابط
 
   async function onSubmit(data) {
-    if (watchLinkLecture !== "" && (!lecture.docs)) {
+    // تحقق من وجود رابط أو مستند وليس كلاهما فارغين
+    if (!watchLinkLecture && !file) {
+      closeSnackbar();
       enqueueSnackbar(t("You must enter the lecture link or upload a document."), { variant: "error" });
       return;
     }
     closeSnackbar();
+    setLoading(true);
     const formData = new FormData();
 
     if (file && fileName !== lecture.docs) {
@@ -174,6 +180,13 @@ export default function TeacherLectureUpdate() {
     }
 
     formData.append("teacherId", teacher.id);
+
+    // تحقق من القيم المدخلة
+    if (isNaN(Number(data.price)) || Number(data.price) <= 0) {
+      enqueueSnackbar(t("Price must be a positive number."), { variant: "error", autoHideDuration: 8000 });
+      setLoading(false);
+      return;
+    }
 
     for (const key in data) {
       if (key !== "image" && key !== "docs") {
@@ -195,6 +208,8 @@ export default function TeacherLectureUpdate() {
       navigate("/teacher/lectures")
     } catch (err) {
       enqueueSnackbar(t("Something went wrong"), { variant: "error", autoHideDuration: 8000 });
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -255,7 +270,7 @@ export default function TeacherLectureUpdate() {
                 )}
               </Box>
             </Box>
-                        <Box sx={{
+            <Box sx={{
               display: { md: "flex", xs: "block" },
               justifyContent: "space-around",
               gap: "20px",
@@ -312,53 +327,56 @@ export default function TeacherLectureUpdate() {
               justifyContent: "space-around",
               gap: "20px",
             }}>
-            <Box sx={{ flex: 1,marginBottom: "18px" }}>
-              <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
-                {t("price")}
-              </InputLabel>
-              <Controller
-                name="price"
-                control={control}
-                render={({ field }) => <TextField {...field} type="number" fullWidth />}
-                {...register("price", {
-                  required: "price Address is required",
-                })}
-              />
-              {errors.price?.type === "required" && (
-                <Typography
-                  color="error"
-                  role="alert"
-                  sx={{ fontSize: "13px", marginTop: "6px" }}
-                >
-                  {t("required")}
-                </Typography>
-              )}
-            </Box>
-            <Box sx={{ flex: 1,marginBottom: "18px" }}>
-              <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
-                {t("currency")}
-              </InputLabel>
-              <Controller
-                name="currency"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    fullWidth
-                    {...register("currency", {
-                      required: t("isRequired"),
-                    })}
+              <Box sx={{ flex: 1, marginBottom: "18px" }}>
+                <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
+                  {t("price")}
+                </InputLabel>
+                <Controller
+                  name="price"
+                  control={control}
+                  render={({ field }) => <TextField {...field} type="number" fullWidth />}
+                  {...register("price", {
+                    required: "price Address is required",
+                  })}
+                />
+                {errors.price?.type === "required" && (
+                  <Typography
+                    color="error"
+                    role="alert"
+                    sx={{ fontSize: "13px", marginTop: "6px" }}
                   >
-                    {
-                      currencies.map((curr) => {
-                        return <MenuItem value={curr.title}>{lang === "en" ? curr.titleEn : curr.titleAr}</MenuItem>
-                      })
-                    }
-                  </Select>
+                    {t("required")}
+                  </Typography>
                 )}
-                rules={{ required: t("required") }}
-              />
-            </Box>
+              </Box>
+              <Box sx={{ flex: 1, marginBottom: "18px" }}>
+                <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
+                  {t("currency")}
+                </InputLabel>
+                <Controller
+                  name="currency"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      fullWidth
+                      {...register("currency", {
+                        required: t("isRequired"),
+                      })}
+                    >
+                      {
+                        currencies.map((curr) => {
+                          return <MenuItem key={curr.title} value={curr.title} sx={{ gap: "1rem" }} >
+                            <img src={`https://flagcdn.com/w320/${curr.code}.png`} style={{ width: "25px" }} />
+                            {lang === "en" ? curr.titleEn : curr.titleAr}
+                          </MenuItem>
+                        })
+                      }
+                    </Select>
+                  )}
+                  rules={{ required: t("required") }}
+                />
+              </Box>
             </Box>
 
             <Box sx={{
@@ -366,60 +384,60 @@ export default function TeacherLectureUpdate() {
               justifyContent: "space-around",
               gap: "20px",
             }}>
-            <Box sx={{ flex: 1,marginBottom: "18px" }}>
-              <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
-                {t("subject")}
-              </InputLabel>
-              <Controller
-                name="subject"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    fullWidth
-                    {...register("subject", {
-                      required: t("isRequired"),
-                    })}
-                  >
-                    {lang === "ar"
-                      ? subjects.map((subject, index) => (
-                        <MenuItem key={index} value={subject.id}>{t(subject.titleAR)}</MenuItem>
-                      ))
-                      : subjects.map((subject, index) => (
-                        <MenuItem key={index} value={subject.id}>{t(subject.titleEN)}</MenuItem>
-                      ))
-                    }
-                  </Select>
-                )}
-                rules={{ required: t("required") }}
-              />
+              <Box sx={{ flex: 1, marginBottom: "18px" }}>
+                <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
+                  {t("subject")}
+                </InputLabel>
+                <Controller
+                  name="subject"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      fullWidth
+                      {...register("subject", {
+                        required: t("isRequired"),
+                      })}
+                    >
+                      {lang === "ar"
+                        ? subjects.map((subject, index) => (
+                          <MenuItem key={index} value={subject.id}>{t(subject.titleAR)}</MenuItem>
+                        ))
+                        : subjects.map((subject, index) => (
+                          <MenuItem key={index} value={subject.id}>{t(subject.titleEN)}</MenuItem>
+                        ))
+                      }
+                    </Select>
+                  )}
+                  rules={{ required: t("required") }}
+                />
 
-            </Box>
-            <Box sx={{flex: 1, marginBottom: "18px" }}>
-              <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
-                {t("studycurriculums")}
-              </InputLabel>
-              <Controller
-                name="curriculums"
-                control={control}
-                render={({ field }) => (
-                  <Select {...field} fullWidth>
-                    {curriculumsData?.data.map((curriculums, index) => (
-                      lang === "ar" ? (
-                        <MenuItem key={index} value={curriculums.id}>
-                          {t(curriculums.titleAR)}
-                        </MenuItem>
-                      ) : (
-                        <MenuItem key={index} value={curriculums.id}>
-                          {t(curriculums.titleEN)}
-                        </MenuItem>
-                      )
-                    ))}
-                  </Select>
-                )}
-                rules={{ required: t("required") }}
-              />
-            </Box>
+              </Box>
+              <Box sx={{ flex: 1, marginBottom: "18px" }}>
+                <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
+                  {t("studycurriculums")}
+                </InputLabel>
+                <Controller
+                  name="curriculums"
+                  control={control}
+                  render={({ field }) => (
+                    <Select {...field} fullWidth>
+                      {curriculumsData?.data.map((curriculums, index) => (
+                        lang === "ar" ? (
+                          <MenuItem key={index} value={curriculums.id}>
+                            {t(curriculums.titleAR)}
+                          </MenuItem>
+                        ) : (
+                          <MenuItem key={index} value={curriculums.id}>
+                            {t(curriculums.titleEN)}
+                          </MenuItem>
+                        )
+                      ))}
+                    </Select>
+                  )}
+                  rules={{ required: t("required") }}
+                />
+              </Box>
             </Box>
 
             <Box sx={{
@@ -428,7 +446,7 @@ export default function TeacherLectureUpdate() {
               gap: "20px",
             }}>
 
-              <Box sx={{flex: 1, marginBottom: "18px"}}>
+              <Box sx={{ flex: 1, marginBottom: "18px" }}>
                 <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }} id="curriculums1">
                   {t("classes")}
                 </InputLabel>
@@ -448,7 +466,7 @@ export default function TeacherLectureUpdate() {
                 />
               </Box>
 
-              <Box sx={{ flex: 1,marginBottom: "18px"}}>
+              {/* <Box sx={{ flex: 1,marginBottom: "18px"}}>
                 <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }} id="curriculums2">
                   {t("semester")}
                 </InputLabel>
@@ -470,7 +488,7 @@ export default function TeacherLectureUpdate() {
                   )}
                   rules={{ required: t("required") }}
                 />
-              </Box>
+              </Box> */}
             </Box>
 
             <Box sx={{
@@ -478,55 +496,52 @@ export default function TeacherLectureUpdate() {
               justifyContent: "space-around",
               gap: "20px",
             }}>
-            <Box sx={{flex:1, marginBottom: "18px" }}>
-              <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
-                {t("descriptionAr")}
-              </InputLabel>
-              <Controller
-                name="descriptionAr"
-                control={control}
-                render={({ field }) => <TextField multiline rows={4} {...field} fullWidth />}
-                {...register("descriptionAr", {
-                  required: "description Address is required",
-                })}
-              />
-              {errors.descriptionAr?.type === "required" && (
-                <Typography
-                  color="error"
-                  role="alert"
-                  sx={{ fontSize: "13px", marginTop: "6px" }}
-                >
-                  {t("required")}
-                </Typography>
-              )}
+              <Box sx={{ flex: 1, marginBottom: "18px" }}>
+                <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
+                  {t("descriptionAr")}
+                </InputLabel>
+                <Controller
+                  name="descriptionAr"
+                  control={control}
+                  render={({ field }) => <TextField multiline rows={4} {...field} fullWidth />}
+                  {...register("descriptionAr", {
+                    required: "description Address is required",
+                  })}
+                />
+                {errors.descriptionAr?.type === "required" && (
+                  <Typography
+                    color="error"
+                    role="alert"
+                    sx={{ fontSize: "13px", marginTop: "6px" }}
+                  >
+                    {t("descriptionAr")}
+                  </Typography>
+                )}
+              </Box>
+
+              <Box sx={{ flex: 1, marginBottom: "18px" }}>
+                <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
+                  {t("descriptionEn")}
+                </InputLabel>
+                <Controller
+                  name="descriptionEn"
+                  control={control}
+                  render={({ field }) => <TextField multiline rows={4} {...field} fullWidth />}
+                  {...register("descriptionEn", {
+                    required: "description Address is required",
+                  })}
+                />
+                {errors.descriptionEn?.type === "required" && (
+                  <Typography
+                    color="error"
+                    role="alert"
+                    sx={{ fontSize: "13px", marginTop: "6px" }}
+                  >
+                    {t("required")}
+                  </Typography>
+                )}
+              </Box>
             </Box>
-
-            <Box sx={{flex:1, marginBottom: "18px" }}>
-              <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
-                {t("descriptionEn")}
-              </InputLabel>
-              <Controller
-                name="descriptionEn"
-                control={control}
-                render={({ field }) => <TextField multiline rows={4} {...field} fullWidth />}
-                {...register("descriptionEn", {
-                  required: "description Address is required",
-                })}
-              />
-              {errors.descriptionEn?.type === "required" && (
-                <Typography
-                  color="error"
-                  role="alert"
-                  sx={{ fontSize: "13px", marginTop: "6px" }}
-                >
-                  {t("required")}
-                </Typography>
-              )}
-            </Box>
-            </Box>
-
-
-
 
             <Box sx={{ marginBottom: "18px" }}>
               <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
@@ -535,10 +550,26 @@ export default function TeacherLectureUpdate() {
               <Controller
                 name="linkLecture"
                 control={control}
-                rules={{ required: false }} 
+                rules={{
+                  required: t("required"),
+                  validate: value =>
+                    value &&
+                    (/^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/i.test(value))
+                      ? true
+                      : t("Only YouTube links are allowed")
+                }}
                 render={({ field }) => <TextField {...field} fullWidth />}
-
               />
+
+              {errors.linkLecture?.type === "validate" && (
+                <Typography
+                  color="error"
+                  role="alert"
+                  sx={{ fontSize: "13px", marginTop: "6px" }}
+                >
+                  {errors.linkLecture.message}
+                </Typography>
+              )}
             </Box>
 
             <Box sx={{
@@ -546,7 +577,7 @@ export default function TeacherLectureUpdate() {
               justifyContent: "space-around",
               gap: "20px",
             }}>
-              <Box sx={{flex:1, marginBottom: "18px" }}>
+              <Box sx={{ flex: 1, marginBottom: "18px" }}>
                 <InputLabel sx={{ marginBottom: "6px", fontSize: "14px", fontWeight: 'bold', color: '#333' }}>
                   {t("Lecture documents")}
                 </InputLabel>
@@ -572,7 +603,7 @@ export default function TeacherLectureUpdate() {
                 )}
               </Box>
 
-              <Box sx={{flex:1,  marginBottom: "18px" }}>
+              <Box sx={{ flex: 1, marginBottom: "18px" }}>
                 <InputLabel sx={{ marginBottom: "6px", fontSize: "14px", fontWeight: 'bold', color: '#333' }}>
                   {t("Choose a suitable image for the lecture")}
                 </InputLabel>

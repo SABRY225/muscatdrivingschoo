@@ -115,7 +115,11 @@ const AdminNewTeacher = () => {
                 <Controller
                   name="phone"
                   control={control}
-                  render={({ field }) => <PhoneInput {...field} />}
+                  render={({ field }) => <PhoneInput
+                      {...field}
+                      inputStyle={{ width: "100%" }}
+                      country={"om"}
+                    />}
                   {...register("phone", {
                     required: "Phone Number is required",
                   })}

@@ -1,5 +1,4 @@
-import { Box, Divider, Grid, Paper, Typography , Avatar , Button } from '@mui/material'
-import React from 'react'
+import {  Paper, Typography  , Button, TableRow, TableCell, TableBody, TableHead, Table, TableContainer } from '@mui/material'
 import Cookies from 'js-cookie';
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next'
@@ -10,48 +9,69 @@ export default function TestSingleTeacher({teacher}) {
     const lang = Cookies.get("i18next") || "en";
     const {t} = useTranslation()
     return (
-        <Paper sx={{padding:"32px 24px",marginY:"30px"}}>
-            <Typography sx={{fontSize:"22px",marginBottom:"18px"}}>{t('tests_teacher')}</Typography>
-           <table className='table_test'>
-            <tr>
-              <td> {t("level")} </td>
-              <td> {t("price")} </td>
-              <td> {t("currency")} </td>
-              <td> {t("book_test") }</td>
-            </tr>
-           
-            {
-              teacher?.Tests?.length> 0 ?
-              teacher?.Tests?.map((item,index)=>
-        {
-          console.log(currencies);
+       
+<Paper sx={{ padding: "20px 5px", marginY: "30px" }}>
+  <Typography sx={{ fontSize: "22px", marginBottom: "18px" }}>
+    {t("tests")}
+  </Typography>
 
-          let current_currency;
-          current_currency = currencies.find((e) => e.title == item?.currency);
-          console.log(current_currency);
+  <TableContainer component={Paper} sx={{ overflowX: "auto" }}>
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell>{t("level")}</TableCell>
+          <TableCell>{t("price")}</TableCell>
+          <TableCell>{t("currency")}</TableCell>
+          <TableCell>{t("book_test")}</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {teacher?.Tests?.length > 0 ? (
+          teacher?.Tests?.map((item, index) => {
+            const current_currency = currencies.find(
+              (e) => e.title === item?.currency
+            );
 
-            console.log(item);
-            return(
-            <>
-                
-                  <tr>
-                    <td>{ (lang === "en") ? item?.Level.titleEN : item?.Level.titleAR }</td>
-                    <td>{item?.price}</td>
-                    <td>{ (lang == "en") ? current_currency.titleEn : current_currency.titleAr}</td>
-
-                  
-
-                    <Button className='btn-test-2' onClick={() => navigate(`/book-test/${item.id}`)}>
-                      {t("book_test")}
-                    </Button>
-                </tr>
-                              
-              </>
-              )
-            })
-            : <tr><td colSpan={3}><p class='notfound'>{t("notfound_tests_teacher")}</p></td></tr>
-          }
-          </table>
-        </Paper>
+            return (
+              <TableRow key={item.id}>
+                <TableCell>
+                  {lang === "en"
+                    ? item?.Level.titleEN
+                    : item?.Level.titleAR}
+                </TableCell>
+                <TableCell>{item?.price}</TableCell>
+                <TableCell>
+                  {lang === "en"
+                    ? current_currency?.titleEn
+                    : current_currency?.titleAr}
+                </TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    onClick={() =>
+                      navigate(`/test/${item.TeacherId}/${item.id}`)
+                    }
+                  >
+                    {t("book_test")}
+                  </Button>
+                </TableCell>
+              </TableRow>
+            );
+          })
+        ) : (
+          <TableRow>
+            <TableCell colSpan={4}>
+              <Typography align="center" className="notfound">
+                {t("notfound_tests_teacher")}
+              </Typography>
+            </TableCell>
+          </TableRow>
+        )}
+      </TableBody>
+    </Table>
+  </TableContainer>
+</Paper>
     )
 }

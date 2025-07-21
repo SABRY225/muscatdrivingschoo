@@ -12,16 +12,17 @@ import Cookies from "js-cookie";
 
 export default function CheckBoxLevels({ checked, setChecked }) {
   const { t } = useTranslation();
-  const teacher  = JSON.parse(localStorage.getItem("teacher"))
+  const {teacher} = useSelector((state) => state.teacher);
+  const teacherFromRedux = JSON.parse(localStorage.getItem("teacher")) || teacher;
   const { data } = useLevels();
   const lang = Cookies.get("i18next") || "en";
-
+ 
   const handleToggle = (value) => () => {
     const currentIndex = checked.findIndex((l) => l.LevelId === value);
     const newChecked = [...checked];
 
     if (currentIndex === -1) {
-      newChecked.push({ LevelId: value, TeacherId: teacher.id });
+      newChecked.push({ LevelId: value, TeacherId: teacherFromRedux.id });
     } else {
       newChecked.splice(currentIndex, 1);
     }

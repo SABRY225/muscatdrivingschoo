@@ -3,31 +3,38 @@ import {
   Button,
   Container,
   FormControl,
+  FormControlLabel,
   InputLabel,
   MenuItem,
   Paper,
+  Radio,
+  RadioGroup,
   Select,
   TextField,
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Navbar from "../../../components/Navbar";
+import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useTranslation } from "react-i18next";
 import { useForm, Controller } from "react-hook-form";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import PaidIcon from "@mui/icons-material/Paid";
 import { useNavigate, useParams } from "react-router-dom";
+import { useSingleTeacher } from "../../../hooks/useSingleTeacher";
 import { useSelector } from "react-redux";
 import Cookies from "js-cookie";
 import { useSnackbar } from "notistack";
 import { convertCurrency } from "../../../utils/convertCurrency";
-import { useSingleTeacher } from "../../../hooks/useSingleTeacher";
+import { useLevels } from "../../../hooks/useLevels";
 
 export default function DetailsBook() {
   const lang = Cookies.get("i18next") || "en";
   const { teacherId } = useParams();
   const { currency } = useSelector((state) => state.currency);
+  const { conversionRate } = useSelector((state) => state.conversionRate);
+  const {data:levels}=useLevels()
   const { data } = useSingleTeacher(teacherId, currency);
   const { t } = useTranslation();
 
@@ -59,7 +66,8 @@ export default function DetailsBook() {
   } = useForm({
     defaultValues: {
       hours: "1",
-      typeLesson: "online",
+      typeLesson: "",
+      placeLesson:"online",
       date: "",
       time: "",
       typeofbook: "",
@@ -73,35 +81,46 @@ export default function DetailsBook() {
   const [price, setPrice] = useState(0);
   const hour = watch("hours");
   const [convertedAmount, setConvertedAmount] = React.useState(0);
-  // console.log(data?.data);
   
   useEffect(() => {
-    const typeLesson = watch("typeLesson");
+    const placeLesson = watch("placeLesson");
     const selectedHours = watch("hours");
-    // console.log(typeLesson);
-    
   
     let basePrice = 0;
-    if (typeLesson === "online") {
+    if (placeLesson === "online") {
       basePrice = data?.data?.RemoteSession?.price -(data?.data?.RemoteSession?.price*(data?.data?.RemoteSession?.discount/100)) || 0;
-    } else if (typeLesson === "student") {
+    } else if (placeLesson === "student") {
       basePrice = +data?.data?.F2FSessionStd?.price -(data?.data?.F2FSessionStd?.price*(data?.data?.F2FSessionStd?.discount/100)) || 0;
-    } else if (typeLesson === "teacher") {
+    } else if (placeLesson === "teacher") {
       basePrice = data?.data?.F2FSessionTeacher?.price -(data?.data?.F2FSessionTeacher?.price*(data?.data?.F2FSessionTeacher?.discount/100)) || 0;
     }
   
     const totalBasePrice = basePrice * selectedHours;
-    // console.log("basePrice : ", basePrice);
-    // console.log("totalBasePrice : ", totalBasePrice);
+    console.log("basePrice : ", basePrice);
+    console.log("totalBasePrice : ", totalBasePrice);
   
     if (totalBasePrice > 0) {
       const fetchConvertedAmount = async () => {
-        const result = await convertCurrency(
+        let result=0;
+        if (placeLesson === "online") {
+        result = await convertCurrency(
           totalBasePrice,
-          typeLesson === "student"?data?.data?.F2FSessionStd?.currency:data?.data?.F2FSessionTeacher?.currency,
+          data?.data?.RemoteSession?.currency,
           currency
         );
-        // console.log(data?.data?.RemoteSession?.currency);
+        }else if(placeLesson === "student"){
+result = await convertCurrency(
+          totalBasePrice,
+          data?.data?.F2FSessionStd?.currency,
+          currency
+        );
+        }else if(placeLesson === "teacher"){
+result = await convertCurrency(
+          totalBasePrice,
+          data?.data?.F2FSessionTeacher?.currency,
+          currency
+        );
+        }
         
         setPrice(result/hour);
         setConvertedAmount(result)
@@ -110,10 +129,12 @@ export default function DetailsBook() {
       fetchConvertedAmount();
     }
   
-  }, [watch("typeLesson"), watch("hours"), currency, data?.data?.RemoteSession?.currency]);
+  }, [watch("placeLesson"), watch("hours"), currency, data?.data?.RemoteSession?.currency,data?.data?.F2FSessionStd?.price,data?.data?.F2FSessionTeacher?.price]);
+  console.log("price :", price);
   
 
   async function onSubmit(data) {
+    console.log(data)
     setLoad(true);
     const result = await convertCurrency(convertedAmount, currency, "OMR");
     try {
@@ -133,8 +154,11 @@ export default function DetailsBook() {
             price: Number(result),
             currency: "OMR",
             period: data.hours,
-            date: data.date + "T" + data.time,
-            type: data.typeLesson,
+            date: data.date,
+            time:data.time,
+            typeLesson:data.typeLesson,
+            place:data.placeLesson,
+            type : "lesson_booking"
           }),
         }
       );
@@ -163,6 +187,8 @@ export default function DetailsBook() {
       });
     }
   }
+  console.log(levels);
+  
   return (
     <Navbar>
       <Container sx={{ marginY: "100px" }}>
@@ -259,21 +285,12 @@ export default function DetailsBook() {
                           required: "type is required",
                         })}
                       >
-                        {data?.data.RemoteSession && (
-                          <MenuItem value={"online"}>
-                            {lang === "ar" ? "عن بعد" : "online"}
+                        {levels?.data?.map((level)=>
+                          <MenuItem value={level.id}>
+                            {lang === "ar" ? level.titleAR: level.titleEN}
                           </MenuItem>
                         )}
-                        {data?.data.F2FSessionStd && (
-                          <MenuItem value={"student"}>
-                            {lang === "ar" ? "في موقع الطالب" : "Student Location"}
-                          </MenuItem>
-                        )}
-                        {data?.data.F2FSessionTeacher && (
-                          <MenuItem value={"teacher"}>
-                            {lang === "ar" ? "في موقع المدرب" : "Teacher Location"}
-                          </MenuItem>
-                        )}
+                      
                       </Select>
                     </FormControl>
                   )}
@@ -288,7 +305,53 @@ export default function DetailsBook() {
                   </Typography>
                 )}
               </Box>
-              <Box sx={{ display: "flex", gap: 3 }}>
+              <Box sx={{ marginBottom: "26px" }}>
+                <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
+                  {t("Place Lesson")}
+                </InputLabel>
+                <Controller
+                  name="placeLesson"
+                  control={control}
+                  render={({ field }) => (
+                    <FormControl fullWidth>
+                      <Select
+                        {...field}
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        {...register("placeLesson", {
+                          required: "place is required",
+                        })}
+                      >
+                        {data?.data.RemoteSession && (
+                          <MenuItem value={"online"}>
+                            {lang === "ar" ? "عن بعد" : "online"}
+                          </MenuItem>
+                        )}
+                        {data?.data.F2FSessionStd && (
+                          <MenuItem value={"student"}>
+                            {lang === "ar" ? "في موقع الطالب" : "Student home"}
+                          </MenuItem>
+                        )}
+                        {data?.data.F2FSessionTeacher && (
+                          <MenuItem value={"teacher"}>
+                            {lang === "ar" ? "في موقع المدرب" : "Teacher home"}
+                          </MenuItem>
+                        )}
+                      </Select>
+                    </FormControl>
+                  )}
+                />
+                {errors.placeLessonLesson?.type === "required" && (
+                  <Typography
+                    color="error"
+                    role="alert"
+                    sx={{ fontSize: "13px", marginTop: "6px" }}
+                  >
+                    {t("required")}
+                  </Typography>
+                )}
+              </Box>
+              <Box sx={{ display: "flex", gap: 1 }}>
                 {/* موعد الحجز */}
                 <Box sx={{ marginBottom: "30px", width: "100%" }}>
                   <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>

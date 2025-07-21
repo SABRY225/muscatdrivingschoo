@@ -115,7 +115,7 @@ export default function TestAdd({ handleClose }) {
     formData.append("subject", data.subject);
     formData.append("LevelId", data.LevelId);
     formData.append("currency", data.currency);
-    formData.append("semester", data.Semester);
+    formData.append("semester","");
     formData.append("class", data.classes);
     formData.append("curriculums", data.curriculums)
     formData.append("linkExam", data.linkExam)
@@ -292,7 +292,7 @@ export default function TestAdd({ handleClose }) {
           }}
         >
 
-        <Box sx={{ flex: 1, marginBottom: "18px" }}>
+        {/* <Box sx={{ flex: 1, marginBottom: "18px" }}>
           <FormControl fullWidth margin="dense">
             <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }} id="curriculums2">
               {t("semester")}
@@ -315,7 +315,7 @@ export default function TestAdd({ handleClose }) {
               )}
             </Select>
           </FormControl>
-        </Box>
+        </Box> */}
         <Box sx={{ flex: 1, marginBottom: "18px",marginTop:"-17px" }}>
           <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
             {t("currency")}
@@ -333,7 +333,10 @@ export default function TestAdd({ handleClose }) {
               >
                 {
                   currencies.map((curr) => {
-                    return <MenuItem value={curr.title}>{lang === "en" ? curr.titleEn : curr.titleAr}</MenuItem>
+                    return  <MenuItem key={curr.title} value={curr.title} sx={{ gap: "1rem" }} >
+                      <img src={`https://flagcdn.com/w320/${curr.code}.png`} style={{ width: "25px" }} />
+                      {lang === "en" ? curr.titleEn : curr.titleAr}
+                    </MenuItem>
                   })
                 }
               </Select>

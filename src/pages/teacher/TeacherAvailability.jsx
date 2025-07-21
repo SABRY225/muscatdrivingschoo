@@ -110,9 +110,8 @@ export default function TeacherAvailability() {
   }
 
   return (
-    <Navbar>
       <TeacherLayout active={5} title={t("availability")}>
-      <Paper sx={{ width: "100%", padding: "20px" }}>
+      <Paper sx={{  padding: "20px" }}>
         <Box>
           <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
             {t("timezone")}
@@ -159,6 +158,5 @@ export default function TeacherAvailability() {
         </Box>
       </Paper>
       </TeacherLayout>
-    </Navbar>
   );
 }

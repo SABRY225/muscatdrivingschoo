@@ -18,21 +18,21 @@ export default function PayingTeacher({ teacher }) {
         <Typography sx={{ marginBottom: "8px" }}>
           {t("studenthome")} -{" "}
           {(teacher?.F2FSessionStd?.price * conversionRate).toFixed(2)}{" "}
-          {currency}
+          {t(currency)}
         </Typography>
       )}
       {teacher?.F2FSessionTeacher && (
         <Typography sx={{ marginBottom: "8px" }}>
           {t("teacherhome")} -{" "}
           {(teacher?.F2FSessionTeacher?.price * conversionRate).toFixed(2)}{" "}
-          {currency}
+           {t(currency)}
         </Typography>
       )}
       {teacher?.RemoteSession && (
         <Typography>
           {t("onlineStudy")} -{" "}
           {(teacher?.RemoteSession?.price * conversionRate).toFixed(2)}{" "}
-          {currency}
+          {t(currency)}
         </Typography>
       )}
     </Paper>

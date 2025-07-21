@@ -24,7 +24,7 @@ export default function TeacherQuestionChooseView() {
   const { t } = useTranslation();
 
   const columns = [
-    { id: "lecture",             label: t("question"),           minWidth: 100 },
+    { id: "question",             label: t("question"),           minWidth: 100 },
     { id: "titleAr",             label: t("titleAr"),           minWidth: 150 },
     { id: "titleEN",             label: t("titleEn"),           minWidth: 150 },
     { id: "isCorrectAnswer",     label: t("isCorrectAnswer"),     minWidth: 150 },
@@ -98,7 +98,7 @@ export default function TeacherQuestionChooseView() {
   return (
     <Box>
       {!isLoading ? (
-        <Paper sx={{ width: "100%", padding: "20px" }}>
+        <Paper sx={{padding: "20px" }}>
           <TableContainer sx={{ maxHeight: 440 }}>
             <TextField
               sx={{ m: 1, width: "90%" }}

@@ -5,16 +5,19 @@ import Navbar from "../Navbar";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { deepOrange } from "@mui/material/colors";
-
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
+import PeopleIcon from '@mui/icons-material/People';
+import LockResetIcon from '@mui/icons-material/LockReset';
 export default function ParentLayout({ children }) {
   const { t } = useTranslation();
-  const topics = [
-    { title: t("profile"),                link: "/profile" },
-    { title: t("profile_photo"),          link: "/profile_photo" },
-    { title: t("view_children"),          link: "/" },
-    { title: t("setting_changepassword"), link: "/changepassword" },
-    { title: t("setting_page"),           link: "/settings" },
-  ];
+const topics = [
+  { title: t("profile"),                link: "/profile",        icon: <AccountCircleIcon /> },
+  { title: t("profile_photo"),          link: "/profile_photo",  icon: <PhotoCameraIcon /> },
+  { title: t("view_children"),          link: "/",               icon: <PeopleIcon /> },
+  { title: t("setting_changepassword"), link: "/changepassword", icon: <LockResetIcon /> },
+];
+
 
   const { parent } = useSelector((state) => state.parent);
   return (
@@ -40,22 +43,23 @@ export default function ParentLayout({ children }) {
                 </Typography>
               </Box>
               <Divider sx={{ marginY: "20px" }} />
-              <List>
-                {topics.map((topic, index) => {
-                  return (
-                    <Link to={`/parent${topic.link}`}>
-                      <ListItem key={topic.title + index + "o"} disablePadding>
-                        <ListItemButton>
-                          <ListItemText
-                            primary={topic.title}
-                            sx={{ textAlign: "start" }}
-                          />
-                        </ListItemButton>
-                      </ListItem>
-                    </Link>
-                  );
-                })}
-              </List>
+<List>
+  {topics.map((topic, index) => {
+    return (
+      <Link to={`/parent${topic.link}`} key={topic.title + index} style={{ textDecoration: "none", color: "inherit" }}>
+        <ListItem disablePadding>
+          <ListItemButton>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              {topic.icon}
+              <ListItemText primary={topic.title} />
+            </Box>
+          </ListItemButton>
+        </ListItem>
+      </Link>
+    );
+  })}
+</List>
+
             </Paper>
           </Grid>
           <Grid item xs={12} lg={9} sx={{ overflow: "hidden" }}>

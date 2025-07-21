@@ -57,7 +57,7 @@ function EditPackage() {
             LevelId: '',
             class: '',
             subject: '',
-            semester: '',
+            // semester: '',
             curriculums: '',
             titleAR: '',
             titleEN: '',
@@ -125,12 +125,14 @@ function EditPackage() {
     useEffect(() => {
 
         if (Package?.startDate && Package?.endDate) {
+            console.log(Package);
+            
             reset({
                 LevelId: Package?.LevelId,
-                class: Package?.class,
+                class: Package?.class?.id,
                 subject: Package?.subject,
-                semester: Package?.semester,
-                curriculums: Package?.curriculums,
+                // semester: Package?.semester,
+                curriculums: Package?.curriculums?.id,
                 titleAR: Package?.titleAR,
                 titleEN: Package?.titleEN,
                 duration: Package?.duration,
@@ -224,7 +226,6 @@ function EditPackage() {
 
 
     return (
-        <Navbar>
             <TeacherLayout>
                 <Container sx={{ marginTop: '50px', marginBottom: '80px' }}>
                     <form sx={{ margin: 'auto' }} encType="multipart/form-data" onSubmit={handleSubmit(createPackage)}>
@@ -452,7 +453,7 @@ function EditPackage() {
                                     rules={{ required: t("required") }}
                                 />
                             </Box>
-                            <Box sx={{ flex: 1, marginBottom: "18px" }}>
+                            {/* <Box sx={{ flex: 1, marginBottom: "18px" }}>
                                 <InputLabel id="semester">{t("semester")}</InputLabel>
                                 <Controller
                                     name="semester"
@@ -474,7 +475,7 @@ function EditPackage() {
                                     )}
                                     rules={{ required: t("required") }}
                                 />
-                            </Box>
+                            </Box> */}
                         </Box>
                         <Box
                             sx={{
@@ -512,7 +513,8 @@ function EditPackage() {
                                             <InputLabel id="currency">{t("currency")}</InputLabel>
                                             <Select labelId="currency" label={t("currency")} {...field}>
                                                 {currencies.map((curr) => (
-                                                    <MenuItem key={curr.title} value={curr.title}>
+                                                    <MenuItem key={curr.title} value={curr.title} sx={{gap:"1rem"}} >
+                                                        <img src={`https://flagcdn.com/w320/${curr.code}.png`} style={{width:"25px"}} />
                                                         {lang === "en" ? curr.titleEn : curr.titleAr}
                                                     </MenuItem>
                                                 ))}
@@ -537,7 +539,7 @@ function EditPackage() {
                                     control={control}
                                     rules={{ required: t("required") }}
                                     render={({ field }) => (
-                                        <TextField type="date" {...field} fullWidth />
+                                        <TextField type="date" {...field} fullWidth label={t("startDate")}/>
                                     )}
                                 />
                                 {errors.startDate?.type === "required" && (
@@ -552,7 +554,7 @@ function EditPackage() {
                                     control={control}
                                     rules={{ required: t("required") }}
                                     render={({ field }) => (
-                                        <TextField type="time" {...field} fullWidth />
+                                        <TextField type="time" {...field} fullWidth label={t("Time")}/>
                                     )}
                                 />
                                 {errors.time?.type === "required" && (
@@ -576,7 +578,7 @@ function EditPackage() {
                                     control={control}
                                     rules={{ required: t("required") }}
                                     render={({ field }) => (
-                                        <TextField type="date" {...field} fullWidth />
+                                        <TextField type="date" {...field} fullWidth label={t("package_endDate")} margin="dense"/>
                                     )}
                                 />
                                 {errors.endDate?.type === "required" && (
@@ -798,8 +800,6 @@ function EditPackage() {
                     </form>
                 </Container>
             </TeacherLayout>
-
-        </Navbar>
     )
 }
 

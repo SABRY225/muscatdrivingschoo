@@ -39,7 +39,7 @@ function MyBillsTeacher() {
     const columns = [
         { id: "Invoice number", label: t("Invoice number"), minWidth: 150 },
         { id: "date", label: t("date"), minWidth: 150 },
-        { id: "type", label: t("Type"), minWidth: 150 },
+        { id: "type", label: t("type service"), minWidth: 150 },
         { id: "price", label: t("price"), minWidth: 150 },
         { id: "student", label: t("student"), minWidth: 150 },
         { id: "phone", label: t("phone"), minWidth: 150 },
@@ -48,16 +48,15 @@ function MyBillsTeacher() {
     ];
 
     const printPDF = (session) => {
-        navigate(`/invoice-teacher/${session.id}/${session.createdAt}/${session.Student?.name}/${teacher?.firstName}/${teacher?.lastName}/${session.Student?.email}/${session.Student?.phoneNumber}/${session.price}/${session.currency}`)
+        navigate(`/invoice-teacher/${session.id}/${session.date}/${session.Student?.name}/${teacher?.firstName}/${teacher?.lastName}/${session.Student?.email}/${session.Student?.phoneNumber}/${session.price}/${session.currency}/${session.type}`)
     };
 
     return (
         <TeacherLayout>
-            <div className='mt-28 p-5'>
-                <div >
+                <Paper sx={{  padding: "20px", margin: 1 }}>
+                     <div  >
                     <h2 className="text-xl font-bold mb-4">{t("Billing Report")}</h2>
-                </div>
-                <Paper sx={{ width: "100%", padding: "20px", margin: 1 }}>
+                    </div>
                     <TableContainer sx={{ maxHeight: 440 }}>
                         <Table stickyHeader aria-label="sticky table">
                             <TableRow>
@@ -77,7 +76,7 @@ function MyBillsTeacher() {
                                         <TableRow hover role="checkbox" key={row.id + "demj"}>
                                             <TableCell align="center">{row.id}</TableCell>
                                             <TableCell align="center">{convertDate(row.date)}</TableCell>
-                                            <TableCell align="center">{t(row.type)}</TableCell>
+                                            <TableCell align="center">{t(row.type=="student"?"Lesson":row.type)}</TableCell>
                                             <TableCell align="center">{row.price} {" "}{t(row.currency)}</TableCell>
                                             <TableCell align="center">{row.Student?.name || "N/A"}</TableCell>
                                             <TableCell align="center">{row.Student?.phoneNumber}</TableCell>
@@ -104,7 +103,6 @@ function MyBillsTeacher() {
                     </TableContainer>
 
                 </Paper>
-            </div>
         </TeacherLayout>
     )
 }

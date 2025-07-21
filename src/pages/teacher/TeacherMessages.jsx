@@ -48,7 +48,7 @@ export default function TeacherMessages() {
 
   return (
       <TeacherLayout>
-      <Box sx={{ px: { xs: 1, sm: 2 }, py: 10,mt:5 }}>
+      <Box sx={{ px: { xs: 1, sm: 2 }, py: 10,mt:0 }}>
         <Stack 
           direction={{ xs: 'column', md: 'row' }} 
           spacing={2}

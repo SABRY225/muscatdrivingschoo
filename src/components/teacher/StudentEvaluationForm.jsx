@@ -57,6 +57,7 @@ const handleSubmit = async (e) => {
   form.append("teacherSignature", formData.teacherSignature);
   form.append("StudentId", formData.StudentId);
   form.append("TeacherId", formData.TeacherId);
+  form.append("language", lang);
 
   try {
     const res = await fetch(`${process.env.REACT_APP_API_KEY}api/v1/teacher/evaluations`, {

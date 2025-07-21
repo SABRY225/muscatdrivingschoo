@@ -17,14 +17,12 @@ import { useNavigate } from "react-router-dom";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useSnackbar } from "notistack";
-// Added by Abdelwahab
 import EmailIcon from "@mui/icons-material/Email";
 import TextField from "@mui/material/TextField";
 import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 import DoDisturbOffIcon from "@mui/icons-material/DoDisturbOff";
 import BuildIcon from "@mui/icons-material/Build";
-import { collection, addDoc, Timestamp } from "firebase/firestore";
-import { db } from "../../firebase";
+import Moment from "moment";
 import Cookies from "js-cookie";
 
 export default function AdminTeachers() {
@@ -38,6 +36,7 @@ export default function AdminTeachers() {
 
   const columns = [
     { id: "",       label: t(""), minWidth: 10 },
+    { id: "Joining date", label: t("Joining date"), minWidth: 250 },
     { id: "Name",   label: t("name"), minWidth: 150 },
     { id: "Email",  label: t("email"), minWidth: 150 },
     { id: "Gender", label: t("gender"), minWidth: 150 },
@@ -202,7 +201,7 @@ export default function AdminTeachers() {
       </Box>
 
       {!isLoading ? (
-        <Paper sx={{ width: "100%", padding: "20px" }}>
+        <Paper sx={{ padding: "20px" }}>
           <TableContainer
             sx={{
               maxHeight: 440,
@@ -262,6 +261,11 @@ export default function AdminTeachers() {
   </svg>
 }
 </TableCell>
+                          <TableCell align="center">
+                            {Moment(row.createdAt).format(
+                              "YYYY/MM/DD , h:mm:ss a"
+                            )}
+                          </TableCell>
                           <TableCell align="center">
                             {row.firstName + " " + row.lastName || ""}
                           </TableCell>

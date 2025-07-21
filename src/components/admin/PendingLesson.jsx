@@ -15,6 +15,7 @@ import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import DoneIcon from "@mui/icons-material/Done";
 import ClearIcon from "@mui/icons-material/Clear";
+import axios from "axios";
 
 export default function PendingLesson() {
   const lang = Cookies.get("i18next") || "en";
@@ -72,7 +73,7 @@ export default function PendingLesson() {
     { id: "price", label: t("price"), minWidth: 150 },
     { id: "Session number", label: t("Session number"), minWidth: 150 },
     { id: "status", label: t("status"), minWidth: 150 },
-    { id: "actions", label: t("actions"), minWidth: 150 },
+    { id: "actions", label: t("actions"), minWidth: 300 },
   ];
 
   const [page, setPage] = React.useState(0);
@@ -88,81 +89,72 @@ export default function PendingLesson() {
   };
 
 
-  async function acceptLesson(id) {
-    closeSnackbar();
 
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_KEY}api/v1/lesson/accept-request/${id}`,
-        {lang},
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );    
-      console.log(response);
-      
-      if (!response.ok) {
-        enqueueSnackbar(t("error"), {
-          variant: "error",
-          autoHideDuration: 8000,
-        });
-      }else{
-      enqueueSnackbar(t("The Lesson has been verified."), {
-        variant: "success",
-        autoHideDuration: 8000,
-      });
+async function acceptLesson(id) {
+  closeSnackbar();
 
-      filterTeachers(id);
-
-      }
-
-    } catch (error) {
-      enqueueSnackbar(t("The Lesson has been verified."), {
-        variant: "error",
-        autoHideDuration: 8000,
-      });
-    }
-  }
-
-  async function rejectLesson(id) {
-    closeSnackbar();
-
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_KEY}api/v1/lesson/reject-request/${id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        enqueueSnackbar(t("The Lesson has been not cancaled."), {
-          variant: "error",
-          autoHideDuration: 8000,
-        });
-      }else
+  try {
+    const response = await axios.patch(
+      `${process.env.REACT_APP_API_KEY}api/v1/lesson/accept-request/${id}`,
+      {lang}, 
       {
-        enqueueSnackbar(t("The Lesson has been not verified."), {
-          variant: "success",
-          autoHideDuration: 8000,
-        });
-  
-        filterTeachers(id);
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
+    );
 
-    } catch (error) {
-      enqueueSnackbar(t("The Lesson has been removed."), {
-        variant: "error",
-        autoHideDuration: 8000,
-      });
-    }
+    console.log(response);
+
+    enqueueSnackbar(t("The Lesson has been verified."), {
+      variant: "success",
+      autoHideDuration: 8000,
+    });
+
+    filterTeachers(id);
+
+  } catch (error) {
+    console.error(error);
+
+    enqueueSnackbar(t("error"), {
+      variant: "error",
+      autoHideDuration: 8000,
+    });
   }
+}
+
+
+async function rejectLesson(id) {
+  closeSnackbar();
+
+  try {
+    await axios.patch(
+      `${process.env.REACT_APP_API_KEY}api/v1/lesson/reject-request/${id}`,
+       {lang}, 
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    enqueueSnackbar(t("The lesson has been rejected."), {
+      variant: "success",
+      autoHideDuration: 8000,
+    });
+
+    filterTeachers(id);
+
+  } catch (error) {
+    console.error(error);
+
+    enqueueSnackbar(t("Failed to reject the lesson."), {
+      variant: "error",
+      autoHideDuration: 8000,
+    });
+  }
+}
+
 
   function filterTeachers(id) {
     const filteredTeachers = Lesson.filter(
@@ -184,7 +176,7 @@ export default function PendingLesson() {
       >
       </Box>
       {!isLoading ? (
-        <Paper sx={{ width: "100%", padding: "20px" }}>
+        <Paper sx={{ padding: "20px" }}>
           <TableContainer sx={{ maxHeight: 440 }}>
             <Table stickyHeader aria-label="sticky table">
               <TableRow>

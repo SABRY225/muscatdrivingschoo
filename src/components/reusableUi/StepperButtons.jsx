@@ -7,7 +7,7 @@ export default function StepperButtons({ onSubmit, load, skipLink }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   return (
-    <Box sx={{ display: "flex", columnGap: "12px", marginTop: "40px" }}>
+    <Box sx={{ display: "flex", columnGap: "12px", marginTop: "20px",marginBottom:"20px" }}>
       <Button
         sx={{ textTransform: "capitalize" }}
         variant="outlined"

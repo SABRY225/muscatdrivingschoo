@@ -61,8 +61,7 @@ export default function TeacherLessonAdd() {
 
     return (
         <>
-      <Box sx={{width:"500px",maxWidth:"100%"}}>
-      <Paper sx={{ width: "100%", padding: "20px" }}>
+      <Paper sx={{padding: "20px" }}>
       {!isLoading && (
             <form onSubmit={handleSubmit(onSubmit)}>
               <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
@@ -130,7 +129,6 @@ export default function TeacherLessonAdd() {
             </form>
         )}
         </Paper>
-        </Box>
         </>
     )
 }

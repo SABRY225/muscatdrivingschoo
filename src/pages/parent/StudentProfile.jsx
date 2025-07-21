@@ -18,11 +18,12 @@ import { useComingLessons } from "../../hooks/useComingLessons";
 import { useStudentRefund } from "../../hooks/useStudentRefund";
 import { useStudentDiscounts } from "../../hooks/useStudentDiscounts";
 import { useStudentHistory } from "../../hooks/useStudentHistory";
-import { useLevels } from "../../hooks/useLevels";
-import { useClasses } from "../../hooks/useClasses";
-import { useCurriculums } from "../../hooks/useCurriculums";
+
 
 import countries from "../../data/countries";
+import { useStudentPackages } from "../../hooks/useStudentPackages";
+import { useStudentTests } from "../../hooks/useStudentTests";
+import { useStudentSessions } from "../../hooks/useStudentSessions";
 const Image = styled('img')({
   width:"500px"
 })
@@ -56,14 +57,18 @@ export default function StudentProfile() {
     }
   }, [data]);
 
-  const { dataLecture, isLoadingLectures } = useStudentLectures(objStudent?.id);
-  const { dataStudentRefund, isLoadingStudentRefund } = useStudentRefund(objStudent?.id,objStudent.token);
-  const { dataDiscounts, isLoadingDiscounts }   = useStudentDiscounts(objStudent?.id);
-  const { dataHistory, isLoadingHistory } = useStudentHistory(objStudent?.id);
+  const { data:dataLecture, isLoadingLectures } = useStudentLectures(id);
+  const { data:dataPackage, isLoadingPackages } = useStudentPackages(id);
+  const { data:dataTest, isLoadingTests } = useStudentTests(id);
+  const { data:dataSessions, isLoadingSessions} = useStudentSessions(id);
+  // const { data:dataStudentRefund, isLoadingStudentRefund } = useStudentRefund(id,objStudent.token);
+  const { data:dataDiscounts, isLoadingDiscounts }   = useStudentDiscounts(id);
+  // const { data:dataHistory, isLoadingHistory } = useStudentHistory(id);
   const allLessons = useAllLessons(objStudent?.id);
   const comingLessons = useComingLessons(objStudent?.id);
   const pastLessons = usePastLessons(objStudent?.id);
 
+  
   return (
     <Navbar>
       <Container sx={{ marginTop: "120px" }}>
@@ -277,7 +282,7 @@ export default function StudentProfile() {
               marginBottom: "30px",
             }}
           >
-            {t("view_teacher_lectures")}
+            {t("Lectures")}
           </Typography>
           <Box sx={{ overflow: "auto" }}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -329,10 +334,10 @@ export default function StudentProfile() {
                         {row.price}
                       </TableCell>
                       <TableCell align={lang === "en" ? "right" : "left"}>
-                        {row.currency}
+                        {t(row.currency)}
                       </TableCell>
                       <TableCell align={lang === "en" ? "right" : "left"}>
-                        {row.type}
+                        {t(row.type)}
                       </TableCell>
                       <TableCell align={lang === "en" ? "right" : "left"}>
                         {moment(row.createdAt).format(
@@ -416,10 +421,10 @@ export default function StudentProfile() {
                               {row.price}
                             </TableCell>
                             <TableCell align={lang === "en" ? "right" : "left"}>
-                              {row.currency}
+                              {t(row.currency)}
                             </TableCell>
                             <TableCell align={lang === "en" ? "right" : "left"}>
-                              {row.type}
+                              {t(row.type)}
                             </TableCell>
                             <TableCell align={lang === "en" ? "right" : "left"}>
                               {moment(row.createdAt).format(
@@ -441,7 +446,268 @@ export default function StudentProfile() {
       <Loading />
       )}
 
-       {!isLoadingHistory ? (
+      {!isLoadingPackages ? (
+              <Paper sx={{ padding: "20px", marginBottom: "40px" }}>
+                <Typography
+                  sx={{
+                    fontSize: "24px",
+                    marginTop: "12px",
+                    fontWeight: "600",
+                    marginBottom: "30px",
+                  }}
+                >
+                  {t("package")}
+                </Typography>
+                <Box sx={{ overflow: "auto" }}>
+                  <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell
+                          align={lang === "en" ? "right" : "left"}
+                          sx={{ color: "#005B8E" }}
+                        >
+                          {t("title")}
+                        </TableCell>
+                        <TableCell
+                          align={lang === "en" ? "right" : "left"}
+                          sx={{ color: "#005B8E" }}
+                        >
+                          {t("amount")}
+                        </TableCell>
+                        <TableCell
+                          align={lang === "en" ? "right" : "left"}
+                          sx={{ color: "#005B8E" }}
+                        >
+                          {t("currency")}
+                        </TableCell>
+                        <TableCell
+                          align={lang === "en" ? "right" : "left"}
+                          sx={{ color: "#005B8E" }}
+                        >
+                          {t("Description")}
+                        </TableCell>
+                        <TableCell
+                          align={lang === "en" ? "right" : "left"}
+                          sx={{ color: "#005B8E" }}
+                        >
+                          {t("history")}
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {dataPackage?.data.length > 0 ?
+                        dataPackage?.data.map((row, index) => (
+                          <TableRow
+                            key={index}
+                            sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                          >
+                            <TableCell align={lang === "en" ? "right" : "left"}>
+                              { (lang == "ar") ? row?.titleAR + " " : row?.titleEN}
+                            </TableCell>
+                            <TableCell align={lang === "en" ? "right" : "left"}>
+                              {row.price}
+                            </TableCell>
+                            <TableCell align={lang === "en" ? "right" : "left"}>
+                              {row.currency}
+                            </TableCell>
+                            <TableCell align={lang === "en" ? "right" : "left"}>
+                              { (lang == "ar") ? row?.descriptionAr + " " : row?.descriptionAn}
+                            </TableCell>
+                            <TableCell align={lang === "en" ? "right" : "left"}>
+                              {moment(row.createdAt).format(
+                                "MMMM Do YYYY, h:mm:ss a"
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))
+                        :
+                      <TableRow>
+                        <TableCell colSpan={5}><p className="notfound">{t("student_discounts_notfound")}</p> </TableCell>
+                      </TableRow>
+                      }
+                    </TableBody>
+                  </Table>
+                </Box>
+              </Paper>
+      ) : (
+      <Loading />
+      )}
+
+      {!isLoadingTests ? (
+              <Paper sx={{ padding: "20px", marginBottom: "40px" }}>
+                <Typography
+                  sx={{
+                    fontSize: "24px",
+                    marginTop: "12px",
+                    fontWeight: "600",
+                    marginBottom: "30px",
+                  }}
+                >
+                  {t("tests")}
+                </Typography>
+                <Box sx={{ overflow: "auto" }}>
+                  <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell
+                          align={lang === "en" ? "right" : "left"}
+                          sx={{ color: "#005B8E" }}
+                        >
+                          {t("title")}
+                        </TableCell>
+                        <TableCell
+                          align={lang === "en" ? "right" : "left"}
+                          sx={{ color: "#005B8E" }}
+                        >
+                          {t("amount")}
+                        </TableCell>
+                        <TableCell
+                          align={lang === "en" ? "right" : "left"}
+                          sx={{ color: "#005B8E" }}
+                        >
+                          {t("currency")}
+                        </TableCell>
+                        <TableCell
+                          align={lang === "en" ? "right" : "left"}
+                          sx={{ color: "#005B8E" }}
+                        >
+                          {t("status")}
+                        </TableCell>
+                        <TableCell
+                          align={lang === "en" ? "right" : "left"}
+                          sx={{ color: "#005B8E" }}
+                        >
+                          {t("history")}
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {dataTest?.data.length > 0 ?
+                        dataTest?.data.map((row, index) => (
+                          <TableRow
+                            key={index}
+                            sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                          >
+                            <TableCell align={lang === "en" ? "right" : "left"}>
+                              { (lang == "ar") ? row.Test?.Level?.titleAR + " " : row.Test?.Level?.titleEN}
+                            </TableCell>
+                            <TableCell align={lang === "en" ? "right" : "left"}>
+                              {row.price}
+                            </TableCell>
+                            <TableCell align={lang === "en" ? "right" : "left"}>
+                              {t(row.currency)}
+                            </TableCell>
+                            <TableCell align={lang === "en" ? "right" : "left"}>
+                              {t(row.type)}
+                            </TableCell>
+                            <TableCell align={lang === "en" ? "right" : "left"}>
+                              {moment(row.createdAt).format(
+                                "MMMM Do YYYY, h:mm:ss a"
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))
+                        :
+                      <TableRow>
+                        <TableCell colSpan={5}><p className="notfound">{t("student_discounts_notfound")}</p> </TableCell>
+                      </TableRow>
+                      }
+                    </TableBody>
+                  </Table>
+                </Box>
+              </Paper>
+      ) : (
+      <Loading />
+      )}
+  {/*  */}
+      {!isLoadingSessions ? (
+              <Paper sx={{ padding: "20px", marginBottom: "40px" }}>
+                <Typography
+                  sx={{
+                    fontSize: "24px",
+                    marginTop: "12px",
+                    fontWeight: "600",
+                    marginBottom: "30px",
+                  }}
+                >
+                  {t("Billing Report")}
+                </Typography>
+                <Box sx={{ overflow: "auto" }}>
+                  <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell
+                          align={lang === "en" ? "right" : "left"}
+                          sx={{ color: "#005B8E" }}
+                        >
+                          {t("title")}
+                        </TableCell>
+                        <TableCell
+                          align={lang === "en" ? "right" : "left"}
+                          sx={{ color: "#005B8E" }}
+                        >
+                          {t("amount")}
+                        </TableCell>
+                        <TableCell
+                          align={lang === "en" ? "right" : "left"}
+                          sx={{ color: "#005B8E" }}
+                        >
+                          {t("currency")}
+                        </TableCell>
+                        <TableCell
+                          align={lang === "en" ? "right" : "left"}
+                          sx={{ color: "#005B8E" }}
+                        >
+                          {t("status")}
+                        </TableCell>
+                        <TableCell
+                          align={lang === "en" ? "right" : "left"}
+                          sx={{ color: "#005B8E" }}
+                        >
+                          {t("history")}
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {dataSessions?.data.length > 0 ?
+                        dataSessions?.data.map((row, index) => (
+                          <TableRow
+                            key={index}
+                            sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                          >
+                            <TableCell align={lang === "en" ? "right" : "left"}>
+                              {t(row?.type)}
+                            </TableCell>
+                            <TableCell align={lang === "en" ? "right" : "left"}>
+                              {row.price}
+                            </TableCell>
+                            <TableCell align={lang === "en" ? "right" : "left"}>
+                              {t(row.currency)}
+                            </TableCell>
+                            <TableCell align={lang === "en" ? "right" : "left"}>
+                              {row.isPaid?t("paid"):t("unpaid")}
+                            </TableCell>
+                            <TableCell align={lang === "en" ? "right" : "left"}>
+                              {moment(row.createdAt).format(
+                                "MMMM Do YYYY, h:mm:ss a"
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))
+                        :
+                      <TableRow>
+                        <TableCell colSpan={5}><p className="notfound">{t("student_discounts_notfound")}</p> </TableCell>
+                      </TableRow>
+                      }
+                    </TableBody>
+                  </Table>
+                </Box>
+              </Paper>
+      ) : (
+      <Loading />
+      )}
+
+       {/* {!isLoadingHistory ? (
               <Paper sx={{ padding: "20px", marginBottom: "40px" }}>
                 <Typography
                   sx={{
@@ -580,7 +846,7 @@ export default function StudentProfile() {
               </Paper>
       ) : (
         <Loading />
-      )}
+      )} */}
       </Container>
 
 

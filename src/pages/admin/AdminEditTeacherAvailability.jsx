@@ -108,7 +108,7 @@ const AdminEditTeacherAvailability = () => {
     <AdminLayout>
       <Box sx={{marginTop:"-100px"}}>
       <TeacherLayout active={5} title={t("availability")}>
-      <Paper sx={{ width: "100%", padding: "20px" }}>
+      <Paper sx={{ padding: "20px" }}>
         <Box>
           <InputLabel sx={{ marginBottom: "6px", fontSize: "14px" }}>
             {t("timezone")}
@@ -153,7 +153,7 @@ const AdminEditTeacherAvailability = () => {
               load={load}
               skipLink="description"
             />
-            <Button
+            {/* <Button
               sx={{ textTransform: "capitalize", marginTop: "40px" }}
               variant="outlined"
               onClick={() =>
@@ -161,7 +161,7 @@ const AdminEditTeacherAvailability = () => {
               }
             >
               {t("skip")}
-            </Button>
+            </Button> */}
           </Box>
         </Box>
         </Paper>

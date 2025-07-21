@@ -78,8 +78,8 @@ const AdminEditTeacherVideo = () => {
 
   return (
     <AdminLayout>
-      <TeacherLayout active={7} title={t("Videointroduction")}>
-      <Paper sx={{ width: "100%", padding: "20px" }}>
+      <TeacherLayout active={7}  title={t("Videointroduction")} >
+      <Paper sx={{ padding: "20px" }}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box sx={{ width: { md: "500px", xs: "100%" } }}>
             <Box sx={{ marginBottom: "26px" }}>
@@ -107,13 +107,13 @@ const AdminEditTeacherVideo = () => {
           </Box>
           <Box sx={{ display: "flex", gap: "12px" }}>
             <StepperButtons onSubmit={onSubmit} load={load} />
-            <Button
+            {/* <Button
               sx={{ textTransform: "capitalize", marginTop: "40px" }}
               variant="outlined"
               onClick={() => navigate("/admin/teachers")}
             >
               {t("skip")}
-            </Button>
+            </Button> */}
           </Box>
         </form>
         </Paper>

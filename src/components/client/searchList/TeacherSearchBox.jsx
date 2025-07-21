@@ -41,12 +41,20 @@ return (
 <Paper sx={{ padding: "32px 24px", marginY: "20px" }}>
 <Grid container spacing={2}>
         <Grid item xs={12} md={6} lg={3}>
-          <Avatar
-            src={`${process.env.REACT_APP_API_KEY}images/${teacher?.image}`}
-            variant="square"
-            sx={{ width: "100%", height: "100%", fontSize: "30px" }}
-            alt={teacher?.firstName}
-          />
+           <Avatar
+      src={`${process.env.REACT_APP_API_KEY}images/${teacher?.image}`}
+      variant="square"
+      alt={teacher?.firstName}
+      sx={{
+        width: "100%",
+        // maxWidth: "200px",
+        maxHeight:"300px",
+        aspectRatio: "2 / 3",
+        height: "auto",
+        objectFit: "cover",
+        borderRadius: "8px"
+      }}
+    />
         </Grid>
         <Grid item xs={12} md={4}>
           <Box sx={{ display: "flex", columnGap: "6px", alignItems: "start" }}>
@@ -85,9 +93,9 @@ return (
               </Typography>
             </Box>
           )}
-          <Typography sx={{ fontSize: "15px", fontWeight: "600", marginBottom: "10px" }}>
+          {/* <Typography sx={{ fontSize: "15px", fontWeight: "600", marginBottom: "10px" }}>
             {lang === "en" ? teacher.shortHeadlineEn : teacher.shortHeadlineAr}
-          </Typography>
+          </Typography> */}
           <Box
             sx={{display: "flex",columnGap: "4px",alignItems: "center",marginBottom: "8px",}}>
             <SpeakerNotesIcon sx={{ fontSize: "16px", color: "#d5d5d5" }} />
@@ -108,19 +116,31 @@ return (
             </Typography>
           </Box>
           <Typography sx={{ fontSize: "13px", width: "90%" }}>
-            {lang === "en" ? teacher?.descriptionEn : teacher?.descriptionAr}
-            <MatLink
-              to={`/teacher/${teacher.id}`}
-              sx={{
-                marginRight: "4px",
-                display: "inline-block",
-                color: "#1a477e",
-                fontSize: "13px",
-                marginX: "5px",
-              }}
-            >
-              {t("read_more")}
-            </MatLink>
+<Box
+  sx={{
+    display: "-webkit-box",
+    WebkitLineClamp: 3, // عدد الأسطر الظاهرة
+    WebkitBoxOrient: "vertical",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    maxWidth: "400px", // أو أي عرض تريده
+  }}
+>
+  {lang === "en" ? teacher?.descriptionEn : teacher?.descriptionAr}
+</Box>
+
+<MatLink
+  to={`/teacher/${teacher.id}`}
+  sx={{
+    display: "inline-block",
+    color: "#1a477e",
+    fontSize: "13px",
+    marginX: "5px",
+  }}
+>
+  {t("read_more")}
+</MatLink>
+
             <Box
               sx={{
                 marginTop: "8px",
@@ -163,9 +183,6 @@ return (
                       <td>{ (lang === "en") ? item?.Level.titleEN : item?.Level.titleAR }</td>
                       <td>{item?.price}</td>
                       <td>{ (lang == "en") ? current_currency.titleEn : current_currency.titleAr}</td>
-
-                    
-
                       <Button className="btn-test" onClick={() => navigate(`/book-test/${item.id}`)}>
                         <AddIcon />
                       </Button>
@@ -207,7 +224,7 @@ return (
                 <Typography sx={{ marginBottom: "5px", fontSize: "13px" }}>
                   {t("studenthome")} -{" "}
                   {(teacher.F2FSessionStd?.price * conversionRate).toFixed(2)}{" "}
-                  {currency}
+                  {t(currency)}
                 </Typography>
               )}
               {teacher.F2FSessionTeacher && (
@@ -216,19 +233,16 @@ return (
                   {(teacher.F2FSessionTeacher?.price * conversionRate).toFixed(
                     2
                   )}{" "}
-                  {currency}
+                  {t(currency)}
                 </Typography>
               )}
               {teacher.RemoteSession && (
                 <Typography sx={{ fontSize: "13px" }}>
                   {t("onlineStudy")} -{" "}
                   {(teacher.RemoteSession?.price * conversionRate).toFixed(2)}{" "}
-                  {currency}
+                  {t(currency)}
                 </Typography>
               )}
-
-
-              
             </Paper>
           )}
 

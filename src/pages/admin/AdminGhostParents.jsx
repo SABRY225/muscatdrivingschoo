@@ -7,7 +7,7 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, TextField } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import Loading from "../../components/Loading";
 import { useSelector } from "react-redux";
@@ -22,6 +22,7 @@ export default function AdminGhostParents() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const { enqueueSnackbar } = useSnackbar();
   const { data, isLoading, refetch } = useAdminGhostParents(token);
+  const [searchValue, setSearchValue] = useState("");
 
   const columns = [
     { id: "Name", label: t("name"), minWidth: 150 },
@@ -56,7 +57,7 @@ export default function AdminGhostParents() {
           variant: "success",
           autoHideDuration: 4000,
         });
-        refetch(); // Refresh the data after successful deletion
+        refetch();
       } else {
         enqueueSnackbar(t("Failed to delete Parent"), {
           variant: "error",
@@ -74,9 +75,16 @@ export default function AdminGhostParents() {
 
   useEffect(() => {
     if (!data) {
-      refetch(); // Ensure data is fetched when the component mounts
+      refetch();
     }
   }, [data, refetch]);
+
+  // تصفية البيانات حسب الاسم أو الإيميل
+  const filteredData =
+    data?.data?.filter((row) =>
+      row.name?.toLowerCase().includes(searchValue.toLowerCase()) ||
+      row.email?.toLowerCase().includes(searchValue.toLowerCase())
+    ) || [];
 
   return (
     <AdminLayout>
@@ -94,8 +102,18 @@ export default function AdminGhostParents() {
         </Typography>
       </Box>
 
+      <Box sx={{ mb: 2 }}>
+        <TextField
+          fullWidth
+          label={t("searchByNameOrEmail")}
+          variant="outlined"
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
+        />
+      </Box>
+
       {!isLoading ? (
-        <Paper sx={{ width: "100%", padding: "20px" }}>
+        <Paper sx={{ padding: "20px" }}>
           <TableContainer sx={{ maxHeight: 440 }}>
             <Table stickyHeader aria-label="sticky table">
               <TableRow>
@@ -110,14 +128,12 @@ export default function AdminGhostParents() {
                 ))}
               </TableRow>
               <TableBody>
-                {data?.data.length > 0 &&
-                  data.data
+                {filteredData.length > 0 ? (
+                  filteredData
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => (
                       <TableRow hover role="checkbox" key={row.id}>
-                        <TableCell align="center">
-                          {row.name || ""}
-                        </TableCell>
+                        <TableCell align="center">{row.name || ""}</TableCell>
                         <TableCell align="center">{row.email}</TableCell>
                         <TableCell align="center">{row.gender || ""}</TableCell>
                         <TableCell align="center">{row.phoneNumper || ""}</TableCell>
@@ -131,14 +147,21 @@ export default function AdminGhostParents() {
                           </Button>
                         </TableCell>
                       </TableRow>
-                    ))}
+                    ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5} align="center">
+                      {t("noResults")}
+                    </TableCell>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           </TableContainer>
           <TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={data?.data.length}
+            count={filteredData.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

@@ -25,7 +25,7 @@ function StudentExam() {
         { id: "teacher", label: t("teacher"), minWidth: 150 },
         { id: "subject", label: t("subject"), minWidth: 150 },
         { id: "class", label: t("classes"), minWidth: 150 },
-        { id: "semester", label: t("semester"), minWidth: 150 },
+        // { id: "semester", label: t("semester"), minWidth: 150 },
         { id: "studycurriculums", label: t("studycurriculums"), minWidth: 150 },
         { id: "link", label: t("Link Exam"), minWidth: 150 },
         { id: "docs", label: t("Test documents"), minWidth: 150 },
@@ -58,7 +58,7 @@ function StudentExam() {
     else return (
         <StudentLayout>
             <Root>
-                <Paper sx={{ width: "100%", padding: "20px" }}>
+                <Paper sx={{ padding: "20px" }}>
                     <TableContainer sx={{ maxHeight: 440 }}>
                         <Table stickyHeader aria-label="sticky table">
                             <TableRow>
@@ -86,7 +86,7 @@ function StudentExam() {
                                                 <TableCell align="center">{row?.Test?.teacher?.firstName + " " + row?.Test?.teacher?.lastName}</TableCell>
                                                 <TableCell align="center">{lang === "ar" ? row?.Test?.subject?.titleAR : row?.Test?.subject?.titleEN}</TableCell>
                                                 <TableCell align="center">{lang === "ar" ? row?.Test?.classData?.titleAR : row?.Test?.classData?.titleEN}</TableCell>
-                                                <TableCell align="center">{t(row?.Test?.semester)}</TableCell>
+                                                {/* <TableCell align="center">{t(row?.Test?.semester)}</TableCell> */}
                                                 <TableCell align="center">{lang === "ar" ? row?.Test?.curriculum?.titleAR : row?.Test?.curriculum?.titleEN}</TableCell>
                                                 {row?.Test?.linkExam ? <TableCell align="center">
                                                     <Button

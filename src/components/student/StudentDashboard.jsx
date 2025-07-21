@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion'; // ✅ استدعاء framer motion
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ImageIcon from '@mui/icons-material/Image';
-import InfoIcon from '@mui/icons-material/Info';
-import DescriptionIcon from '@mui/icons-material/Description';
+// import InfoIcon from '@mui/icons-material/Info';
+// import DescriptionIcon from '@mui/icons-material/Description';
 import WalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import StudentLayout from './StudentLayout';

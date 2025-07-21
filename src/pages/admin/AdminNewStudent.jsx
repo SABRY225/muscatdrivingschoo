@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Box,
   Button,
   Container,
@@ -18,6 +19,7 @@ import Cookies from "js-cookie";
 import PhoneInput from "react-phone-input-2";
 import { useSelector } from "react-redux";
 import countries from "../../data/countries";
+import { useState } from "react";
 
 const AdminNewStudent = () => {
   const {
@@ -40,6 +42,7 @@ const AdminNewStudent = () => {
   const navigate = useNavigate();
   const lang = Cookies.get("i18next") || "en";
   const { token } = useSelector((state) => state.admin);
+  const [countryCode, setCountryCode] = useState("om"); // افتراضي عمان
 
   async function onSubmit(data) {
     closeSnackbar();
@@ -123,7 +126,11 @@ const AdminNewStudent = () => {
                 <Controller
                   name="phoneNumber"
                   control={control}
-                  render={({ field }) => <PhoneInput {...field} />}
+                  render={({ field }) => <PhoneInput
+                      {...field}
+                      inputStyle={{ width: "100%" }}
+                      country={"om"}
+                    />}
                   {...register("phoneNumber", {
                     required: "Phone Number is required",
                   })}
@@ -167,52 +174,47 @@ const AdminNewStudent = () => {
                 </Typography>
               )}
             </Box>
-            {/* -------------------------- */}
+            {/* ---------------------  location ----- */}
             <Box sx={{ marginBottom: "30px" }}>
               <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
-                {t("place")}
-              </InputLabel>
-              <Controller
-                name="location"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    fullWidth
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    MenuProps={{
-                      elevation: 1,
-                      PaperProps: {
-                        style: {
-                          maxHeight: 48 * 3 + 8,
-                          width: 160,
-                        },
-                      },
-                    }}
-                    {...register("location", {
-                      required: "location is required",
-                    })}
-                  >
-                    {countries.map((op, index) => {
-                      return (
-                        <MenuItem key={index + "mjnnj"} value={op.code}>
-                          {lang === "en" ? op.name_en : op.name_ar}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                )}
-              />
-              {errors.location?.type === "required" && (
-                <Typography
-                  color="error"
-                  role="alert"
-                  sx={{ fontSize: "13px", marginTop: "6px" }}
-                >
-                  {t("required")}
-                </Typography>
-              )}
+                              {t("country")}
+                            </InputLabel>
+                            <Controller
+                              name="location"
+                              control={control}
+                              rules={{ required: t("required") }}
+                              render={({ field }) => (
+                                <Autocomplete
+                                  options={countries}
+                                  getOptionLabel={(option) =>
+                                    lang === "en" ? option.name_en : option.name_ar
+                                  }
+                                  onChange={(_, selected) => {
+                                    field.onChange(selected?.code || "");
+                                    setCountryCode(selected?.code || "");
+                                  }}
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      label={t("place")}
+                                      error={!!errors.place}
+                                      helperText={errors.place ? errors.place.message : ""}
+                                    />
+                                  )}
+                                  renderOption={(props, option) => (
+                                    <li {...props} style={{ display: "flex", alignItems: "center" }}>
+                                      <img
+                                        src={`https://flagcdn.com/w40/${option.code}.png`}
+                                        alt={option.code}
+                                        width="30"
+                                        style={{ marginLeft: 8 }}
+                                      />
+                                      <span>{lang === "en" ? option.name_en : option.name_ar}</span>
+                                    </li>
+                                  )}
+                                />
+                              )}
+                            />
             </Box>
             {/* -------------------------- */}
             <Box sx={{ marginBottom: "30px" }}>

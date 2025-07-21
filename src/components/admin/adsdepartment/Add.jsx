@@ -51,7 +51,7 @@ export default function Add() {
     return (
         <>
         <Box sx={{width:"500px",maxWidth:"100%"}}>
-        <Paper sx={{ width: "100%", padding: "20px" }}>
+        <Paper sx={{ padding: "20px" }}>
             <form onSubmit={handleSubmit(onSubmit)}>
             <Box sx={{marginBottom:"18px"}}>
                 <InputLabel sx={{marginBottom:"6px",fontSize:"14px"}}>{t('titleAr')}</InputLabel>

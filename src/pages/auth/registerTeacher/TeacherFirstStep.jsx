@@ -77,8 +77,8 @@ export default function TeacherFirstStep() {
 
       const resData = await response.json();
       console.log(resData);
-      
-      if (resData.status !== 200 && resData.status !== 201) {
+
+      if (!response.ok) {
         enqueueSnackbar(
           lang === "ar" ? resData.message.arabic : resData.message.english,
           { variant: "error", autoHideDuration: 8000 }
@@ -137,32 +137,40 @@ export default function TeacherFirstStep() {
                 {t("phone")}
               </InputLabel>
               <Box sx={{ direction: "rtl" }}>
-                <Controller
-                  name="phone"
-                  control={control}
-                  render={({ field }) => <PhoneInput {...field} />}
-                  rules={{
-                    required: t("required"),
-                    minLength: {
-                      value: 10,
-                      message: t("invalidPhone"),
-                    },
-                    maxLength: {
-                      value: 15,
-                      message: t("invalidPhone"),
-                    },
-                    pattern: {
-                      value: /^[0-9]+$/,
-                      message: t("invalidPhone"),
-                    },
-                  }}
-                />
-                {errors.phone && (
-                  <Typography color="error" sx={{ fontSize: "13px", marginTop: "6px" }}>
-                    {errors.phone.message}
-                  </Typography>
-                )}
-              </Box>
+  <Controller
+    name="phone"
+    control={control}
+    render={({ field }) => (
+      <PhoneInput
+        {...field}
+        country="om"
+        enableSearch={true}
+        inputStyle={{ width: "100%" }}
+      />
+    )}
+    rules={{
+      required: t("required"),
+      minLength: {
+        value: 8,
+        message: t("invalidPhone"),
+      },
+      maxLength: {
+        value: 15,
+        message: t("invalidPhone"),
+      },
+      pattern: {
+        value: /^[0-9]+$/,
+        message: t("invalidPhone"),
+      },
+    }}
+  />
+  {errors.phone && (
+    <Typography color="error" sx={{ fontSize: "13px", marginTop: "6px" }}>
+      {errors.phone.message}
+    </Typography>
+  )}
+</Box>
+
             </Box>
 
             {/* ✅ الموافقة على الشروط */}
@@ -179,7 +187,7 @@ export default function TeacherFirstStep() {
 
               <div>
                 <Link
-                  style={{ color: "blue" }}
+                  className="text-[10px] text-blue-700 font-bold"
                   to={"/Terms-Conditions-teacher"}
                 >
                   {t("What are the terms and conditions ?")}

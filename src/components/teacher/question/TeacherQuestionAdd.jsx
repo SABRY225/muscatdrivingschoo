@@ -65,8 +65,7 @@ export default function TeacherQuestionAdd() {
 
     return (
         <>
-      <Box sx={{width:"500px",maxWidth:"100%"}}>
-      <Paper sx={{ width: "100%", padding: "20px" }}>
+      <Paper sx={{ padding: "20px" }}>
         <form onSubmit={handleSubmit(onSubmit)}>
             <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
                 {t("choose_lectures")}
@@ -158,8 +157,7 @@ export default function TeacherQuestionAdd() {
 
             <Button variant="contained" type="submit" sx={{ml:"6px",mr:"6px"}}>{t('save')}</Button>
       </form>
-    </Paper>
-    </Box>
+      </Paper>
     </>
     )
 }

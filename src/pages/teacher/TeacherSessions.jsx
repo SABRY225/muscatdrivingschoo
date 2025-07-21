@@ -16,7 +16,7 @@ export default function TeacherSessions() {
   return (
     <Navbar>
       <TeacherLayout>
-      <Box sx={{ marginTop: "80px", marginBottom: "80px" }}>
+      <Box sx={{ marginTop: "0px", marginBottom: "80px" }}>
         <Button
           href="http://meet.google.com/new"
           target="_blank"
@@ -40,6 +40,7 @@ export default function TeacherSessions() {
                     parentTeacher={teacher}
                     parentStudent={lesson?.Student}
                     date={lesson?.date}
+                    time={lesson?.time}
                     type={lesson?.type}
                     period={lesson?.period}
                     isStudent={false}

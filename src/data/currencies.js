@@ -68,8 +68,8 @@ export default [
     {
         title: "ILS",
         titleAr: "الشيقل الفلسطيني",
-        titleEn: "Israeli Shekel",
-        code: "il"
+        titleEn: "palastine",
+        code: "ps"
     },
     {
         title: "INR",

@@ -67,11 +67,15 @@ export default function BookTest() {
             date: data.date + " * " + data.time,
             title: "",
             language: lang,
+            type : "test_booking"
+
           }),
         }
       );
       setLoad(false);
       const resData = await response.json();
+      console.log(resData);
+      
       if (response.status !== 200 && response.status !== 201) {
         enqueueSnackbar(resData.message, {
           variant: "error",
@@ -118,7 +122,7 @@ export default function BookTest() {
         ) : (
           <Paper sx={{ padding: "30px 20px" }}>
             <Typography
-              sx={{ fontSize: "24px", fontWeight: "600", marginBottom: "24px" }}
+              sx={{ fontSize: {md:"24px",xs:"20px"}, fontWeight: "600", marginBottom: "24px" }}
             >
               {t("bookDetails_Test")} {(lang == "en") ? test?.Level?.titleEN : test?.Level?.titleAR}
             </Typography>
@@ -126,7 +130,7 @@ export default function BookTest() {
 
               <Box>
 
-                <Box sx={{ display: "flex", gap: 3 }}>
+                <Box sx={{ display: "flex", gap: 1 }}>
                   <Box sx={{ marginBottom: "30px", width: "100%" }}>
                     <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>
                       {t("bookDate")}

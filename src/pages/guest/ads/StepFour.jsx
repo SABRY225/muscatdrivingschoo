@@ -154,39 +154,56 @@ export default function StepFour() {
 
         <Box sx={{ marginBottom: "26px" }}>
           <InputLabel sx={{ marginBottom: "6px", fontSize: "13px" }}>{t("currency")}</InputLabel>
-          <Autocomplete fullWidth name="currency"
-                options={currencies}    value={currencyValue}     inputValue={currencyValue}
-                onChange={(event, newInputValue) => {
-                  if (newInputValue) {
-                    setCurrencyValue(
-                      lang === "en"
-                        ? newInputValue?.titleEn
-                        : newInputValue?.titleAr
-                    );
-                    setCurrencyCode(newInputValue?.title);
-                    setCurrencyError(false);
-                  } else {
-                    setCurrencyValue("");
-                    setCurrencyCode("");
-                  }
-                }}
-                onInputChange={(event, newInputValue) => {
-                  setCurrencyValue(newInputValue);
-                }}
-                getOptionLabel={(op) =>
-                  (lang === "en" ? op.titleEn : op.titleAr) || op
-                }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label={lang === "en" ? "Choose a Currency" : "إختر العمله"}
-                    inputProps={{
-                      ...params.inputProps,
-                      autoComplete: "new-password",
-                    }}
-                  />
-                )}
-              />
+          <Autocomplete
+  fullWidth
+  name="currency"
+  options={currencies}
+  value={currencyValue}
+  inputValue={currencyValue}
+  onChange={(event, newInputValue) => {
+    if (newInputValue) {
+      setCurrencyValue(
+        lang === "en" ? newInputValue?.titleEn : newInputValue?.titleAr
+      );
+      setCurrencyCode(newInputValue?.title);
+      setCurrencyError(false);
+    } else {
+      setCurrencyValue("");
+      setCurrencyCode("");
+    }
+  }}
+  onInputChange={(event, newInputValue) => {
+    setCurrencyValue(newInputValue);
+  }}
+  getOptionLabel={(op) =>
+    (lang === "en" ? op.titleEn : op.titleAr) || op
+  }
+  renderOption={(props, item) => (
+    <li {...props}>
+      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", justifyContent: "center" }}>
+        <div className="pl-1">
+          <img
+            src={`https://flagcdn.com/w320/${item.code}.png`}
+            alt=""
+            style={{ width: "20px" }}
+          />
+        </div>
+        <div>{lang === "en" ? item.titleEn : item.titleAr}</div>
+      </div>
+    </li>
+  )}
+  renderInput={(params) => (
+    <TextField
+      {...params}
+      label={lang === "en" ? "Choose a Currency" : "إختر العمله"}
+      inputProps={{
+        ...params.inputProps,
+        autoComplete: "new-password",
+      }}
+    />
+  )}
+/>
+
               {countryError && (
                 <Typography
                   color="error"

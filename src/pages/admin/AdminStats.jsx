@@ -73,7 +73,7 @@ const StatCard = ({ label, value, icon: Icon, to = "#", isWarning = false }) => 
 const warningKeys = [
   "studentExchangeNumWaiting",
   "teacherExchangeNumWaiting",
-  "totalStudentsRequests",
+  "teachersWiting",
   "adsNumWaiting",
   "packageWaiting",
   "teacherLectureWaiting",
@@ -104,7 +104,7 @@ const AdminStats = () => {
   { key: "Parentstructors", icon: SupervisorAccountIcon, },
   { key: "teacherOnline", icon: PersonOutlineIcon, to: "/admin/teachers" },
   { key: "teacherExchangeNumWaiting", icon: SwapHorizIcon, to: "/admin/exchange-requests" },
-  { key: "totalStudentsRequests", icon: PendingActionsIcon, to: "/admin/teachers_approve" },
+  { key: "teachersWiting", icon: PendingActionsIcon, to: "/admin/teachers_approve" },
   { key: "sessionsNumber", icon: AssignmentTurnedInIcon, to: "/admin/booked-lessons" },
   { key: "adsNumWaiting", icon: PendingActionsIcon, to: "/admin/ads?status=pending" },
   { key: "adsNum", icon: PlaylistAddCheckIcon, to: "/admin/ads" },

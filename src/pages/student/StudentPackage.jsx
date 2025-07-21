@@ -7,13 +7,15 @@ import {
   Typography,
   Box,
   Grid,
-  Paper
+  Paper,
+  Button
 } from '@mui/material';
 import { t } from 'i18next';
 import Loading from '../../components/Loading';
-import PackageDetails from '../../components/reusableUi/PackageDetails';
+// import PackageDetails from '../../components/reusableUi/PackageDetails';
 import Cookies from "js-cookie";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Root = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -28,6 +30,7 @@ function StudentPackage() {
   const lang = Cookies.get("i18next") || "en";
   const { student } = useSelector(state => state.student);
   const [data, setData] = React.useState(null);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     (async () => {
@@ -37,7 +40,11 @@ function StudentPackage() {
   }, [student.id]);
 
   if (data === null) return <Loading />;
-
+  
+  const handelPakage =(pkg)=>{
+    localStorage.setItem('package',JSON.stringify(pkg))
+    navigate('/student/package/single-package')
+  }
   if (!data.length) {
     return (
       <StudentLayout>
@@ -72,7 +79,9 @@ function StudentPackage() {
                 </Typography>
               </Grid>
               <Grid item xs={12}>
-                <PackageDetails data={pkg} teacherButton={true} />
+                <Button variant="contained" size="small" sx={{ height: "50px" }} onClick={()=>handelPakage(pkg)}>
+                    {t("details")}
+                </Button>
               </Grid>
             </Grid>
             <Divider sx={{ mt: 3 }} />

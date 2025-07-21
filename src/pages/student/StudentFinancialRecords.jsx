@@ -108,7 +108,7 @@ function StudentFinancialRecords() {
       ) : (
         <Loading />
       )}
-      {!isLoading2 ? (
+      {/* {!isLoading2 ? (
         <Paper sx={{ padding: "20px", marginBottom: "40px" }}>
           <Typography
             sx={{
@@ -163,7 +163,7 @@ function StudentFinancialRecords() {
         </Paper>
       ) : (
         <Loading />
-      )}
+      )} */}
     </StudentLayout>
   );
 }

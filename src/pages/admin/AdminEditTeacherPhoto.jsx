@@ -87,7 +87,7 @@ const AdminEditTeacherPhoto = () => {
     <AdminLayout>
       <Box sx={{marginTop:"-100px"}}>
       <TeacherLayout active={1} title={t("profile_photo")}>
-      <Paper sx={{ width: "100%", padding: "20px" }}>
+      <Paper sx={{ padding: "20px" }}>
         <input
           type="file"
           id="image"
@@ -117,15 +117,6 @@ const AdminEditTeacherPhoto = () => {
         </Box>
         <Box sx={{ display: "flex", gap: "12px" }}>
           <StepperButtons onSubmit={handleButtonSubmit} load={load} />
-          <Button
-            sx={{ textTransform: "capitalize", marginTop: "40px" }}
-            variant="outlined"
-            onClick={() =>
-              navigate("/admin/edit/teacher/additionalInformation/" + teacherId)
-            }
-          >
-            {t("skip")}
-          </Button>
         </Box>
         </Paper>
       </TeacherLayout>

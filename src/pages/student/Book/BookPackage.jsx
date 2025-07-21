@@ -55,6 +55,8 @@ export default function BookPackage() {
             date          : "",
             title         : "",
             language      : lang,
+            type : "package_booking"
+
           }),
         }
       );
@@ -114,7 +116,7 @@ export default function BookPackage() {
         <Loading />
         ) : (
         <Paper sx={{ padding: "30px 20px" }}>
-          <Typography sx={{ fontSize: "24px", fontWeight: "600", marginBottom: "24px" }}>
+          <Typography sx={{ fontSize: {md:"24px",xs:"20px"}, fontWeight: "600", marginBottom: "24px" }}>
             {t("bookDetails_Package")} { (lang=="en") ? objPackage?.titleEN : objPackage?.titleAR}
           </Typography>
           <form onSubmit={handleSubmit(onSubmit)}>

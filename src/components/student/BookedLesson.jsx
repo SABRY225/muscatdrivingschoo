@@ -22,6 +22,7 @@ export default function BookedLesson({
   image,
   name,
   date,
+  time,
   type,
   period,
   isStudent,
@@ -201,7 +202,7 @@ export default function BookedLesson({
             >
               <DateRangeIcon sx={{ fontSize: "16px", color: "#9D9D9D" }} />
               <Typography sx={{ fontSize: "13px", color: "#9D9D9D" }}>
-                {new Date(date).toLocaleString()}
+                {date}{" , "} {time}
               </Typography>
             </Box>
             <Box

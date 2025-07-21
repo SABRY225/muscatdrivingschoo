@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
         border: "1pt solid #ccc",
         borderRadius: 50,
     },
-    QrCode:{
+    QrCode: {
         width: 70,
         alignSelf: "center",
         marginBottom: 20,
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
 
 
 const InvoiceTeacher = () => {
-    const {SessionId,CreatedAt,StudentName,TeacherFirstName,TeacherLastName,studentEmail,StudentPhoneNumber,Price,Currency}=useParams();
+    const { SessionId, date, StudentName, TeacherFirstName, TeacherLastName, studentEmail, StudentPhoneNumber, Price, Currency, sessionType } = useParams();
 
     return (
         <PDFViewer width="100%" height="700">
@@ -95,7 +95,7 @@ const InvoiceTeacher = () => {
                         <View style={styles.section}>
                             <Text>
                                 <Text style={styles.label}>Teacher Name: </Text>
-                                <Text style={styles.label2}>{TeacherFirstName+" "+TeacherLastName}</Text>
+                                <Text style={styles.label2}>{TeacherFirstName + " " + TeacherLastName}</Text>
                             </Text>
                             <Text>
                                 <Text style={styles.label}>Student Name: </Text>
@@ -115,8 +115,12 @@ const InvoiceTeacher = () => {
                                 <Text style={styles.label2}>INV-{SessionId}</Text>
                             </Text>
                             <Text>
+                                <Text style={styles.label}>Service Type: </Text>
+                                <Text style={styles.label2}>{sessionType === "student" ? "Lesson" : sessionType}</Text>
+                            </Text>
+                            <Text>
                                 <Text style={styles.label}>Date: </Text>
-                                <Text style={styles.label2}>{new Date(CreatedAt).toDateString()}</Text>
+                                <Text style={styles.label2}>{new Date(date).toLocaleDateString("en-EG")}</Text>
                             </Text>
                         </View>
                         <View style={styles.section}>

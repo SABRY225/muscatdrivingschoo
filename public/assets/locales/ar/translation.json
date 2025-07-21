@@ -1595,5 +1595,10 @@
   "lectureName": "اسم المحاضرة",
   "testName": "اسم الاختبار",
   "discountName": "اسم الخصم",
-  "Package Lesson":"حصة باقة"
+  "Package Lesson":"حصة باقة",
+  "totalBalance":"إجمالي الرصيد",
+  "availableBalance":"الرصيد المتاح",
+  "withdrawnBalance":"الرصيد المسحوب",
+  "showDetails":"عرض التفاصيل",
+  "The required amount":"المبلغ المطلوب"
 }

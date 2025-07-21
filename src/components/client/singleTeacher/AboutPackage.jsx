@@ -4,9 +4,16 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { convertCurrency } from '../../../utils/convertCurrency';
+import currencies from '../../../data/currencies';
 
 export default function AboutPackage({ packageData }) {
   const { currency } = useSelector(state => state.currency);
+
+  // Find currency info from currencies array
+  const currencyInfo = currencies.find(
+    curr => curr.title === currency || curr.titleEn === currency || curr.titleAr === currency || curr.code === currency
+  );
+  // Assume currency is an object: { code: 'om', name: 'OMR', ... }
   const { t } = useTranslation();
   const lang = Cookies.get("i18next") || "en";
   const [convertedAmount, setConvertedAmount] = React.useState(null);
@@ -125,7 +132,19 @@ export default function AboutPackage({ packageData }) {
       <ResponsiveRow
         label={t("Price Package")}
         value={
-          convertedAmount !== null ? `${convertedAmount} ${t(currency)}` : "..."
+          convertedAmount !== null ? (
+            <Box display="flex" alignItems="center" justifyContent="center" gap={1}>
+              <span>{convertedAmount}</span>
+              {currencyInfo?.code && (
+                <img
+                  src={`https://flagcdn.com/w40/${currencyInfo.code.toLowerCase()}.png`}
+                  alt={currencyInfo.code}
+                  style={{ width: 28, height: 20, borderRadius: 4, marginLeft: 4 }}
+                />
+              )}
+              <span>{lang === "ar" ? currencyInfo?.titleAr : currencyInfo?.titleEn || currencyInfo?.title || currency}</span>
+            </Box>
+          ) : "..."
         }
         color="#5dade2"
       />

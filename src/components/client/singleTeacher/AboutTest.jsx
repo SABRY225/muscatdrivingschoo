@@ -4,6 +4,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { convertCurrency } from '../../../utils/convertCurrency';
 import { useSelector } from 'react-redux';
+import currencies from '../../../data/currencies';
 
 export default function AboutTest({ testData }) {
     const { t } = useTranslation();
@@ -21,6 +22,11 @@ export default function AboutTest({ testData }) {
         }
         fetchConvertedAmount();
     }, [testData.price, currency, testData.currency]);
+
+    // Find currency info from currencies array
+    const currencyInfo = currencies.find(
+      curr => curr.title === currency || curr.titleEn === currency || curr.titleAr === currency || curr.code === currency
+    );
 
     return (
         <Paper sx={{ padding: 1, borderRadius: 2, boxShadow: 3 ,mt:4}}>
@@ -53,8 +59,22 @@ export default function AboutTest({ testData }) {
                     { label: t("subject"), value: lang === "ar" ? testData?.subject?.titleAR : testData?.subject?.titleEN },
                     { label: t("classes"), value: lang === "ar" ? testData?.class?.titleAR : testData?.class?.titleEN },
                     // { label: t("semester"), value: t(testData?.semester) },
-                    { label: t("price"), value: convertedAmount },
-                    { label: t("currency"), value: t(currency) },
+                    {
+                      label: t("price"),
+                      value: convertedAmount !== null ? (
+                        <Box display="flex" alignItems="center" justifyContent="center" gap={1}>
+                          <span>{convertedAmount}</span>
+                          {currencyInfo?.code && (
+                            <img
+                              src={`https://flagcdn.com/w40/${currencyInfo.code.toLowerCase()}.png`}
+                              alt={currencyInfo.code}
+                              style={{ width: 28, height: 20, borderRadius: 4, marginLeft: 4 }}
+                            />
+                          )}
+                          <span>{lang === "ar" ? currencyInfo?.titleAr : currencyInfo?.titleEn || currencyInfo?.title || currency}</span>
+                        </Box>
+                      ) : "..."
+                    },
                 ].map((item, index) => (
                     <Box
                         key={index}

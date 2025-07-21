@@ -4,6 +4,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { convertCurrency } from '../../../utils/convertCurrency';
 import { useSelector } from 'react-redux';
+import currencies from '../../../data/currencies';
 
 export default function AboutDiscount({ data }) {
     const { t } = useTranslation();
@@ -23,6 +24,11 @@ export default function AboutDiscount({ data }) {
         fetchConvertedAmount();
     }, [data.amountAfterDiscount,data.amountBeforeDiscount, currency, data.currency]);
    
+    // Find currency info from currencies array
+    const currencyInfo = currencies.find(
+      curr => curr.title === currency || curr.titleEn === currency || curr.titleAr === currency || curr.code === currency
+    );
+
     return (
         <Paper sx={{ padding: { xs: "16px", sm: "32px 24px" }, marginY: "30px" }}>
             <CardMedia
@@ -59,250 +65,194 @@ export default function AboutDiscount({ data }) {
 
             {/* استخدام Grid لتوزيع العناصر بشكل مرن */}
             <Grid container spacing={2} justifyContent="space-between" sx={{ marginBottom: "15px" }}>
-                <Grid item xs={12} sm={6} md={4}>
-                    <Typography
-                        mt={1}
-                        variant="body1"
+                <Grid item xs={12} >
+                    <Box
                         sx={{
-                            fontWeight: "700",
-                            background: "#f2f3f4",
-                            borderRadius: "1rem",
-                            padding: "1rem",
-                            textAlign: "center"
-                        }}
-                    >
-                        {t("Discount Type")}
-                    </Typography>
-                    <Typography
-                        mt={1}
-                        variant="body1"
-                        sx={{
-                            fontWeight: "400",
-                            background: "#f2f3f4",
-                            borderRadius: "1rem",
-                            padding: "1rem",
+                            background: "linear-gradient(135deg, #f8fafc 60%, #d6eaf8 100%)",
+                            borderRadius: "1.5rem",
+                            boxShadow: "0 2px 12px 0 rgba(52, 152, 219, 0.10)",
+                            padding: "1.2rem 1rem 0.7rem 1rem",
                             textAlign: "center",
-                            color: "#5dade2"
+                            mb: 2,
+                            minHeight: "100px",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center"
                         }}
                     >
-                        {t(data.discountType)}
-                    </Typography>
+                        <span style={{ fontWeight: 700, fontSize: "1.1rem", marginBottom: 8 }}>{t("Discount Type")}</span>
+                        <span style={{ color: "#5dade2", fontWeight: 600, fontSize: "1.1rem" }}>{t(data.discountType)}</span>
+                    </Box>
                 </Grid>
 
-                <Grid item xs={12} sm={6} md={4}>
-                    <Typography
-                        mt={1}
-                        variant="body1"
+                <Grid item xs={12} >
+                    <Box
                         sx={{
-                            fontWeight: "700",
-                            background: "#f2f3f4",
-                            borderRadius: "1rem",
-                            padding: "1rem",
-                            textAlign: "center"
-                        }}
-                    >
-                        {t("classes")}
-                    </Typography>
-                    <Typography
-                        mt={1}
-                        variant="body1"
-                        sx={{
-                            fontWeight: "400",
-                            background: "#f2f3f4",
-                            borderRadius: "1rem",
-                            padding: "1rem",
+                            background: "linear-gradient(135deg, #f8fafc 60%, #d6eaf8 100%)",
+                            borderRadius: "1.5rem",
+                            boxShadow: "0 2px 12px 0 rgba(52, 152, 219, 0.10)",
+                            padding: "1.2rem 1rem 0.7rem 1rem",
                             textAlign: "center",
-                            color: "#5dade2"
+                            mb: 2,
+                            minHeight: "100px",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center"
                         }}
                     >
-                        {lang === "ar" ? data?.class?.titleAR : data?.class?.titleEN}
-                    </Typography>
+                        <span style={{ fontWeight: 700, fontSize: "1.1rem", marginBottom: 8 }}>{t("classes")}</span>
+                        <span style={{ color: "#5dade2", fontWeight: 600, fontSize: "1.1rem" }}>{lang === "ar" ? data?.class?.titleAR : data?.class?.titleEN}</span>
+                    </Box>
                 </Grid>
 
-                <Grid item xs={12} sm={6} md={4}>
-                    <Typography
-                        mt={1}
-                        variant="body1"
+                <Grid item xs={12} >
+                    <Box
                         sx={{
-                            fontWeight: "700",
-                            background: "#f2f3f4",
-                            borderRadius: "1rem",
-                            padding: "1rem",
-                            textAlign: "center"
-                        }}
-                    >
-                        {t("studyCurriculum")}
-                    </Typography>
-                    <Typography
-                        mt={1}
-                        variant="body1"
-                        sx={{
-                            fontWeight: "400",
-                            background: "#f2f3f4",
-                            borderRadius: "1rem",
-                            padding: "1rem",
+                            background: "linear-gradient(135deg, #f8fafc 60%, #d6eaf8 100%)",
+                            borderRadius: "1.5rem",
+                            boxShadow: "0 2px 12px 0 rgba(52, 152, 219, 0.10)",
+                            padding: "1.2rem 1rem 0.7rem 1rem",
                             textAlign: "center",
-                            color: "#5dade2"
+                            mb: 2,
+                            minHeight: "100px",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center"
                         }}
                     >
-                        {lang === "ar" ? data?.curriculums?.titleAR : data?.curriculums?.titleEN}
-                    </Typography>
+                        <span style={{ fontWeight: 700, fontSize: "1.1rem", marginBottom: 8 }}>{t("studyCurriculum")}</span>
+                        <span style={{ color: "#5dade2", fontWeight: 600, fontSize: "1.1rem" }}>{lang === "ar" ? data?.curriculums?.titleAR : data?.curriculums?.titleEN}</span>
+                    </Box>
                 </Grid>
             </Grid>
 
             {/* عرض البيانات الأخرى */}
             <Grid container spacing={2} justifyContent="space-between">
-                <Grid item xs={12} sm={6} md={4}>
-                    <Typography
-                        mt={1}
-                        variant="body1"
+                <Grid item xs={12} >
+                    <Box
                         sx={{
-                            fontWeight: "700",
-                            background: "#f2f3f4",
-                            borderRadius: "1rem",
-                            padding: "1rem",
-                            textAlign: "center"
-                        }}
-                    >
-                        {t("Amount Before Discount")}
-                    </Typography>
-                    <Typography
-                        mt={1}
-                        variant="body1"
-                        sx={{
-                            fontWeight: "400",
-                            background: "#f2f3f4",
-                            borderRadius: "1rem",
-                            padding: "1rem",
+                            background: "linear-gradient(135deg, #eaf6fb 60%, #d6eaf8 100%)",
+                            borderRadius: "1.5rem",
+                            boxShadow: "0 2px 12px 0 rgba(52, 152, 219, 0.12)",
+                            padding: "1.2rem 1rem 0.7rem 1rem",
                             textAlign: "center",
-                            color: "#5dade2"
+                            mb: 2,
+                            minHeight: "120px",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center"
                         }}
                     >
-                        {convertedAmount !== null ? convertedAmount : "Loading..."} {t(currency)}
-                    </Typography>
+                        <span style={{ fontWeight: 700, fontSize: "1.1rem", marginBottom: 8 }}>{t("Amount Before Discount")}</span>
+                        <span style={{ fontSize: "1.2rem", fontWeight: 700 }}>{convertedAmount !== null ? convertedAmount : "Loading..."}</span>
+                        {currencyInfo?.code && (
+                          <img
+                            src={`https://flagcdn.com/w40/${currencyInfo.code.toLowerCase()}.png`}
+                            alt={currencyInfo.code}
+                            style={{ width: 38, height: 38, borderRadius: "50%", margin: "8px 0" }}
+                          />
+                        )}
+                        <span style={{ color: "#2980b9", fontWeight: 600, fontSize: "1rem" }}>{lang === "ar" ? currencyInfo?.titleAr : currencyInfo?.titleEn || currencyInfo?.title || currency}</span>
+                    </Box>
                 </Grid>
 
-                <Grid item xs={12} sm={6} md={4}>
-                    <Typography
-                        mt={1}
-                        variant="body1"
+                <Grid item xs={12} >
+                    <Box
                         sx={{
-                            fontWeight: "700",
-                            background: "#f2f3f4",
-                            borderRadius: "1rem",
-                            padding: "1rem",
-                            textAlign: "center"
-                        }}
-                    >
-                        {t("Amount After Discount")}
-                    </Typography>
-                    <Typography
-                        mt={1}
-                        variant="body1"
-                        sx={{
-                            fontWeight: "400",
-                            background: "#f2f3f4",
-                            borderRadius: "1rem",
-                            padding: "1rem",
+                            background: "linear-gradient(135deg, #eaf6fb 60%, #d6eaf8 100%)",
+                            borderRadius: "1.5rem",
+                            boxShadow: "0 2px 12px 0 rgba(52, 152, 219, 0.12)",
+                            padding: "1.2rem 1rem 0.7rem 1rem",
                             textAlign: "center",
-                            color: "#5dade2"
+                            mb: 2,
+                            minHeight: "120px",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center"
                         }}
                     >
-                        {convertedAmount2 !== null ? convertedAmount2 : "Loading..."} {t(currency)}
-                    </Typography>
+                        <span style={{ fontWeight: 700, fontSize: "1.1rem", marginBottom: 8 }}>{t("Amount After Discount")}</span>
+                        <span style={{ fontSize: "1.2rem", fontWeight: 700 }}>{convertedAmount2 !== null ? convertedAmount2 : "Loading..."}</span>
+                        {currencyInfo?.code && (
+                          <img
+                            src={`https://flagcdn.com/w40/${currencyInfo.code.toLowerCase()}.png`}
+                            alt={currencyInfo.code}
+                            style={{ width: 38, height: 38, borderRadius: "50%", margin: "8px 0" }}
+                          />
+                        )}
+                        <span style={{ color: "#2980b9", fontWeight: 600, fontSize: "1rem" }}>{lang === "ar" ? currencyInfo?.titleAr : currencyInfo?.titleEn || currencyInfo?.title || currency}</span>
+                    </Box>
                 </Grid>
 
-                <Grid item xs={12} sm={6} md={4}>
-                    <Typography
-                        mt={1}
-                        variant="body1"
+                <Grid item xs={12} >
+                    <Box
                         sx={{
-                            fontWeight: "700",
-                            background: "#f2f3f4",
-                            borderRadius: "1rem",
-                            padding: "1rem",
-                            textAlign: "center"
-                        }}
-                    >
-                        {t("startDate")}
-                    </Typography>
-                    <Typography
-                        mt={1}
-                        variant="body1"
-                        sx={{
-                            fontWeight: "400",
-                            background: "#f2f3f4",
-                            borderRadius: "1rem",
-                            padding: "1rem",
+                            background: "linear-gradient(135deg, #f8fafc 60%, #d6eaf8 100%)",
+                            borderRadius: "1.5rem",
+                            boxShadow: "0 2px 12px 0 rgba(52, 152, 219, 0.10)",
+                            padding: "1.2rem 1rem 0.7rem 1rem",
                             textAlign: "center",
-                            color: "#5dade2"
+                            mb: 2,
+                            minHeight: "100px",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center"
                         }}
                     >
-                        {new Date(data.startDate).toDateString()}
-                    </Typography>
+                        <span style={{ fontWeight: 700, fontSize: "1.1rem", marginBottom: 8 }}>{t("startDate")}</span>
+                        <span style={{ color: "#5dade2", fontWeight: 600, fontSize: "1.1rem" }}>{new Date(data.startDate).toLocaleDateString()}</span>
+                    </Box>
                 </Grid>
             </Grid>
 
             {/* عرض البيانات المتبقية */}
             <Grid container spacing={2} justifyContent="space-between">
-                <Grid item xs={12} sm={6} md={4}>
-                    <Typography
-                        mt={1}
-                        variant="body1"
+                <Grid item xs={12} >
+                    <Box
                         sx={{
-                            fontWeight: "700",
-                            background: "#f2f3f4",
-                            borderRadius: "1rem",
-                            padding: "1rem",
-                            textAlign: "center"
-                        }}
-                    >
-                        {t("endDate")}
-                    </Typography>
-                    <Typography
-                        mt={1}
-                        variant="body1"
-                        sx={{
-                            fontWeight: "400",
-                            background: "#f2f3f4",
-                            borderRadius: "1rem",
-                            padding: "1rem",
+                            background: "linear-gradient(135deg, #f8fafc 60%, #d6eaf8 100%)",
+                            borderRadius: "1.5rem",
+                            boxShadow: "0 2px 12px 0 rgba(231, 76, 60, 0.10)",
+                            padding: "1.2rem 1rem 0.7rem 1rem",
                             textAlign: "center",
-                            color: "#ec7063"
+                            mb: 2,
+                            minHeight: "100px",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center"
                         }}
                     >
-                        {new Date(data.endDate).toDateString()}
-                    </Typography>
+                        <span style={{ fontWeight: 700, fontSize: "1.1rem", marginBottom: 8 }}>{t("endDate")}</span>
+                        <span style={{ color: "#ec7063", fontWeight: 600, fontSize: "1.1rem" }}>{new Date(data.endDate).toLocaleDateString()}</span>
+                    </Box>
                 </Grid>
 
-                <Grid item xs={12} sm={6} md={4}>
-                    <Typography
-                        mt={1}
-                        variant="body1"
+                <Grid item xs={12} >
+                    <Box
                         sx={{
-                            fontWeight: "700",
-                            background: "#f2f3f4",
-                            borderRadius: "1rem",
-                            padding: "1rem",
-                            textAlign: "center"
-                        }}
-                    >
-                        {t("terms And Conditions")}
-                    </Typography>
-                    <Typography
-                        variant="body1"
-                        mt={1}
-                        sx={{
-                            fontWeight: "400",
-                            background: "#f2f3f4",
-                            borderRadius: "1rem",
-                            padding: "1rem",
+                            background: "linear-gradient(135deg, #f8fafc 60%, #d6eaf8 100%)",
+                            borderRadius: "1.5rem",
+                            boxShadow: "0 2px 12px 0 rgba(52, 152, 219, 0.10)",
+                            padding: "1.2rem 1rem 0.7rem 1rem",
                             textAlign: "center",
-                            color: "#5dade2"
+                            mb: 2,
+                            minHeight: "100px",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center"
                         }}
                     >
-                        {lang === "ar" ? data.conditionsAR : data.conditionsEN}
-                    </Typography>
+                        <span style={{ fontWeight: 700, fontSize: "1.1rem", marginBottom: 8 }}>{t("terms And Conditions")}</span>
+                        <span style={{ color: "#5dade2", fontWeight: 600, fontSize: "1.1rem" }}>{lang === "ar" ? data.conditionsAR : data.conditionsEN}</span>
+                    </Box>
                 </Grid>
             </Grid>
         </Paper>

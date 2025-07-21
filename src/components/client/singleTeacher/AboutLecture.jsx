@@ -4,6 +4,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { convertCurrency } from '../../../utils/convertCurrency';
 import { useSelector } from 'react-redux';
+import currencies from '../../../data/currencies';
 
 export default function AboutLecture({ lectureData }) {
     const { t } = useTranslation();
@@ -21,14 +22,33 @@ export default function AboutLecture({ lectureData }) {
         fetchConvertedAmount();
     }, [lectureData.price, currency, lectureData.currency]);
 
+    // Find currency info from currencies array
+    const currencyInfo = currencies.find(
+      curr => curr.title === currency || curr.titleEn === currency || curr.titleAr === currency || curr.code === currency
+    );
+
     const infoItems = [
-        { label: t("description"), value: lang === "ar" ? lectureData.descriptionAr : lectureData.descriptionEn },
+        { label: t("Description"), value: lang === "ar" ? lectureData.descriptionAr : lectureData.descriptionEn },
         { label: t("studycurriculums"), value: lang === "ar" ? lectureData?.curriculums?.titleAR : lectureData?.curriculums?.titleEN },
         { label: t("subject"), value: lang === "ar" ? lectureData?.subject?.titleAR : lectureData?.subject?.titleEN },
         { label: t("classes"), value: lang === "ar" ? lectureData?.class?.titleAR : lectureData?.class?.titleEN },
         // { label: t("semester"), value: t(lectureData?.semester) },
-        { label: t("price"), value: convertedAmount },
-        { label: t("currency"), value: t(currency) },
+        {
+          label: t("price"),
+          value: convertedAmount !== null ? (
+            <Box display="flex" alignItems="center" justifyContent="center" gap={1}>
+              <span>{convertedAmount}</span>
+              {currencyInfo?.code && (
+                <img
+                  src={`https://flagcdn.com/w40/${currencyInfo.code.toLowerCase()}.png`}
+                  alt={currencyInfo.code}
+                  style={{ width: 28, height: 20, borderRadius: 4, marginLeft: 4 }}
+                />
+              )}
+              <span>{lang === "ar" ? currencyInfo?.titleAr : currencyInfo?.titleEn || currencyInfo?.title || currency}</span>
+            </Box>
+          ) : "..."
+        },
     ];
 
     return (

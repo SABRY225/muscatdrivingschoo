@@ -1,4 +1,6 @@
 import * as React from "react";
+import LoginIcon from '@mui/icons-material/Login';
+import SchoolIcon from '@mui/icons-material/School';
 import PropTypes from "prop-types";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -8,6 +10,7 @@ import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
+import MapIcon from '@mui/icons-material/Map';
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -342,21 +345,22 @@ function Navbar(props) {
           </ListItem>
         </Link>
         {!teacher && !parent && !student && !guest && (
-          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", }}>
-            <Button sx={{ my: 1, color: "white", display: "block", textTransform: "capitalize", padding: "1px 18px", }}
-              variant="text" onClick={() => navigate("/login")}>
+          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "start", }}>
+            <Button sx={{ my: 1, color: "white", display: "flex", alignItems: "center", gap: 1, textTransform: "capitalize", padding: "1px 18px", }}
+              variant="text" onClick={() => navigate("/login")}> 
+              <LoginIcon sx={{ fontSize: 22 }} />
               {t("login")}
             </Button>
             <Button
               onClick={() => navigate("/teacherRegister/step1")}
               sx={{
-                display: "block", textTransform: "capitalize", padding: "1px 13px",
-                // backgroundColor: "#ffc93c",
+                display: "flex", alignItems: "center", gap: 1, textTransform: "capitalize", padding: "1px 13px",
                 color: "#fff",
                 fontSize: "14px", height: "50px", borderRadius: "10px",
               }}
               variant="text"
             >
+              <SchoolIcon sx={{ fontSize: 22 }} />
               {t("becometeacher")}
             </Button>
           </Box>
@@ -365,6 +369,7 @@ function Navbar(props) {
 
         {teacher && (
           <>
+          
             <Link to="/teacher/notifications">
               <ListItem sx={{
                 color: "white",
@@ -417,6 +422,21 @@ function Navbar(props) {
         )}
         {student && (
           <>
+          <Link to="/map-browser">
+          <ListItem
+            sx={{
+              color: "white",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-start",
+              gap: 1.5, // مسافة بين الأيقونة والنص
+              px: 2,
+            }}
+          >
+            <MapIcon />
+            {t("mapBroswer")}
+          </ListItem>
+        </Link>
             <Link to="/student/statistics">
               <ListItem
                 sx={{

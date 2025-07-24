@@ -119,7 +119,7 @@ export default function Login() {
         >
           <form onSubmit={handleSubmit(onSubmit)}>
             <Typography
-              sx={{ fontSize: "28px", fontWeight: "600", marginBottom: "16px" }}
+              sx={{ fontSize: {md:"28px",xs:"19px"}, fontWeight: "600", marginBottom: "16px" }}
             >
               {t("loginemail")}
             </Typography>
@@ -165,15 +165,24 @@ export default function Login() {
             >
               {load ? t("login") + "..." : t("login")}
             </Button>
-            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: { xs: "column", sm: "row" },
+                justifyContent: { xs: "center", sm: "space-between" },
+                alignItems: "center",
+                gap: { xs: 1, sm: 0 },
+                mt: 4,
+                mb: 2,
+              }}
+            >
               <Typography
                 sx={{
-                  marginTop: "40px",
                   fontSize: "15px",
                   textAlign: "center",
                   fontWeight: "700",
-                  marginBottom: "20px",
                   cursor: "pointer",
+                  mb: { xs: 1, sm: 0 },
                 }}
                 onClick={() => navigate("/teacherRegister/step1")}
               >
@@ -181,11 +190,9 @@ export default function Login() {
               </Typography>
               <Typography
                 sx={{
-                  marginTop: "40px",
                   fontSize: "15px",
                   textAlign: "center",
                   fontWeight: "700",
-                  marginBottom: "20px",
                   cursor: "pointer",
                 }}
                 onClick={() => navigate("/forgetPassword/step1")}
@@ -195,9 +202,9 @@ export default function Login() {
             </Box>
 
             <Grid container spacing={2}>
-              <Grid item xs={4}>
+              <Grid item xs={12} sm={4}>
                 <Button
-                  sx={{ textTransform: "capitalize" }}
+                  sx={{ textTransform: "capitalize", mb: { xs: 1, sm: 0 } }}
                   variant="outlined"
                   fullWidth
                   onClick={() => navigate("/studentregister/step1")}
@@ -205,9 +212,9 @@ export default function Login() {
                   {t("student")}
                 </Button>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} sm={4}>
                 <Button
-                  sx={{ textTransform: "capitalize" }}
+                  sx={{ textTransform: "capitalize", mb: { xs: 1, sm: 0 } }}
                   variant="outlined"
                   fullWidth
                   onClick={() => navigate("/teacherRegister/step1")}
@@ -215,7 +222,7 @@ export default function Login() {
                   {t("teacher")}
                 </Button>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} sm={4}>
                 <Button
                   sx={{ textTransform: "capitalize" }}
                   variant="outlined"
